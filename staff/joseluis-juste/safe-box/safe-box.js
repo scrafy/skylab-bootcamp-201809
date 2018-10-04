@@ -1,29 +1,24 @@
-function FactorySafeBox(){
+// safe-box.js
 
-    var password = "abc";
-    var secret;
-    
-    return{
-        saveSecret:function(_secret, _pass){
-            
-            if (_pass === "") throw Error("invalid password");
+var safeBox;
+(function () {
+    var _password;
+    var _secret;
 
-            if (_pass === undefined) throw Error("invalid password");
+    safeBox = {
+        saveSecret: function (secret, password) {
+            if (typeof secret !== 'string' || !secret.trim().length) throw Error('invalid secret');
 
-            if (_pass.trim() === undefined) throw Error("invalid password");
+            if (typeof password !== 'string' || !password.trim().length) throw Error('invalid password');
 
-            if (_pass === password){
-                secret = _secret;
-                return;
-            }
-            throw Error("invalid password");
+            _secret = secret;
+            _password = password;
         },
-        retrieveSecret:function(pass){
-            
-            if (pass === password)
-                return secret;
-            
-            throw Error("invalid password");
+
+        retrieveSecret: function (password) {
+            if (password !== _password) throw Error('invalid password');
+
+            return _secret;
         }
-    }
-}
+    };
+})();
