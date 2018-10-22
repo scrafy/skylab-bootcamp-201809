@@ -1,26 +1,22 @@
 import React, { Component } from 'react'
 
 class Post extends Component {
-    state = { text: this.props.text }
+    // state = { postId:this.props.postId, user: this.props.user, url:this.props.url, text: this.props.text, like: false }
 
 
-    handleChange = event => {
-        const text = event.target.value
+    // handleLikePost = () => {
+    //     logic.likedPost(postId)
+    //     this.setState({ like: true })
+    // }
 
-        this.setState({ text })
-    }
-
-    handleBlur = () => {
-        this.props.onUpdatePost(this.props.id, this.state.text)
-    }
-
-    render() {
-        return <article className="post">
-            <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
-
-            <button onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
-        </article>
-    }
+    // render() {
+    //     return <article className="post">
+    //         <p>{this.state.user}</p>
+    //         <img src={url}></img>
+    //         <p>{this.state.text}</p>
+    //         <button onClick={() => this.handleLikePost}>{!this.state.like ? <i className="far fa-heart"></i> : <i class="fas fa-heart"></i>}</button>
+    //     </article>
+    // }
 }
 
 export default Post

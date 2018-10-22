@@ -24,3 +24,8 @@
 .div-home {
     border: solid 1px black;
 }
+
+.upload__img{
+    height: 200px;
+    width: 100%;
+}
