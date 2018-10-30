@@ -1,7 +1,7 @@
 var http = require('http')
 var url = require('url')
 
-let [, , port] = process.argv
+//let [, , port] = process.argv
 
 
 var server = http.createServer(function (req, res) {
@@ -33,5 +33,5 @@ var server = http.createServer(function (req, res) {
 
 })
 
-server.listen(port)
+server.listen(55000)
 
