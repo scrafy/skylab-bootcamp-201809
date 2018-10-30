@@ -1,14 +1,30 @@
 const fs = require('fs')
 
-const [,,origin,destiny] = process.argv
+const [, , orig, dest] = process.argv
 
-const text = fs.readFileSync(origin, 'utf8')
 
-fs.writeFile (destiny, text, (err) => {
+fs.readdir(orig,(err,files)=>{
     if (err) throw err
+
+    files.forEach(file => {
+        
+        console.log(file.toString())
+
+    })
 })
 
-/**
- * 
- * 
- */
+// const isdir = fs.lstatSync(orig)
+
+// console.log (isdir)
+
+// const rs = fs.createReadStream(orig)
+
+// const ws = fs.createWriteStream(dest)
+
+// rs.pipe(ws)
+
+// rs.on('end', () => printMem())
+
+// function printMem() {
+//     console.log(process.memoryUsage().rss / 1024 / 1024)
+// }
