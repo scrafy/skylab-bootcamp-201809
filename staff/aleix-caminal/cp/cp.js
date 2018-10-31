@@ -1,19 +1,29 @@
 const path = require('path')
 const fs = require('fs')
 
-const { argv: [, , recu, from, to] } = process
+let options = []
+for (var i = 2; i < process.argv.length; i++) {
+    if (process.argv[i].charAt(0) === '-') {
+        let newopts = process.argv[i].substr(1).split('');
+        options = options.concat(newopts)
+    }
+}
 
-if (recu === '-R') {
-    function recursive(from, to) {
-        if (fs.lstatSync(from).isDirectory()) {
-            fs.mkdirSync(to)
+const source = process.argv[process.argv.length - 2]
+const target = process.argv[process.argv.length - 1]
 
-            fs.readdirSync(from)
-                .forEach(file => recursive(path.join(from, file), path.join(to, file)))
+if (options.includes('R')) {
+    function recursive(source, target) {
+        if (fs.lstatSync(source).isDirectory()) {
+            fs.mkdirSync(target)
 
-        } else fs.createReadStream(from).pipe(fs.createWriteStream(to))
+            fs.readdirSync(source)
+                .forEach(file => recursive(path.join(source, file), path.join(target, file)))
+
+        } else fs.createReadStream(source).pipe(fs.createWriteStream(target))
     }
 
-    recursive(from, to)
-
-} else fs.createReadStream(recu).pipe(fs.createWriteStream(from))
+    recursive(source, target)
+} else {
+    fs.createReadStream(source).pipe(fs.createWriteStream(target))
+}
