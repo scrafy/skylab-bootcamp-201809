@@ -1,30 +1,24 @@
-const fs = require('fs')
+//solución Judith
 
-const [, , orig, dest] = process.argv
+var path = require('path')
+var fs = require('fs')
 
+const {argv: [,,recu, src, dest]} = process
 
-fs.readdir(orig,(err,files)=>{
-    if (err) throw err
-
-    files.forEach(file => {
+if (recu === '-R') {
+    var recursive = function(src, dest) {
         
-        console.log(file.toString())
+        if(fs.lstatSync(src).isDirectory()){
 
-    })
-})
+            fs.mkdirSync(dest)
 
-// const isdir = fs.lstatSync(orig)
+            fs.readdirSync(src).forEach((item) => {
+            recursive(path.join(src, item),
+                                path.join(dest, item))
+            })
+        } else fs.createReadStream(src).pipe(fs.createWriteStream(dest))
+    }
 
-// console.log (isdir)
+    recursive(src, dest)
 
-// const rs = fs.createReadStream(orig)
-
-// const ws = fs.createWriteStream(dest)
-
-// rs.pipe(ws)
-
-// rs.on('end', () => printMem())
-
-// function printMem() {
-//     console.log(process.memoryUsage().rss / 1024 / 1024)
-// }
+}else fs.createReadStream(recu).pipe(fs.createWriteStream(src))
