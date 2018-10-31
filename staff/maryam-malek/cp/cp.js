@@ -43,5 +43,12 @@ function recurDir(input, output) {
                 }
             })
         })
-    })
+    })   
 }
+
+// USE PATH TO JOIN DIRECTORY WITH FILE
+
+// const path = require('path')
+// path.join(input, file)
+// ===
+// `${input}/${file}`
