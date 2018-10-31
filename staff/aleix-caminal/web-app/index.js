@@ -79,7 +79,8 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('/home', (req, res) => {
-    res.send(
+    if (auth && Object.keys(auth).length > 0) {
+        res.send(
 `<!DOCTYPE html>
 <html>
     <head>
@@ -90,7 +91,10 @@ app.get('/home', (req, res) => {
         <a href="/logout">logout</a>
     </body>
 </html>`
-    )
+        )
+    } else {
+        res.redirect('/login')
+    }
 })
 
 app.get('/users', (req, res) => {
@@ -117,8 +121,15 @@ app.post('/register', (req, res) => {
     req.on('data', chunk => data += chunk)
 
     req.on('end', () => {
-        const user = parseData(data)
-        user.id = Date.now()
+        const register = parseData(data)
+        const user = {
+            id: Date.now(),
+            name: register.name,
+            surname: register.surname,
+            username: register.username,
+            password: register.password
+        }
+
         users.push(user)
         res.redirect('/login')
     })
