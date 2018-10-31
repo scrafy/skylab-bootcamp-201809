@@ -1,30 +1,19 @@
-var fs = require('fs')
+const path = require('path')
+const fs = require('fs')
 
-const { argv: [, , originPath, destinyPath] } = process
+const { argv: [, , recu, from, to] } = process
 
-// First we read the file
-if (originPath === '-R') {
-    const { argv: [, , , originPath, destinyPath] } = process
+if (recu === '-R') {
+    function recursive(from, to) {
+        if (fs.lstatSync(from).isDirectory()) {
+            fs.mkdirSync(to)
 
-    const readStream = fs.createReadStream(originPath)
-    const writeStream = fs.createWriteStream(destinyPath)
+            fs.readdirSync(from)
+                .forEach(file => recursive(path.join(from, file), path.join(to, file)))
 
-    readStream.pipe(writeStream)
+        } else fs.createReadStream(from).pipe(fs.createWriteStream(to))
+    }
 
-} else {
-    const readStream = fs.createReadStream(originPath)
-    const writeStream = fs.createWriteStream(destinyPath)
+    recursive(from, to)
 
-    readStream.pipe(writeStream)
-
-}
-
-
-fs.lstat(originPath, (err, stats) => {
-
-    if(err)
-        return console.log(err); //Handle error
-
-    if(stats.isFile())
-
-});
+} else fs.createReadStream(recu).pipe(fs.createWriteStream(from))
