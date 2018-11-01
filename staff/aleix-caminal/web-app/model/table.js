@@ -1,7 +1,18 @@
 class Table {
-    find(table) {
+    _find(table) {
         this.table = JSON.parse(sessionStorage.getItem(table)) || []
         return this
+    }
+
+    _save(table) {
+        const index = this.table.findIndex(element => element.id === this.id)
+        index < 0 ? this.table.push(this) : this.table[index] = this
+        sessionStorage.setItem(table, JSON.stringify(this.table))
+        return this
+    }
+
+    _delete(table) {
+        sessionStorage.setItem(table, JSON.stringify(this.all().filter(element => element.id !== this.id)))
     }
 
     where(query) {
@@ -10,31 +21,16 @@ class Table {
         return this
     }
 
-    save(table) {
-        let elements = this.all()
-        const index = elements.findIndex(element => element.id === this.id)
-        index < 0 ? elements.push(this) : elements[index] = this
-        sessionStorage.setItem(table, JSON.stringify(elements))
-        return this
-    }
-
-    delete(table) {
-        sessionStorage.setItem(table, JSON.stringify(this.all().filter(element => element.id !== this.id)))
-    }
-
     all() {
-        forEach()
-        for (var key in elements[0]) this[key] = elements[0][key]
-        return this
+        return this.table
     }
 
-    first(elements) {
-        for (var key in elements[0]) this[key] = elements[0][key]
-        return this
+    first() {
+        return this.table[0]
     }
 
     get(id) {
-        return this.first(this.find({id: id}))
+        return this.find().where({id}).first())
     }
 }
 
