@@ -24,7 +24,7 @@ const logic = {
         this._users.push(user)
     },
 
-    login(username, password) {
+    get login(username, password) {
         if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
         if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
