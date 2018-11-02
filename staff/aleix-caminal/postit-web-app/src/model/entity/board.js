@@ -3,6 +3,10 @@ const Entity = require('../entity')
 class Board extends Entity {
     constructor(query) {
         super(query)
+
+        this.id = query.id || Date.now()
+        this.title = query.title
+        this.userId = query.userId
     }
 }
 

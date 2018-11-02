@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Route, withRouter, Redirect } from 'react-router-dom'
-import Login from './components/Login'
-import Register from './components/Register'
-import Board from './components/Board'
-import LOGIC from './logic'
+import Login from './Login'
+import Register from './Register'
+import Board from './Board'
+import LOGIC from '../logic'
 
 function Header(props) {
     return <header className="header">

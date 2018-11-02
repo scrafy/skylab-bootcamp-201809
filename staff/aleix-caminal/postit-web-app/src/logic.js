@@ -90,7 +90,7 @@ const LOGIC = {
                 let user = usersTable.newEntity({
                     name: form.querySelector('input[name="name"]').value,
                     username: form.querySelector('input[name="username"]').value,
-                    password: sha256(form.querySelector('input[name="password"]').value)
+                    password: form.querySelector('input[name="password"]').value
                 })
                 usersTable.save(user)
                 callback()

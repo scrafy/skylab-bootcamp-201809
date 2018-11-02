@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const LOGIC = require('./logic')
+const LOGIC = require('../logic')
 
 describe('Logic', function () {
     describe('addBoard', function () {
