@@ -1,4 +1,5 @@
-const { User } = require('./data')
+const { User, Postit } = require('./data')
+
 
 const logic = {
     registerUser(name, surname, username, password) {
@@ -49,10 +50,24 @@ const logic = {
         )
 
         _user.id = user.id
+        _user.postits = user.postits
 
         delete _user.password
 
         return _user
+    },
+
+    createPostit(text, id) {
+        const user = User.findById(id)
+
+        const userPostits = user.postits
+
+        let _postit = new Postit(text)
+
+        userPostits.push(_postit)
+
+        user.save()
+
     }
 }
 

@@ -98,8 +98,46 @@ app.get('/home', mySession, (req, res) => {
         const user = logic.retrieveUser(id)
 
         res.send(buildView(`<p>Welcome ${user.name}!</p>
-                        <a href="/logout">logout</a>`))
+                        <a href="/logout">logout</a>
+                        <a href="/postits">go postits</a>
+                        `))
     } else res.redirect('/')
+})
+
+app.get('/postits', mySession, (req, res) => {
+    const id = req.session.userId
+
+    if (id) {
+        const user = logic.retrieveUser(id)
+
+        res.send(buildView(`<p>Your postits</p>
+                        <a href="/logout">logout</a>
+                        <form action="/postits" method="POST" >
+                        <textarea type="text" name="text" placeholder="write text here"></textarea>
+                        <button type="submit">Create</button>
+                        <ul class = "list-group">
+                            ${user.postits.map(post => `<li class="list-group-item postit">${post.text} <i onClick="alert(${post.id})" class="fas fa-trash-alt trash"></i></li>`).join('')}
+                        </ul>
+                        
+                        </form>
+                        `))
+    } else res.redirect('/')
+})
+
+
+app.post('/postits', [formBodyParser, mySession], (req, res) => {
+        let {text} = req.body
+        const id = req.session.userId
+
+        try {
+            logic.createPostit(text, id)
+
+            res.redirect('/postits')
+        } catch ({ message }) {
+            error = message
+
+            res.redirect('/login')
+        }
 })
 
 app.get('/logout', mySession, (req, res) => {

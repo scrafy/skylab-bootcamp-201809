@@ -8,6 +8,7 @@ function buildView(body) {
             <link rel="stylesheet" href="/vendor/bootstrap/4.1.3/css/bootstrap.min.css">
             <link rel="stylesheet" type="text/css" href="/styles/main.css">
             <link href="/images/favicon.png" type="image/png" rel="Shortcut Icon">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
         </head>
         <body>
             <div class="container">

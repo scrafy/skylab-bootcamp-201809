@@ -7,6 +7,7 @@ class User {
         this.surname = surname
         this.username = username
         this.password = password
+        this.postits = []
     }
 
     save() {
@@ -45,6 +46,7 @@ class User {
 
         return user
     }
+    
 
     static findById(id) {
         const json = fs.readFileSync(User._file)
@@ -53,9 +55,12 @@ class User {
 
         const user = users.find(user => user.id === id)
 
-        // TODO is user an instance of User?
+        const _user = new User (user.name, user.surname, user.username, user.password)
 
-        return user
+        _user.id = id
+        _user.postits = user.postits
+
+        return _user
     }
 }
 
