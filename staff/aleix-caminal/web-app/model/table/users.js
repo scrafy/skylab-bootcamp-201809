@@ -6,16 +6,16 @@ class UsersTable extends Table {
         return new User(query)
     }
 
-    find(table) {
+    find() {
         return this._find('users')
     }
 
-    save(table) {
-        return this._save('users')
+    save(user) {
+        return this._save('users', user)
     }
 
-    delete(table) {
-        return this._delete('users')
+    delete(user) {
+        return this._delete('users', user)
     }
 }
 

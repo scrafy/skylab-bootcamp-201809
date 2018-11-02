@@ -4,15 +4,16 @@ class Table {
         return this
     }
 
-    _save(table) {
-        const index = this.table.findIndex(element => element.id === this.id)
-        index < 0 ? this.table.push(this) : this.table[index] = this
+    _save(table, entity) {
+        const index = this.table.findIndex(element => element.id === entity.id)
+        index < 0 ? this.table.push(entity) : this.table[index] = entity
         sessionStorage.setItem(table, JSON.stringify(this.table))
-        return this
+        return entity
     }
 
-    _delete(table) {
-        sessionStorage.setItem(table, JSON.stringify(this.all().filter(element => element.id !== this.id)))
+    _delete(table, entity) {
+        sessionStorage.setItem(table, JSON.stringify(this.table.filter(element => element.id !== entity.id)))
+        return true
     }
 
     where(query) {
