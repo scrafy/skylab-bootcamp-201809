@@ -1,20 +1,21 @@
-const { UsersTable, BoardsTable, PostsTable } = require('./model')
 const { sha256 } = require('js-sha256')
+const { UsersTable } = require('./model/table/users')
+const { BoardsTable } = require('./model/table/posts')
+const { PostsTable } = require('./model/table/boards')
 
 const LOGIC = {
-    users: new UsersTable(),
-    boards: new BoardsTable(),
-    posts: new PostsTable(),
     auth: JSON.parse(sessionStorage.getItem('auth')) || {},
 
     addBoard(form, user_id) {
         if (typeof form !== 'object' || form.tagName !== 'FORM') throw Error('no form passed as argument')
 
         if (this.validate(form, ['title'])) {
-            this.boards.newEntity({
+            const boardsTable = new BoardsTable()
+            let board = boardsTable.newEntity({
                 title: form.querySelector('input[name="title"]').value,
                 user_id: user_id
-            }).save()
+            })
+            boardsTable.save(board)
         }
 
         setTimeout(function() {
@@ -22,57 +23,62 @@ const LOGIC = {
         }, 3000)
 
         form.querySelector('input[name="title"]').value = ''
-        return this.boards.find({
+        const boardsTable = new BoardsTable()
+
+        return boardsTable.find().where({
             user_id: user_id
-        })
+        }).all()
     },
 
     deleteBoard(id) {
         if (!id) throw Error('id is not valid')
+        const boardsTable = new BoardsTable()
 
-        const board = this.boards.get(id)
-        board.delete()
-        return this.boards.find({
+        let board = boardsTable.get(id)
+        boardsTable.delete(board)
+        return boardsTable.find().where({
             user_id: board.user_id
-        })
+        }).all()
     },
 
     updateBoard(id, title) {
         if (!id) throw Error('id is not valid')
         if (!title) throw Error('title is not valid')
+        const boardsTable = new BoardsTable()
 
-        const board = this.boards.get(id)
+        let board = boardsTable.get(id)
         board.title = title
-        board.save()
-        return this.boards.find({
+        boardsTable.save(board)
+        return boardsTable.find().where({
             user_id: board.user_id
-        })
+        }).all()
     },
 
     addPost(input, board_id) {
         if (typeof input !== 'object' || input.tagName !== 'INPUT') throw Error('no input passed as argument')
+        const postsTable = new PostsTable()
 
-        if (input) {
-            this.posts.newEntity({
-                title: input.value,
-                board_id: board_id
-            }).save();
-        }
+        if (!input) return false
 
-        input.value = '';
-        return this.posts.find({
+        let post = postsTable.newEntity({
+            title: input.value,
             board_id: board_id
         })
+        postsTable.save(post);
+
+        input.value = '';
+        return postsTable.find().where({board_id}).all()
     },
 
     deletePost(id) {
         if (!id) throw Error('id is not valid')
+        const postsTable = new PostsTable()
 
-        const post = this.posts.get(id)
-        post.delete()
-        return this.posts.find({
+        const post = postsTable.get(id)
+        postsTable.delete(post)
+        return postsTable.find().where({
             board_id: post.board_id
-        })
+        }).all()
     },
 
     register(form, callback) {
@@ -80,11 +86,13 @@ const LOGIC = {
 
         if (this.validate(form, ['name', 'username', 'password', 'confirm_password'])) {
             if (form.querySelector('input[name="password"]').value === form.querySelector('input[name="confirm_password"]').value) {
-                this.users.newEntity({
+                const usersTable = new UsersTable()
+                let user = usersTable.newEntity({
                     name: form.querySelector('input[name="name"]').value,
                     username: form.querySelector('input[name="username"]').value,
                     password: sha256(form.querySelector('input[name="password"]').value)
-                }).save()
+                })
+                usersTable.save(user)
                 callback()
             } else {
                 this.error('Passwords do not match');
@@ -126,11 +134,11 @@ const LOGIC = {
         if (!password) throw Error('password is not valid')
 
         try {
-            const user_id = this.users.find({
+            const usersTable = new UsersTable()
+            return usersTable.find().where({
                 username: username,
                 password: password
-            })[0].id
-            return this.users.get(user_id)
+            }).first()
         } catch (e) {
             return false
         }
