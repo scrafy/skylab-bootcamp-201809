@@ -13,6 +13,7 @@ const { argv: [, , port = process.env.PORT || 8080] } = process
 const app = express()
 
 app.use(express.static('./public'))
+app.set('view engine', 'pug')
 
 const formBodyParser = bodyParser.urlencoded({ extended: false })
 
@@ -31,19 +32,11 @@ app.use(mySession)
 app.get('/', (req, res) => {
     req.session.error = null
 
-    res.send(buildView(`<a href="/login">Login</a> or <a href="/register">Register</a>`))
+    res.render('landing')
 })
 
 app.get('/register', (req, res) => {
-    res.send(buildView(`<form action="/register" method="POST">
-            <input type="text" name="name" placeholder="Name">
-            <input type="text" name="surname" placeholder="Surname">
-            <input type="text" name="username" placeholder="username">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit">Register</button>
-        </form>
-        ${req.session.error ? `<p class="error">${req.session.error}</p>` : ''}
-        <a href="/">go back</a>`))
+    res.render('register', {error: req.session.error})
 })
 
 app.post('/register', formBodyParser, (req, res) => {
@@ -54,8 +47,7 @@ app.post('/register', formBodyParser, (req, res) => {
             .then(() => {
                 req.session.error = null
 
-                res.send(buildView(`<p>Ok! user ${name} registered.</p>
-                                    <a href="/">go back</a>`))
+                res.render('register-confirm', {name} )
             }).catch(({ message }) => {
                 req.session.err = message
 
