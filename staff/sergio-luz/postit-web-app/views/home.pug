@@ -1,0 +1,7 @@
+extends layout
+block content
+      p Welcome #{name}!
+      a(href='/logout') logout
+      ul
+        each val in text
+            li= val

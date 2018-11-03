@@ -1,25 +1,25 @@
 require('dotenv').config()
 const express = require('express')
 const session = require('express-session')
-// const FileStore = require('session-file-store')(session)
-const sessionFileStore = require('session-file-store')
-const FileStore = sessionFileStore(session)
+const FileStore = require('session-file-store')(session)
 const bodyParser = require('body-parser')
-const buildView = require('./helpers/build-view')
 const logic = require('./logic')
+const package = require('./package.json')
 
 const { argv: [, , port = process.env.PORT || 8080] } = process
 
 const app = express()
 
 app.use(express.static('./public'))
-
-let error = null
+app.set('view engine', 'pug')
 
 const formBodyParser = bodyParser.urlencoded({ extended: false })
 
-const mySession = session({ 
-    secret: 'my super secret', 
+const buildView = require('./helpers/build-view')
+
+
+const mySession = session({
+    secret: 'my super secret',
     cookie: { maxAge: 60 * 60 * 24 },
     resave: true,
     saveUninitialized: true,
@@ -28,22 +28,16 @@ const mySession = session({
     })
 })
 
-app.get('/', (req, res) => {
-    error = null
+app.use(mySession)
 
-    res.send(buildView(`<a href="/login">Login</a> or <a href="/register">Register</a>`))
+app.get('/', (req, res) => {
+    req.session.error=null
+
+    res.render('landing')
 })
 
 app.get('/register', (req, res) => {
-    res.send(buildView(`<form action="/register" method="POST">
-            <input type="text" name="name" placeholder="Name">
-            <input type="text" name="surname" placeholder="Surname">
-            <input type="text" name="username" placeholder="username">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit">Register</button>
-        </form>
-        ${error ? `<p class="error">${error}</p>` : ''}
-        <a href="/">go back</a>`))
+    res.render('register', {error:req.session.error})
 })
 
 app.post('/register', formBodyParser, (req, res) => {
@@ -51,11 +45,16 @@ app.post('/register', formBodyParser, (req, res) => {
 
     try {
         logic.registerUser(name, surname, username, password)
+            .then(() => {
+                req.session.error = null
 
-        error = null
+                res.render('register-confirm', { name })
+            })
+            .catch(({ message }) => {
+                req.session.error = message
 
-        res.send(buildView(`<p>Ok! user ${name} registered.</p>
-                <a href="/">go back</a>`))
+                res.redirect('/register')
+            })
     } catch ({ message }) {
         error = message
 
@@ -64,27 +63,28 @@ app.post('/register', formBodyParser, (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-    res.send(buildView(`<form action="/login" method="POST">
-            <input type="text" name="username" placeholder="username">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit">Login</button>
-        </form>
-        ${error ? `<p class="error">${error}</p>` : ''}
-        <a href="/">go back</a>`))
+    res.render('login', { error: req.session.error })
+
 })
 
 app.post('/login', [formBodyParser, mySession], (req, res) => {
     const { username, password } = req.body
 
     try {
-        const id = logic.authenticateUser(username, password)
+        logic.authenticateUser(username, password)
+            .then(id => {
+                debugger
+                req.session.userId = id
+                req.session.error = null
 
+                res.redirect('/home')
+            })
+            .catch(({ message }) => {
+                req.session.error = message
 
-        req.session.userId = id
+                res.redirect('/login')
+            })
 
-        error = null
-
-        res.redirect('/home')
     } catch ({ message }) {
         error = message
 
@@ -94,23 +94,31 @@ app.post('/login', [formBodyParser, mySession], (req, res) => {
 
 app.get('/home', mySession, (req, res) => {
     const id = req.session.userId
-
+debugger
     if (id) {
-        const user = logic.retrieveUser(id)
-        debugger
 
-        res.send(buildView(`<p>Welcome ${user.name}!</p>
-            <form action="/home/createNewPostit" method='GET'>
-                <button>Create a new postit</button>
-            </form>
+        try {
+            logic.retrieveUser(id)
+                .then(user => {
+                    debugger
+                    const {name, postits}=user
+                    const text=postits.map(post=> post.text)
+                    return res.render('home', { name, text })})
+                .then(({ message }) => {
+                    req.session.error = message
 
-            
-            <div>
-                ${user.postits.map(post=> `<p>${post.text}</p>`).join('')}
-            </div>
+                    res.redirect('/')
+                })
+        } catch ({ message }) {
+            req.session.error = message
 
-            <a href="/logout">logout</a>`))
-    } else res.redirect('/')
+            res.redirect('/')
+        }
+    }
+        else{
+            res.redirect('/')
+        }
+
 })
 
 app.get('/logout', mySession, (req, res) => {
@@ -119,14 +127,7 @@ app.get('/logout', mySession, (req, res) => {
     res.redirect('/')
 })
 
-app.get('/users', (req, res) => {
-    res.send(buildView(`<ul>
-            ${logic._users.map(user => `<li>${user.id} ${user.name} ${user.surname}</li>`).join('')}
-        </ul>
-        <a href="/">go back</a>`))
-})
-
-app.get('/home/createNewPostit', mySession, (req, res)=>{
+app.get('/home/createNewPostit', mySession, (req, res) => {
     res.send(buildView(`
     <form action="/home/createNewPostit" method='POST'>
         <input name='text' placeholder='Write text here...'>
@@ -134,8 +135,8 @@ app.get('/home/createNewPostit', mySession, (req, res)=>{
     </form>`))
 })
 
-app.post('/home/createNewPostit', [formBodyParser, mySession], (req, res)=>{
-    const {text}= req.body
+app.post('/home/createNewPostit', [formBodyParser, mySession], (req, res) => {
+    const { text } = req.body
     debugger
     const id = req.session.userId
     logic.updatePostits(id, text)

@@ -22,38 +22,37 @@ const logic = {
     },
 
     authenticateUser(username, password) {
+    
         if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
         if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        const user = User.findByUsername(username)
+        return User.findByUsername(username)
+            .then(user=>{
+                if (!user || user.password!== password) throw Error ('invalid username or password')
 
-        if (!user || user.password !== password) throw Error('invalid username or password')
-
-        return user.id
+                return user.id
+            })
     },
 
     retrieveUser(id) {
         if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
 
-        const user = User.findById(id)
+        return User.findById(id)
+            .then(user=>{
+                if (!user) throw Error(`user with id ${id} not found`)
+        
+                const _user = user.toObject()
+        
+                _user.id = id
+        
+                delete _user.password
+        
+                return _user
+            })
 
-        if (!user) throw Error(`user with id ${id} not found`)
-
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username
-        )
-
-        _user.id = user.id
-        _user.postits=user.postits
-
-        delete _user.password
-
-        return _user
     },
 
     updatePostits(userId, text, id){
