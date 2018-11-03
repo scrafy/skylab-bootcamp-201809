@@ -68,6 +68,19 @@ const logic = {
 
         user.save()
 
+    },
+
+    deletePostit(userId,postitId) {
+        const user = User.findById(userId)
+
+        const userPostits = user.postits
+
+        const index = userPostits.findIndex(post => post.id === parseFloat(postitId))
+
+        userPostits.splice(index, 1)
+
+        user.save()
+
     }
 }
 

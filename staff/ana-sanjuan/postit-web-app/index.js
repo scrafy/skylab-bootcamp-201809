@@ -116,7 +116,12 @@ app.get('/postits', mySession, (req, res) => {
                         <textarea type="text" name="text" placeholder="write text here"></textarea>
                         <button type="submit">Create</button>
                         <ul class = "list-group">
-                            ${user.postits.map(post => `<li class="list-group-item postit">${post.text} <i onClick="alert(${post.id})" class="fas fa-trash-alt trash"></i></li>`).join('')}
+                            ${user.postits.map(post => `<li class="list-group-item postit">${post.text} 
+                            <form action="/postits" method="POST">
+                            <input type="hidden" name="postitId" value="${post.id}">
+                            <button type="submit" name="action" value="delete"><i class="fas fa-trash-alt trash"></i><button>
+                            </form>
+                            </li>`).join('')}
                         </ul>
                         
                         </form>
@@ -126,18 +131,31 @@ app.get('/postits', mySession, (req, res) => {
 
 
 app.post('/postits', [formBodyParser, mySession], (req, res) => {
-        let {text} = req.body
+        let {text, action, postitId} = req.body
         const id = req.session.userId
+        if(!action){
+            try {
+                logic.createPostit(text, id)
 
-        try {
-            logic.createPostit(text, id)
+                res.redirect('/postits')
+            } catch ({ message }) {
+                error = message
 
-            res.redirect('/postits')
-        } catch ({ message }) {
-            error = message
+                res.redirect('/login')
+            }
 
-            res.redirect('/login')
+        } else if (action === "delete" ) {
+            try {
+                logic.deletePostit(id, postitId)
+
+                res.redirect('/postits')
+            } catch ({ message }) {
+                error = message
+
+                res.redirect('/login')
+            }
         }
+        
 })
 
 app.get('/logout', mySession, (req, res) => {
