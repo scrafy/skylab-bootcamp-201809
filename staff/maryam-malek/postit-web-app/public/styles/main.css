@@ -1,7 +1,49 @@
+body {
+    background-color: #383636;
+}
 .title {
-    color: green;
+    color: gold;
+    font-family: 'Indie Flower', cursive;
+    font-size: 3em;
 }
 
 .error {
     color: red;
 }
+
+.postits-area {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 500px;
+    width: 500px;
+}
+
+.postit {
+    background-color: gold;
+    font-family: 'Indie Flower', cursive;
+    width: 150px;
+    height: 155px;
+    margin: 50px 10px;
+    border-radius: 20px;
+    border: solid 1px yellow;
+}
+
+.postit textarea {
+    background: transparent;
+    border: none;
+    width: 150px;
+    height: 80px;
+    resize: none;
+}
+
+.postit button, .create {
+    border-radius: 20px;
+}
+
+.postit form {
+    margin: 3px;
+}
+
+
+
