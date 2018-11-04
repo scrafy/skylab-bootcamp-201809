@@ -1,73 +1,73 @@
 const fs = require('fs')
 
 class User {
-    constructor(user) {
-        const { id, name, surname, username, password } = user
+  constructor(user) {
+    const { id, name, surname, username, password, postits } = user
 
-        this.id = id || Date.now()
+    this.id = id || Date.now()
+    this.name = name
+    this.surname = surname
+    this.username = username
+    this.password = password
+    this.postits = postits || []
+  }
 
-        this.name = name
-        this.surname = surname
-        this.username = username
-        this.password = password
-    }
+  save() {
+    return new Promise((resolve, reject) => {
+      fs.readFile(User._file, (err, json) => {
+        if (err) return reject(err)
 
-    save() {
-        return new Promise((resolve, reject) => {
-            fs.readFile(User._file, (err, json) => {
-                if (err) return reject(err)
+        const users = JSON.parse(json)
 
-                const users = JSON.parse(json)
+        const index = users.findIndex(user => user.id === this.id)
 
-                const index = users.findIndex(user => user.id === this.id)
+        if (index < 0) users.push(this)
+        else users[index] = this
 
-                if (index < 0) users.push(this)
-                else users[index] = this
+        json = JSON.stringify(users)
 
-                json = JSON.stringify(users)
+        fs.writeFile(User._file, json, (err) => {
+          if (err) return reject(err)
 
-                fs.writeFile(User._file, json, (err) => {
-                    if (err) return reject(err)
-
-                    resolve()
-                })
-            })
+          resolve(this.toObject())
         })
-    }
+      })
+    })
+  }
 
-    toObject() {
-        const { name, surname, username, password } = this
+  toObject() {
+    const { name, surname, username, password, postits } = this
 
-        return { name, surname, username, password }
-    }
+    return { name, surname, username, password, postits }
+  }
 
-    static findByUsername(username) {
-        return new Promise((resolve, reject) => {
-            fs.readFile(User._file, (err, json) => {
-                if (err) return reject(err)
+  static findByUsername(username) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(User._file, (err, json) => {
+        if (err) return reject(err)
 
-                const users = JSON.parse(json)
+        const users = JSON.parse(json)
 
-                const user = users.find(user => user.username === username)
+        const user = users.find(user => user.username === username)
 
-                resolve(user ? new User(user) : undefined)
-            })
-        })
-    }
+        resolve(user ? new User(user) : undefined)
+      })
+    })
+  }
 
-    static findById(id) {
-        return new Promise((resolve, reject) => {
-            fs.readFile(User._file, (err, json) => {
-                if (err) return reject(err)
+  static findById(id) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(User._file, (err, json) => {
+        if (err) return reject(err)
 
-                const users = JSON.parse(json)
+        const users = JSON.parse(json)
 
-                const user = users.find(user => user.id === id)
+        const user = users.find(user => user.id === id)
 
-                resolve(user ? new User(user) : undefined)
-            })
-        })
-    }
+        resolve(user ? new User(user) : undefined)
+      })
+    })
+  }
 }
 
 User._file = './data/users.json'

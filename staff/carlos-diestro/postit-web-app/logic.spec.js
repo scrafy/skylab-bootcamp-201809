@@ -9,102 +9,166 @@ const { expect } = require('chai')
 // debug -> $ mocha debug src/logic.spec.js --timeout 10000
 
 describe('logic', () => {
-    before(() => {
-        User._file = './data/users.spec.json'
+  before(() => {
+    User._file = './data/users.spec.json'
+  })
+
+  false && describe('register', () => {
+    let name, surname, username, password
+
+    beforeEach(() => {
+      fs.writeFileSync(User._file, JSON.stringify([]))
+
+      name = `name-${Math.random()}`
+      surname = `surname-${Math.random()}`
+      username = `username-${Math.random()}`
+      password = `password-${Math.random()}`
     })
 
-    describe('register', () => {
-        let name, surname, username, password
+    it('should succeed on correct data', () =>
+      logic.registerUser(name, surname, username, password)
+        .then(() => {
+          const json = fs.readFileSync(User._file)
 
-        beforeEach(() => {
-            fs.writeFileSync(User._file, JSON.stringify([]))
+          const users = JSON.parse(json)
 
-            name = `name-${Math.random()}`
-            surname = `surname-${Math.random()}`
-            username = `username-${Math.random()}`
-            password = `password-${Math.random()}`
+          const [user] = users
+
+          expect(user.name).to.equal(name)
+          expect(user.surname).to.equal(surname)
+          expect(user.username).to.equal(username)
+          expect(user.password).to.equal(password)
         })
+    )
 
-        it('should succeed on correct data', () =>
-            logic.registerUser(name, surname, username, password)
-                .then(() => {
-                    const json = fs.readFileSync(User._file)
-
-                    const users = JSON.parse(json)
-
-                    const [user] = users
-
-                    expect(user.name).to.equal(name)
-                    expect(user.surname).to.equal(surname)
-                    expect(user.username).to.equal(username)
-                    expect(user.password).to.equal(password)
-                })
-        )
-
-        it('should fail on undefined name', () => {
-            expect(() => logic.registerUser(undefined, surname, username, password)).to.throw(TypeError, 'undefined is not a string')
-        })
-
-        // TODO other test cases
+    it('should fail on undefined name', () => {
+      expect(() => logic.registerUser(undefined, surname, username, password)).to.throw(TypeError, 'undefined is not a string')
     })
 
-    describe('authenticate', () => {
-        let user
+    // TODO other test cases
+  })
 
-        beforeEach(() => {
-            user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+  false && describe('authenticate', () => {
+    let user
 
-            fs.writeFileSync(User._file, JSON.stringify([user]))
-        })
+    beforeEach(() => {
+      user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
-        it('should authenticate on correct credentials', () => {
-            const { username, password } = user
-
-            return logic.authenticateUser(username, password)
-                .then(id => {
-                    expect(id).to.exist
-                    expect(id).to.be.a('number')
-
-                    const json = fs.readFileSync(User._file)
-
-                    const users = JSON.parse(json)
-
-                    const [_user] = users
-
-                    expect(_user.id).to.equal(id)
-                })
-        })
-
-        it('should fail on undefined username', () => {
-            expect(() => logic.authenticateUser(undefined, user.password)).to.throw(TypeError, 'undefined is not a string')
-        })
-
-        // TODO other test cases
+      fs.writeFileSync(User._file, JSON.stringify([user]))
     })
 
-    describe('retrieve', () => {
-        let user
+    it('should authenticate on correct credentials', () => {
+      const { username, password } = user
 
-        beforeEach(() => {
-            user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+      return logic.authenticateUser(username, password)
+        .then(id => {
+          expect(id).to.exist
+          expect(id).to.be.a('number')
 
-            fs.writeFileSync(User._file, JSON.stringify([user]))
+          const json = fs.readFileSync(User._file)
+
+          const users = JSON.parse(json)
+
+          const [_user] = users
+
+          expect(_user.id).to.equal(id)
         })
-
-        it('should succeed on valid id', () =>
-            logic.retrieveUser(user.id)
-                .then(_user => {
-                    expect(_user).not.to.be.instanceof(User)
-
-                    const { id, name, surname, username, password } = _user
-                    
-                    expect(id).to.exist
-                    expect(id).to.equal(user.id)
-                    expect(name).to.equal(user.name)
-                    expect(surname).to.equal(user.surname)
-                    expect(username).to.equal(user.username)
-                    expect(password).to.be.undefined
-                })
-        )
     })
+
+    it('should fail on undefined username', () => {
+      expect(() => logic.authenticateUser(undefined, user.password)).to.throw(TypeError, 'undefined is not a string')
+    })
+
+    // TODO other test cases
+  })
+
+  false && describe('retrieve', () => {
+    let user
+
+    beforeEach(() => {
+      user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+
+      fs.writeFileSync(User._file, JSON.stringify([user]))
+    })
+
+    it('should succeed on valid id', () =>
+      logic.retrieveUser(user.id)
+        .then(_user => {
+          expect(_user).not.to.be.instanceof(User)
+
+          const { id, name, surname, username, password } = _user
+
+          expect(id).to.exist
+          expect(id).to.equal(user.id)
+          expect(name).to.equal(user.name)
+          expect(surname).to.equal(user.surname)
+          expect(username).to.equal(user.username)
+          expect(password).to.be.undefined
+        })
+    )
+  })
+
+  describe('addUserPostit', () => {
+    let user
+
+    beforeEach(() => {
+      user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+
+      fs.writeFileSync(User._file, JSON.stringify([user]))
+    })
+
+    it('should succeed on add a postit', () => {
+      const postit = { id: Date.now(), text: 'demo added test text' }
+
+      return logic.addUserPostit(user.id, postit)
+        .then(_user => {
+          expect(_user).not.to.be.instanceof(User)
+          expect(_user.postits.length).to.equal(1)
+          expect(_user.postits[0].text).to.equal('demo added test text')
+        })
+    })
+  })
+
+  false && describe('updateUserPostit', () => {
+    let user
+
+    beforeEach(() => {
+      const postit = { id: Date.now(), text: 'demo test text' }
+
+      user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
+
+      fs.writeFileSync(User._file, JSON.stringify([user]))
+    })
+
+    it('should succeed on update a postit', () => {
+      const postit = { id: user.postits[0].id, text: 'demo updated test text' }
+
+      return logic.updateUserPostit(user.id, postit)
+        .then(_user => {
+          expect(_user).not.to.be.instanceof(User)
+          expect(_user.postits.length).to.equal(1)
+          expect(_user.postits[0].text).to.equal('demo updated test text')
+        })
+    })
+  })
+
+  false && describe('deleteUserPostit', () => {
+    let user
+
+    beforeEach(() => {
+      const postit = { id: Date.now(), text: 'demo deleted test text' }
+
+      user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
+
+      fs.writeFileSync(User._file, JSON.stringify([user]))
+    })
+
+    it('should succeed on delete a postit', () => {
+      return logic.deleteUserPostit(user.id, user.postits[0].id)
+        .then(_user => {
+          expect(_user).not.to.be.instanceof(User)
+          expect(_user.postits.length).to.equal(0)
+        })
+    })
+  })
 })
