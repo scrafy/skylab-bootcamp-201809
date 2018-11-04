@@ -1,48 +1,47 @@
-let bodyParser = require('body-parser')
 let Logic = require("../logic/logic")
-const pug = require('pug');
 
-function setUserPaths(app, route){
+function setAppPaths(app, route) {
 
-    let urlencodedParser = bodyParser.urlencoded({ extended: false })
+    route.use(function (req, res, next) {
 
-    route.use(function(req, res, next) {
         next();
+
     });
-   
-    route.post("/register",urlencodedParser,function(req, res){
 
-        Logic.register(req.body).then(data => {
+    route.get("/", function (req, res) {
 
-            //redirect to home
-
-        }).catch(err => {
-            req.session.errorMessage = err
-            //redirect to register
-        })
+        if (req.session.userId)
+            res.redirect("/landing")
+        else
+            res.render('home')
     })
 
-    route.post("/login",urlencodedParser,function(req, res){
+    route.get("/landing", function (req, res) {
 
-        Logic.login(req.body.username, req.body.password).then(userId => {
+        if (!req.session.userId)
 
-            req.session.userId = userId
-            //redirect to landing
+            res.redirect("/")
+        else {
+            Logic.getUserPostIts(Number.parseInt(req.session.userId)).then(postits => {
 
-        }).catch(err => {
+                res.render('landing', { postits: postits, errorMessage:req.session.errorMessage, message:req.session.message},(err, html) =>{
+                    delete req.session.errorMessage
+                    delete req.session.message
+                    res.send(html)
+                })
 
-            req.session.errorMessage = err
-            //redirect to login
-        })
+            }).catch(err => {
+                req.session.errorMessage = err
+                res.redirect("/landing")
+            })
+
+        }
+
+
     })
 
-    route.post("/logout",urlencodedParser,function(req, res){
+    app.use('/', route)
 
-        delete req.session.userId
-        //redirect to home
-    })
-
-    app.use('/user', route)
 }
 
-module.exports = setUserPaths
+module.exports = setAppPaths

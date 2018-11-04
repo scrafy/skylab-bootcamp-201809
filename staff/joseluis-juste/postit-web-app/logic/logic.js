@@ -7,10 +7,10 @@ const Logic = {
     login(username, password) {
 
         return new Promise((resolve, reject) => {
-            if (typeof username !== "string") throw Error("The username is not a string")
-            if (!username.length) throw Error("The username can not be empty")
-            if (typeof password !== "string") throw Error("The password is not a string")
-            if (!password.length) throw Error("The password can not be empty")
+            if (typeof username !== "string") {reject("The username is not a string"); done()}
+            if (!username.length){ reject("The username can not be empty"); done()}
+            if (typeof password !== "string") {reject("The password is not a string"); done()}
+            if (!password.length) {reject("The password can not be empty"); done()}
             new User().getAll().then(users => {
                 let user = users.find(user => { return user.username === username && user.password === password })
                 if (!user)
@@ -18,7 +18,7 @@ const Logic = {
                 else
                     resolve(user.id.toString())
 
-            }).catch(err => typeof err === "string" ? reject(err) : reject(err.message))
+            }).catch(err => reject(err))
         })
     },
 
@@ -34,7 +34,7 @@ const Logic = {
 
         return new Promise((resolve, reject) => {
 
-            if (typeof userId !== "number") throw Error("The userId is not a number")
+            if (typeof userId !== "number") {reject("The userId is not a number"); done()}
 
             let user = new User()
             user.getModelById(userId).then(_user => {
@@ -50,7 +50,7 @@ const Logic = {
                     user.update().then(res => resolve(res)).catch(err => reject(err))
                 }
 
-            }).catch(err => typeof err === "string" ? reject(err) : reject(err.message))
+            }).catch(err => reject(err))
         })
 
     },
@@ -59,8 +59,8 @@ const Logic = {
 
         return new Promise((resolve, reject) => {
 
-            if (typeof userId !== "number") throw Error("The userId is not a number")
-            if (typeof postitId !== "number") throw Error("The postitId is not a number")
+            if (typeof userId !== "number") {reject("The userId is not a number"); done()}
+            if (typeof postitId !== "number") {reject("The postitId is not a number"); done()}
 
             let user = new User()
             user.getModelById(userId).then(_user => {
@@ -80,7 +80,7 @@ const Logic = {
                     }
                 }
                
-            }).catch(err => typeof err === "string" ? reject(err) : reject(err.message))
+            }).catch(err => reject(err))
         })
 
     },
@@ -89,8 +89,8 @@ const Logic = {
         
         return new Promise((resolve, reject) => {
 
-            if (typeof userId !== "number") throw Error("The userId is not a number")
-            if (typeof postitId !== "number") throw Error("The postitId is not a number")
+            if (typeof userId !== "number"){ reject("The userId is not a number"); done()}
+            if (typeof postitId !== "number"){ reject("The postitId is not a number"); done()}
           
 
             let user = new User()
@@ -116,7 +116,7 @@ const Logic = {
                     }
                 }
                
-            }).catch(err => typeof err === "string" ? reject(err) : reject(err.message))
+            }).catch(err => reject(err))
         })
 
     },
@@ -125,14 +125,14 @@ const Logic = {
         
         return new Promise((resolve, reject) => {
 
-            if (typeof userId !== "number") throw Error("The userId is not a number")
+            if (typeof userId !== "number"){reject("The userId is not a number"); done()}
             
             let user = new User()
             user.getModelById(userId).then(_user => {
                 delete _user.password
                 resolve(_user)   
                
-            }).catch(err => typeof err === "string" ? reject(err) : reject(err.message))
+            }).catch(err => reject(err))
         })
 
     },
@@ -141,12 +141,12 @@ const Logic = {
         
         return new Promise((resolve, reject) => {
 
-            if (typeof userId !== "number") throw Error("The userId is not a number")
+            if (typeof userId !== "number"){ reject("The userId is not a number"); done()}
             
             let user = new User()
             user.getModelById(userId).then(_user => {
                 resolve(_user.postits)               
-            }).catch(err => typeof err === "string" ? reject(err) : reject(err.message))
+            }).catch(err => reject(err))
         })
 
     },

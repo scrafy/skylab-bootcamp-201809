@@ -1,45 +1,71 @@
 let bodyParser = require('body-parser')
 let Logic = require("../logic/logic")
-const pug = require('pug');
 
-function setUserPaths(app, route){
+
+function setUserPaths(app, route) {
 
     let urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-    route.use(function(req, res, next) {
+    route.use(function (req, res, next) {
+
         next();
     });
-   
-    route.post("/register",urlencodedParser,function(req, res){
+
+    route.get("/register", urlencodedParser, function (req, res) {
+
+        res.render('register', { errorMessage: req.session.errorMessage }, (err, html) => {
+            delete req.session.errorMessage
+            res.send(html)
+        })
+
+    })
+
+    route.post("/register", urlencodedParser, function (req, res) {
 
         Logic.register(req.body).then(data => {
 
-            //redirect to home
+            res.redirect("/")
 
         }).catch(err => {
             req.session.errorMessage = err
-            //redirect to register
+            res.redirect("/user/register")
         })
     })
 
-    route.post("/login",urlencodedParser,function(req, res){
+    route.get("/login", function (req, res) {
+
+        if (req.session.userId)
+
+            res.redirect("/landing")
+        else {
+            res.render('login', { errorMessage: req.session.errorMessage }, (err, html) => {
+                delete req.session.errorMessage
+                res.send(html)
+            })
+        }
+
+
+
+    })
+
+    route.post("/login", urlencodedParser, function (req, res) {
 
         Logic.login(req.body.username, req.body.password).then(userId => {
 
             req.session.userId = userId
-            //redirect to landing
+            res.redirect("/landing")
 
         }).catch(err => {
 
             req.session.errorMessage = err
-            //redirect to login
+            res.redirect("/user/login")
         })
     })
 
-    route.post("/logout",urlencodedParser,function(req, res){
+    route.get("/logout", urlencodedParser, function (req, res) {
 
         delete req.session.userId
-        //redirect to home
+        res.redirect("/")
     })
 
     app.use('/user', route)

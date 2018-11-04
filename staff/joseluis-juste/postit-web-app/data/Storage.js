@@ -13,41 +13,44 @@ class Storage {
                     fs.writeFileSync(`./files/${model.PathFile}`, JSON.stringify([]))
                 }
             } catch (error) {
-                throw Error(error.message)
+                reject(error.message)
+                done()
             }
             fs.readFile(`./files/${model.PathFile}`, (err, data) => {
 
-                if (err) throw Error(err)
-                else {
-                    try {
-                        data = JSON.parse(data)
-                        let found = data.find(_item => _item.username === model.Username)
-                        if (!found) {
-                            model.validateModel()
-                            if (!model.HasErrors) {
-                                data.push(model.toSave())
-                                fs.writeFile(`./files/${model.PathFile}`, JSON.stringify(data), err => {
+                if (err) {
 
-                                    if (err) reject(err)
-                                    else {
-                                        resolve(true)
-                                    }
+                    reject(error.message)
+                    done()
+                }
 
-                                })
+                try {
+                    data = JSON.parse(data)
+                    let found = data.find(_item => _item.username === model.Username)
+                    if (!found) {
+                        model.validateModel()
+                        if (!model.HasErrors) {
+                            data.push(model.toSave())
+                            fs.writeFile(`./files/${model.PathFile}`, JSON.stringify(data), err => {
 
-                            }
-                            else {
-                                reject(`The ${model.__proto__.constructor.name} has validation errors`)
-                            }
-                        } else {
-                            reject(`Exists a ${model.__proto__.constructor.name} with the username "${model.Username}"`)
+                                if (err) reject(err)
+                                else {
+                                    resolve(true)
+                                }
+
+                            })
+
                         }
-
-                    } catch (error) {
-                        reject(error)
+                        else {
+                            reject(`The ${model.__proto__.constructor.name} has validation errors`)
+                        }
+                    } else {
+                        reject(`Exists a ${model.__proto__.constructor.name} with the username "${model.Username}"`)
                     }
-                }// end else
 
+                } catch (error) {
+                    reject(error.message)
+                }
             })
 
         })
@@ -60,40 +63,42 @@ class Storage {
 
             fs.readFile(`./files/${model.PathFile}`, (err, data) => {
 
-                if (err) reject(err)
-                else {
-                    try {
-                        data = JSON.parse(data)
-                        let index = data.findIndex(item => { return item.id === model.Id })
-                       
-                        if (index < 0) {
-                            reject(`Can not update an inexisting ${model.__proto__.constructor.name}`)
-                        } else if (data.findIndex(item => { return item.username === model.Username && item.id !== model.Id }) > -1) {
-                            reject(`Can not update a ${model.__proto__.constructor.name} beacuse exists a ${model.__proto__.constructor.name} with the same username: ${model.Username}`)
+                if (err) {
+
+                    reject(error.message)
+                    done()
+                }
+
+                try {
+                    data = JSON.parse(data)
+                    let index = data.findIndex(item => { return item.id === model.Id })
+
+                    if (index < 0) {
+                        reject(`Can not update an inexisting ${model.__proto__.constructor.name}`)
+                    } else if (data.findIndex(item => { return item.username === model.Username && item.id !== model.Id }) > -1) {
+                        reject(`Can not update a ${model.__proto__.constructor.name} beacuse exists a ${model.__proto__.constructor.name} with the same username: ${model.Username}`)
+
+                    } else {
+                        model.validateModel()
+                        if (!model.HasErrors) {
+                            data[index] = model.toSave()
+                            fs.writeFile(`./files/${model.PathFile}`, JSON.stringify(data), err => {
+
+                                if (err) reject(err)
+                                else {
+                                    resolve(true)
+                                }
+
+                            })
 
                         } else {
-                            model.validateModel()
-                            if (!model.HasErrors) {
-                                data[index] = model.toSave()
-                                fs.writeFile(`./files/${model.PathFile}`, JSON.stringify(data), err => {
-
-                                    if (err) reject(err)
-                                    else {
-                                        resolve(true)
-                                    }
-
-                                })
-
-                            } else {
-                                reject(`The ${model.__proto__.constructor.name} has validation errors`)
-                            }
+                            reject(`The ${model.__proto__.constructor.name} has validation errors`)
                         }
-
-                    } catch (error) {
-                        reject(error)
                     }
-                }// end else
 
+                } catch (error) {
+                    reject(error.message)
+                }
             })
 
         })
@@ -107,7 +112,10 @@ class Storage {
 
             fs.readFile(`./files/${file_path}`, (err, data) => {
 
-                if (err) throw Error(err)
+                if (err) {
+                    reject(error.message)
+                    done()
+                }
                 try {
 
                     data = JSON.parse(data)
@@ -142,7 +150,10 @@ class Storage {
 
             fs.readFile(`./files/${file_path}`, (err, data) => {
 
-                if (err) throw Error(err)
+                if (err) {
+                    reject(error.message)
+                    done()
+                }
 
                 try {
                     data = JSON.parse(data)
@@ -171,13 +182,16 @@ class Storage {
 
             fs.readFile(`./files/${model.PathFile}`, (err, data) => {
 
-                if (err) throw Error(err)
+                if (err) {
+                    reject(error.message)
+                    done()
+                }
 
                 try {
                     data = JSON.parse(data)
                     resolve(data)
                 } catch (error) {
-                    reject(error)
+                    reject(error.message)
                 }
             })
 

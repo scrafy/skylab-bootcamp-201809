@@ -7,9 +7,11 @@ let app = express()
 
 app.use(session({
     secret: 'kJHSJKTODSUJ57664JGLHJGJHU7464664JDK',
-    cookie: {}
+    cookie: { maxAge: 60 * 60 * 24 }
 }))
 
+app.use(express.static('./public'))
+app.set('view engine', 'pug')
 
 configRoutes(app, express.Router())
 
