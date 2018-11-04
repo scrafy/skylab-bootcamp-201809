@@ -60,7 +60,7 @@ const Logic = {
         return new Promise((resolve, reject) => {
 
             if (typeof userId !== "number") {reject("The userId is not a number"); done()}
-            if (typeof postitId !== "number") {reject("The postitId is not a number"); done()}
+            if (isNaN(postitId)) {reject("The postitId is not a number"); done()}
 
             let user = new User()
             user.getModelById(userId).then(_user => {

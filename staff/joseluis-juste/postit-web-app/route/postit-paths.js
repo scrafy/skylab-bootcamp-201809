@@ -26,6 +26,41 @@ function setPostitPaths(app, route) {
         }
     })
 
+    route.delete("/delete/:postitId", urlencodedParser, function (req, res) {
+
+        if (req.xhr){
+            res.type("json")
+            res.status(200)
+            req.session.message = null
+            if (!req.session.userId){
+                res.send(JSON.stringify({error:"The session of the user has ended", redirectTo:"/"}))
+            }else{
+                Logic.deletePostIt(Number.parseInt(req.session.userId), Number.parseInt(req.params.postitId)).then(postits => {
+                    
+                    res.send(JSON.stringify({error:null, message:"Postit delete correctly"}))
+
+                }).catch(err => {
+                    res.send(JSON.stringify({error:err}))                                        
+                })
+            }
+        }else{
+            if (!req.session.userId)
+            res.redirect("/")
+        else {
+                Logic.deletePostIt(Number.parseInt(req.session.userId), Number.parseInt(req.params.postitId)).then(postits => {
+                req.session.message = "Postit delete correctly"
+                res.redirect("/landing")
+
+            }).catch(err => {
+
+                req.session.errorMessage = err
+                res.redirect("/landing")
+            })
+        }
+        }
+       
+    })
+
     app.use('/postit', route)
 
 }
