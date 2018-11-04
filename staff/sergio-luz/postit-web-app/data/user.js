@@ -33,7 +33,7 @@ class User {
                 fs.writeFileSync(User._file, json, (err) => {
                     if (err) return reject(err)
 
-                    resolve()
+                    resolve(json)
                 })
             })
         })
@@ -71,8 +71,6 @@ class User {
                 const users = JSON.parse(json)
 
                 const user = users.find(user => user.username === username)
-
-                const newUser= Object.assign({}, user)
 
                 resolve(user ? new User(user) : undefined)
             })
