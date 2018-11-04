@@ -16,13 +16,9 @@ class User {
     save() {
 
         return new Promise((resolve, reject) => {
-<<<<<<< HEAD
-            debugger
+            
             fs.readFile(User._file, (err, json) => {
-                debugger
-=======
-            fs.readFileSync(User._file, (err, json) => {
->>>>>>> ea429739bf968797505c1d6dae552937bc4ff8f2
+                
                 if (err) return reject(err)
 
                 const users = JSON.parse(json)
@@ -37,11 +33,7 @@ class User {
                 fs.writeFileSync(User._file, json, (err) => {
                     if (err) return reject(err)
 
-<<<<<<< HEAD
                     resolve(json)
-=======
-                    resolve()
->>>>>>> ea429739bf968797505c1d6dae552937bc4ff8f2
                 })
             })
         })
@@ -58,19 +50,11 @@ class User {
         const postit = new Postits(text)
 
         return new Promise((resolve, reject)=>{
-<<<<<<< HEAD
-            debugger
             User.findById(userId)
                 .then(user=>{
                     user.postits.push(postit)
                     user.save()
                 } )
-=======
-            User.findById(userId)
-                .then(user=> this.postits=user.postits)
-                .then(()=> this.postits.push(postit))
-                .then(()=> this.save())
->>>>>>> ea429739bf968797505c1d6dae552937bc4ff8f2
                 .then(()=> resolve())
                 .catch(err=> reject(err))
         })
@@ -81,22 +65,11 @@ class User {
         return new Promise((resolve, reject) => {
             fs.readFile(User._file, (err, json) => {
                 if (err) return reject(err)
-<<<<<<< HEAD
-                debugger
 
-=======
-
-                debugger
->>>>>>> ea429739bf968797505c1d6dae552937bc4ff8f2
                 const users = JSON.parse(json)
 
                 const user = users.find(user => user.username === username)
 
-<<<<<<< HEAD
-=======
-                const newUser= Object.assign({}, user)
-
->>>>>>> ea429739bf968797505c1d6dae552937bc4ff8f2
                 resolve(user ? new User(user) : undefined)
             })
         })
