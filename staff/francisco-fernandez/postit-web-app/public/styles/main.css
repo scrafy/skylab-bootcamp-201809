@@ -16,3 +16,7 @@ textarea{
     height: 150px;
     resize: none;
 }
+
+button{
+    margin-bottom: 30px;
+}
