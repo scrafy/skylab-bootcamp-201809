@@ -1,4 +1,4 @@
-const { User } = require('./data')
+const { User, Postit } = require('./data')
 
 const logic = {
     registerUser(name, surname, username, password) {
@@ -43,7 +43,7 @@ const logic = {
         return User.findById(id)
             .then(user => {
                 if (!user) throw Error(`user with id ${id} not found`)
-
+                
                 const _user = user.toObject()
 
                 _user.id = id
@@ -52,7 +52,38 @@ const logic = {
 
                 return _user
             })
+    },
+
+    newPostit(id,text){
+
+        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
+        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+
+        if (!text.trim()) throw Error('username is empty or blank')
+
+        const postit = new Postit(text)
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+
+                user.savePostit(postit)
+
+            })
+    },
+
+    deletePostit(postitId,id){
+        debugger
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+                
+                user.killPostit(postitId)
+
+            })
+
     }
+
 }
 
 module.exports = logic

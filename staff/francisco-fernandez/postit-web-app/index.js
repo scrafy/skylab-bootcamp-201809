@@ -17,7 +17,7 @@ const formBodyParser = bodyParser.urlencoded({ extended: false })
 
 const mySession = session({
     secret: 'my super secret',
-    cookie: { maxAge: 60 * 60 * 24 },
+    cookie: { maxAge: 60 * 60 * 24 * 1000 },
     resave: true,
     saveUninitialized: true,
     store: new FileStore({
@@ -92,9 +92,13 @@ app.get('/home', (req, res) => {
 
     if (id) {
         try {
+            debugger
             logic.retrieveUser(id)
-                .then(({ name }) => res.render('home', { name }))
+                .then(({ name,postits}) => {
+                debugger
+                res.render('home', { name,postits})})
                 .catch(({ message }) => {
+                    debugger
                     req.session.error = message
 
                     res.redirect('/')
@@ -105,6 +109,64 @@ app.get('/home', (req, res) => {
             res.redirect('/')
         }
     } else res.redirect('/')
+})
+
+app.get('/new-postit', (req, res) =>{
+    const id = req.session.userId
+
+    if (id) {
+        try{
+            logic.retrieveUser(id)
+                .then(({ name }) => res.render('new-postit', { name }))
+                .catch(({ message }) => {
+                    req.session.error = message
+
+                    res.redirect('/')
+                })
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+})
+
+app.post('/new-postit', formBodyParser, (req, res) => {
+    
+    const { text } = req.body
+    const id = req.session.userId
+    if(id){
+        try{
+            logic.newPostit(id, text)
+
+            res.redirect('/home')
+
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+
+})
+
+app.post('/delete-postit',formBodyParser,(req,res)=>{
+    
+    const {postitId} = req.body
+    const id = req.session.userId
+    if(id){
+        try{
+            logic.deletePostit(postitId, id)
+                
+            res.redirect('/home')
+
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+
 })
 
 app.get('/logout', (req, res) => {
