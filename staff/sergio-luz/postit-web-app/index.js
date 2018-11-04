@@ -30,6 +30,8 @@ const buildView = require('./helpers/build-view')
 
 
 
+app.use(mySession)
+
 app.get('/', (req, res) => {
     req.session.error = null
 
@@ -46,7 +48,6 @@ app.post('/register', formBodyParser, (req, res) => {
     try {
         logic.registerUser(name, surname, username, password)
             .then(() => {
-                debugger
                 req.session.error = null
 
                 res.render('register-confirm', { name })
@@ -96,7 +97,6 @@ app.post('/login', formBodyParser, (req, res) => {
 
 app.get('/home', (req, res) => {
     const id = req.session.userId
-    debugger
     if (id) {
         try {
             logic.retrieveUser(id)
