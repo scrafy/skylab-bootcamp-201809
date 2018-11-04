@@ -1,0 +1,6 @@
+extends layout
+block content
+      p Welcome #{name}!
+      form(action='/home/createNewPostit', method='POST')
+        input(name='text', placeholder='Write text here...')
+        button(type='submit') Save postit
