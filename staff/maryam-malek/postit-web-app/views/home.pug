@@ -1,6 +1,9 @@
 extends layout
 block content
-      p Welcome #{name.toUpperCase()}!
-      a(href='/postits') Go to my postits
+      p(class='sub-title') Welcome #{name.toUpperCase()}!
       br
-      a(href='/logout') Log out
+      form(action='/postits', method='GET')
+        button(class='quick-button' type='submit') My postits
+      div(class='links')      
+        a(href='/postits') My postits  |
+        a(href='/logout')   Log out

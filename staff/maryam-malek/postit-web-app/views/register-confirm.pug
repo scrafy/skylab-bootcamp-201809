@@ -1,7 +1,9 @@
 extends layout
 block content
-      p Ok! user #{name.toUppserCase()} registered.
+      p(class='sub-title') Ok! user #{name.toUpperCase()} registered.
       br
-      a(href='/login') Log in
-      br
+      form(action='/login', method='GET')
+        button(type='submit') Log in
       a(href='/') Go back
+      div(class='links')      
+        a(href='/login') Log in

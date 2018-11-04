@@ -1,6 +1,6 @@
 extends layout
 block content
-    p #{user.name.toUpperCase()}'s postits!
+    p(class='sub-title') #{user.name.toUpperCase()}'s postits!
     form(action='/postits', method='POST')
       input(type='hidden', name='type', value='create')
       input(type='text', name='body', placeholder='Write here...')
@@ -9,21 +9,20 @@ block content
     if error 
       p(class='error') #{error}
     div(class='postits-area')
-      ul
-        if postits
-          each postit in postits
-            div(class = 'postit')
-              form(action='/postits', method='POST')
-                input(type='hidden', name='type', value='update')
-                input(type='hidden', name='postitId', value= postit.id)
-                textarea(name='body')= postit.body
-                button(type='submit')
-                  i.far.fa-edit
-              form(action='/postits', method='POST')
-                input(type='hidden', name='type', value='delete')
-                input(type='hidden', name='postitId', value= postit.id)
-                button(type='submit') 
-                  i.far.fa-trash-alt
-    a(href='/home') Go to home
-    br
-    a(href='/logout') Log out
+      if postits
+        each postit in postits
+          div(class = 'postit')
+            form(action='/postits', method='POST')
+              input(type='hidden', name='type', value='update')
+              input(type='hidden', name='postitId', value= postit.id)
+              textarea(name='body')= postit.body
+              button(type='submit')
+                i.far.fa-edit
+            form(action='/postits', method='POST')
+              input(type='hidden', name='type', value='delete')
+              input(type='hidden', name='postitId', value= postit.id)
+              button(type='submit') 
+                i.far.fa-trash-alt
+    div(class='links')
+      a(href='/home') Home  |
+      a(href='/logout')   Log out

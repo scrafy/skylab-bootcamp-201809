@@ -1,10 +1,32 @@
 body {
     background-color: #383636;
 }
+
+a{
+    color: white;
+} 
+
+.contaier {
+    position: relative;
+}
+
+.links {
+    position: absolute;
+    right: 5%;
+    top: 5%;
+}
+
 .title {
     color: gold;
     font-family: 'Indie Flower', cursive;
     font-size: 3em;
+}
+
+.sub-title {
+    font-size: 1.5em;
+    color: #008080;
+    font-family: 'Indie Flower', cursive;
+    font-weight: bold;
 }
 
 .error {
@@ -15,8 +37,8 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    height: 500px;
-    width: 500px;
+    height: auto;
+    width: 100%;
 }
 
 .postit {
@@ -45,5 +67,11 @@ body {
     margin: 3px;
 }
 
+.quick-button {
+    border-radius: 100%;
+    height: 65px;
+    width: 77px;
+    background-color: #19d7e0;
+}
 
 
