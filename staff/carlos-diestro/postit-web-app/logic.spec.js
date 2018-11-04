@@ -13,7 +13,7 @@ describe('logic', () => {
     User._file = './data/users.spec.json'
   })
 
-  false && describe('register', () => {
+  describe('register', () => {
     let name, surname, username, password
 
     beforeEach(() => {
@@ -48,7 +48,7 @@ describe('logic', () => {
     // TODO other test cases
   })
 
-  false && describe('authenticate', () => {
+  describe('authenticate', () => {
     let user
 
     beforeEach(() => {
@@ -82,7 +82,7 @@ describe('logic', () => {
     // TODO other test cases
   })
 
-  false && describe('retrieve', () => {
+  describe('retrieve', () => {
     let user
 
     beforeEach(() => {
@@ -129,7 +129,7 @@ describe('logic', () => {
     })
   })
 
-  false && describe('updateUserPostit', () => {
+  describe('updateUserPostit', () => {
     let user
 
     beforeEach(() => {
@@ -152,7 +152,7 @@ describe('logic', () => {
     })
   })
 
-  false && describe('deleteUserPostit', () => {
+  describe('deleteUserPostit', () => {
     let user
 
     beforeEach(() => {
