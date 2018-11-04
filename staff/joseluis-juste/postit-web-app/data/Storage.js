@@ -1,29 +1,32 @@
 let fs = require('fs')
-let User = require('../data/user')
 
 class Storage {
 
-    constructor() {
 
-    }
-
-    save = function (model) {
+    save(model) {
 
         return new Promise((resolve, reject) => {
 
-            fs.readFile(`../files/${model.PathFile()}`, (err, data) => {
+            try {
+                if (!fs.existsSync(`./files/${model.PathFile}`)) {
 
-                if (err) reject(err)
+                    fs.writeFileSync(`./files/${model.PathFile}`, JSON.stringify([]))
+                }
+            } catch (error) {
+                throw Error(error.message)
+            }
+            fs.readFile(`./files/${model.PathFile}`, (err, data) => {
+
+                if (err) throw Error(err)
                 else {
                     try {
                         data = JSON.parse(data)
-                        data = data.map(item => model.getDataFromPlainObject(item))
-                        let found = data.find(_item => _item.Id === model.Id)
+                        let found = data.find(_item => _item.username === model.Username)
                         if (!found) {
                             model.validateModel()
                             if (!model.HasErrors) {
-                                data.push(model)
-                                fs.writeFile(`../files/${model.PathFile()}`, JSON.stringify(data), err => {
+                                data.push(model.toSave())
+                                fs.writeFile(`./files/${model.PathFile}`, JSON.stringify(data), err => {
 
                                     if (err) reject(err)
                                     else {
@@ -33,11 +36,11 @@ class Storage {
                                 })
 
                             }
-                            else{
-                                reject("The model has validation errors")
+                            else {
+                                reject(`The ${model.__proto__.constructor.name} has validation errors`)
                             }
                         } else {
-                            this.update(model)
+                            reject(`Exists a ${model.__proto__.constructor.name} with the username "${model.Username}"`)
                         }
 
                     } catch (error) {
@@ -51,26 +54,28 @@ class Storage {
 
     }
 
-    update = function (model) {
+    update(model) {
 
         return new Promise((resolve, reject) => {
 
-            fs.readFile(`../files/${model.PathFile()}`, (err, data) => {
+            fs.readFile(`./files/${model.PathFile}`, (err, data) => {
 
                 if (err) reject(err)
                 else {
                     try {
                         data = JSON.parse(data)
-                        data = data.map(item => model.getDataFromPlainObject(item))
-                        let index = data.indexOf(item => item.Id === model.Id)
+                        let index = data.findIndex(item => { return item.id === model.Id })
+                       
                         if (index < 0) {
-                            reject("Can not update an inexisting model")
+                            reject(`Can not update an inexisting ${model.__proto__.constructor.name}`)
+                        } else if (data.findIndex(item => { return item.username === model.Username && item.id !== model.Id }) > -1) {
+                            reject(`Can not update a ${model.__proto__.constructor.name} beacuse exists a ${model.__proto__.constructor.name} with the same username: ${model.Username}`)
+
                         } else {
                             model.validateModel()
                             if (!model.HasErrors) {
-                                data[index] = model
-                                //users[index].Id = user.Id
-                                fs.writeFile(`../files/${model.PathFile()}`, JSON.stringify(data), err => {
+                                data[index] = model.toSave()
+                                fs.writeFile(`./files/${model.PathFile}`, JSON.stringify(data), err => {
 
                                     if (err) reject(err)
                                     else {
@@ -79,8 +84,8 @@ class Storage {
 
                                 })
 
-                            }else{
-                                reject("The model has validation errors")
+                            } else {
+                                reject(`The ${model.__proto__.constructor.name} has validation errors`)
                             }
                         }
 
@@ -94,4 +99,93 @@ class Storage {
         })
 
     }
+
+
+    delete(file_path, id) {
+
+        return new Promise((resolve, reject) => {
+
+            fs.readFile(`./files/${file_path}`, (err, data) => {
+
+                if (err) throw Error(err)
+                try {
+
+                    data = JSON.parse(data)
+                    let index = data.findIndex(item => item.id === id)
+                    if (index === -1) {
+                        reject("The model not exists")
+                    }
+                    else {
+                        data.splice(index, 1)
+                        fs.writeFile(`./files/${file_path}`, JSON.stringify(data), err => {
+
+                            if (err) reject(err)
+                            else {
+                                resolve(true)
+                            }
+
+                        })
+                    }
+
+                } catch (error) {
+                    reject(error)
+                }
+            })
+
+        })
+
+    }
+
+    getModelById(file_path, id) {
+
+        return new Promise((resolve, reject) => {
+
+            fs.readFile(`./files/${file_path}`, (err, data) => {
+
+                if (err) throw Error(err)
+
+                try {
+                    data = JSON.parse(data)
+                    let index = data.findIndex(item => item.id === id)
+                    if (index < 0) {
+                        reject("The model not exists")
+                    }
+                    else {
+
+                        let cp = Array.from(data)
+                        resolve(cp[index])
+                    }
+
+                } catch (error) {
+                    reject(error)
+                }
+            })
+
+        })
+
+    }
+
+    getAll(model) {
+
+        return new Promise((resolve, reject) => {
+
+            fs.readFile(`./files/${model.PathFile}`, (err, data) => {
+
+                if (err) throw Error(err)
+
+                try {
+                    data = JSON.parse(data)
+                    resolve(data)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+
+        })
+
+    }
+
 }
+
+
+module.exports = Storage

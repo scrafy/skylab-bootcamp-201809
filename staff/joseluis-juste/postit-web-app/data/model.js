@@ -1,106 +1,136 @@
-class Model{
+let Storage = require("./storage")
 
-    validationErrors
-    hasErrors
-    path_file
+class Model {
 
-    get HasErrors(){
+    get HasErrors() {
 
         return this.hasErrors
     }
 
-    get ValidationErrors(){
+    get ValidationErrors() {
 
         return this.validationErrors
     }
 
-    get PathFile(){
+    get PathFile() {
 
         return this.path_file
     }
 
-    constructor(path_file){
+    constructor(path_file, propertiesToValidate) {
+        
         this.hasErrors = false
         this.path_file = path_file
-    }
-
-    validateModel = function(){
 
         this.validationErrors = []
-        
-        for(let p in this){
+
+        this.propertiesToValidate = propertiesToValidate
+       
+    }
+
+    setValidationRules() {
+
+        throw Error("The getModelFromPlainObject method is not implemented by the child")
+
+    }
+
+    validateModel() {
+
+        this.validationErrors = []
+        this.hasErrors = false
+
+        for (let p in this) {
+           
+            if(this.propertiesToValidate.indexOf(p) < 0) continue
 
             if (typeof this[p] === "string" && this[p] !== undefined)
                 this[p] = this[p].trim()
         }
 
-        for(let p in this){
+        for (let p in this) {
 
+            if(this.propertiesToValidate.indexOf(p) < 0) continue
+
+            if (this[p] instanceof Array) continue
+            
             let validationRules = this.validationRules[p]
             validationRules.forEach(rule => {
 
-                switch(rule.typeValidation){
+                switch (rule.typeValidation) {
 
                     case "type":
-                        if (typeof this[p] !== rule.requiredType){
+                        if (typeof this[p] !== rule.requiredType) {
                             this.validationErrors.push(rule.message)
                         }
-                    break;
+                        break;
                     case "exists":
-                        if (this[p] === undefined || !this[p].length){
+                        if (this[p] === undefined || !this[p].length) {
                             this.validationErrors.push(rule.message)
                         }
-                    break;
+                        break;
                     case "email":
-                        if (!this[p].match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)[.]{1}([a-zA-Z]{2,5})$/g)){
+                        if (!this[p].match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)[.]{1}([a-zA-Z]{2,5})$/g)) {
                             this.validationErrors.push(rule.message)
                         }
-                    break;
+                        break;
                     case "maxlength":
-                        if (this[p].length > rule.maxlength){
+                        if (this[p].length > rule.maxLength) {
                             this.validationErrors.push(rule.message)
                         }
-                    break;
+                        break;
                     case "minlength":
-                        if (this[p].length < rule.minLength){
+                        if (this[p].length < rule.minLength) {
                             this.validationErrors.push(rule.message)
                         }
-                    break;
+                        break;
                 }
                 if (this.validationErrors.length > 0)
-                    break
+                    return
 
-            })            
+            })
 
         }
-
-        if (this.validationErrors.length > 0){
+       
+        if (this.validationErrors.length > 0) {
             this.hasErrors = true
         }
 
     }
 
-    getDataFromPlainObject = function(){
+    getModelFromPlainObject() {
 
-        throw Error("The getDataFromPlainObject method is not implemented by the child")
+        throw Error("The getModelFromPlainObject method is not implemented by the child")
     }
 
-    save = function(){
+    toSave() {
 
+        throw Error("The toSave method is not implemented by the child")
     }
 
-    delete = function(){
-
-
+    save() {
+        let storage = new Storage()
+        return storage.save(this)
     }
 
-    update = function(){
-
-
+    delete() {
+        let storage = new Storage()
+        return storage.delete(this.path_file, this.id)
     }
 
-    all = function(){
+    update() {
+        let storage = new Storage()
+        return storage.update(this)
+    }
 
+    getModelById(id) {
+        
+        let storage = new Storage()
+        return storage.getModelById(this.path_file, id)
+    }
+
+    getAll() {
+        let storage = new Storage()
+        return storage.getAll(this)
     }
 }
 

@@ -1,70 +1,79 @@
-let Model  = require("./model")
+let Model = require("./model")
 
-class PostIt extends Model
-{
-    id
-    content
-
-    validationRules = {
-
-        id:[
-            {
-                typeValidation:"type",
-                requiredType:"number",
-                message:"The id attribute is not of type number"
-            }           
-        ],
-        content:[
-            {
-                typeValidation:"type",
-                requiredType:"string",
-                message:"The name attribute is not of type string"
-            },
-            {
-                typeValidation:"exists",
-                message:"The name attribute can not be empty or undefined"
-            }
-        ]
-    }
-
-    constructor(){
-        this.id = Date.now()
-    }
-
-    get Id(){
+class PostIt extends Model {
+   
+    get Id() {
 
         return this.id
     }
 
-    set Id(value){
-        
+    set Id(value) {
+
         this.id = value
-       
+
     }
 
-    get Content(){
+    get Content() {
 
         return this.content
     }
 
-    set Content(value){
-        
+    set Content(value) {
+
         this.content = value
-       
+
+    }
+   
+
+    constructor() {
+        
+        super("", ["content"])
+        this.id = Date.now()
+        this.setValidationRules()
+        this.content = undefined
     }
 
-    getDataFromPlainObject = function(obj){
+    getModelFromPlainObject(obj) {
 
-        let postit = new PostIt()
-        if (typeof obj !== "object") throw TypeError("Error in getDataFromPlainObject: The parameter is not of type object")
+        if (typeof obj !== "object") throw TypeError("Error in getModelFromPlainObject: The parameter is not of type object")
 
-        for(var p in obj){
-            
-            postit[p] = obj[p]
+        for (var p in obj) {
+
+            this[p] = obj[p]
 
         }
-        return postit
+        
     }
+
+    setValidationRules(){
+
+        this.validationRules = {
+
+            id: [
+                {
+                    typeValidation: "type",
+                    requiredType: "number",
+                    message: "The id attribute is not of type number"
+                }
+            ],
+            content: [
+                {
+                    typeValidation: "type",
+                    requiredType: "string",
+                    message: "The content attribute is not of type string"
+                },
+                {
+                    typeValidation: "exists",
+                    message: "The content attribute can not be empty or undefined"
+                }
+            ]
+        }
+    }
+
+    toSave(){
+        return {id:this.Id, content:this.Content}
+    }
+
 }
 
 module.exports = PostIt

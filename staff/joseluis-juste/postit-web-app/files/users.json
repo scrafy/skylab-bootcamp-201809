@@ -1,0 +1,25 @@
+[
+    {
+        "id": 1541331050961,
+        "postits": [{
+            "id":123658822,
+             "content":"asdasdasdasd"
+        },{
+            "id":123658822,
+             "content":"asdasdasdasd"
+        },{
+            "id":123658822,
+             "content":"asdasdasdasd"
+        },
+        {
+            "id":123658822,
+             "content":"asdasdasdasd"
+        }],
+        "name": "jose",
+        "surname": "luis",
+        "email": "scrafy26@gmail.com",
+        "phone": "627206369",
+        "username": "pepe",
+        "password": "1234"
+    }
+]
