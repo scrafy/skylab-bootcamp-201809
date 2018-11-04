@@ -12,13 +12,15 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        let user = User.findByUsername(username)
+        return User.findByUsername(username)
+            .then(user => {
+                if (user) throw Error(`username ${username} already registered`)
+        
+                user = new User({ name, surname, username, password })
+        
+                return user.save()
+            })
 
-        if (user) throw Error(`username ${username} already registered`)
-
-        user = new User(name, surname, username, password)
-
-        user.save()
     },
 
     authenticateUser(username, password) {
@@ -28,32 +30,26 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        const user = User.findByUsername(username)
-
-        if (!user || user.password !== password) throw Error('invalid username or password')
-
-        return user.id
+        return User.findByUsername(username)
+            .then(user => {
+                if (!user || user.password !== password) throw Error('invalid username or password')
+        
+                return user.id
+            })
     },
 
     retrieveUser(id) {
         if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
 
-        const user = User.findById(id)
-
-        if (!user) throw Error(`user with id ${id} not found`)
-
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username,
-        )
-
-        _user.id = user.id
-        _user.postits = user.postits
-
-        delete _user.password
-
-        return _user
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+                const _user = user.toObject()
+        
+                delete _user.password
+        
+                return _user
+            })
     },
 
     savePostit(userId, body) {
@@ -61,50 +57,32 @@ const logic = {
         if (typeof body !== 'string') throw TypeError(`${body} is not a string`)
         if (!body.trim()) throw Error('postit body is empty or blank')
 
-        const postit = new Postit(body)
-        const user = User.findById(userId)
-
-
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username,
-            user.password
-        )
-
-        _user.id = user.id
-        _user.postits = user.postits
-
-        _user.postits.push(postit)
-
-        _user.save()
+        const postit = new Postit({body})
+        return User.findById(userId)
+            .then(user => {
+                user.postits.push(postit)
+        
+                return user.save()
+            })
     },
 
     deletePostit(userId, postitId) {
         if (typeof userId !== 'number') throw TypeError(`${userId} is not a number`)
         if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
 
-        const user = User.findById(userId)
-
-        const index = user.postits.findIndex(postit => postit.id === postitId)
-
-        let pos1 = postits.slice(0, index)
-        let pos2 = postits.slice(index+1)
-
-        let _postits = pos1.concat(pos2)
-
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username,
-            user.password
-        )
-
-        _user.id = user.id
-
-        _user.postits = _postits
-
-        _user.save()
+        return User.findById(userId)
+            .then(user => {
+                const index = user.postits.findIndex(postit => postit.id === postitId)
+        
+                let pos1 = postits.slice(0, index)
+                let pos2 = postits.slice(index + 1)
+        
+                let _postits = pos1.concat(pos2)
+        
+                user.postits = _postits
+        
+                return user.save()
+            })
 
     }
 }
