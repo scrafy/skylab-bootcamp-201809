@@ -1,18 +1,17 @@
 
 extends layout
 block content  
-  p Your postits
+p Your postits
+form(action='/postits', method='POST')
   a(href='/logout') logout
-  form(action='/postits', method='POST')
     textarea(type='text', name='text', placeholder='write text here')
     button(type='submit') Create
     ul.list-group
-    - postits.map(post => {`
-    li.list-group-item.postit
-      ${text} 
-      input(type='hidden', name='postitId', value='${post.id}')
-      button(type='submit', name='action', value='delete')
-        i.fas.fa-trash-alt.trash
-      button
-     `
-     ).join('')-}
+      script.
+        #{posits}.map(post => `
+          li.list-group-item.postit 
+            #{text} 
+          input(type='hidden', name='postitId', value='#{id}')
+          button.trash(type='submit', name='action', value='delete')
+            i.fas.fa-trash-alt`
+          ).join('')

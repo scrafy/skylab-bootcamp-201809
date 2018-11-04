@@ -118,6 +118,8 @@ app.get('/postits', (req, res) => {
         try {
             logic.retrieveUser(id)
                 .then(user => {
+                    // res.render('postits', {posits: user.postits, text: post.text, id: post.id})
+                    
                     res.send(buildView(`<p>Your postits</p>
                         <a href="/logout">logout</a>
                         <form action="/postits" method="POST" >
@@ -127,7 +129,7 @@ app.get('/postits', (req, res) => {
                             ${user.postits.map(post => `<li class="list-group-item postit">${post.text} 
                             <form action="/postits" method="POST">
                             <input type="hidden" name="postitId" value="${post.id}">
-                            <button type="submit" name="action" value="delete"><i class="fas fa-trash-alt trash"></i><button>
+                            <button class= "trash" type="submit" name="action" value="delete"><i class="fas fa-trash-alt "></i>
                             </form>
                             </li>`).join('')}
                         </ul>
