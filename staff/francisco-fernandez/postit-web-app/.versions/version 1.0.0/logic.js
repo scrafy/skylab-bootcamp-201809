@@ -12,14 +12,13 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return User.findByUsername(username)
-            .then(user => {
-                if (user) throw Error(`username ${username} already registered`)
+        let user = User.findByUsername(username)
 
-                user = new User({ name, surname, username, password })
+        if (user) throw Error(`username ${username} already registered`)
 
-                return user.save()
-            })
+        user = new User(name, surname, username, password)
+
+        user.save()
     },
 
     authenticateUser(username, password) {
@@ -29,29 +28,31 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return User.findByUsername(username)
-            .then(user => {
-                if (!user || user.password !== password) throw Error('invalid username or password')
+        const user = User.findByUsername(username)
 
-                return user.id
-            })
+        if (!user || user.password !== password) throw Error('invalid username or password')
+
+        return user.id
     },
 
     retrieveUser(id) {
         if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
 
-        return User.findById(id)
-            .then(user => {
-                if (!user) throw Error(`user with id ${id} not found`)
+        const user = User.findById(id)
 
-                const _user = user.toObject()
+        if (!user) throw Error(`user with id ${id} not found`)
 
-                _user.id = id
+        const _user = new User(
+            user.name,
+            user.surname,
+            user.username
+        )
 
-                delete _user.password
+        _user.id = user.id
 
-                return _user
-            })
+        delete _user.password
+
+        return _user
     }
 }
 

@@ -19,25 +19,24 @@ describe('User (model)', () => {
             fs.writeFileSync(User._file, JSON.stringify([]))
         })
 
-        it('should succeed on correct data', () =>
-            new User({ name, surname, username, password }).save()
-                .then(() => {
-                    const json = fs.readFileSync(User._file)
+        it('should succeed on correct data', () => {
+            new User(name, surname, username, password).save()
 
-                    const users = JSON.parse(json)
+            const json = fs.readFileSync(User._file)
 
-                    debugger
+            const users = JSON.parse(json)
 
-                    expect(users.length).to.equal(1)
+            debugger
 
-                    const [user] = users
+            expect(users.length).to.equal(1)
 
-                    expect(user.name).to.equal(name)
-                    expect(user.surname).to.equal(surname)
-                    expect(user.username).to.equal(username)
-                    expect(user.password).to.equal(password)
-                })
-        )
+            const [user] = users
+
+            expect(user.name).to.equal(name)
+            expect(user.surname).to.equal(surname)
+            expect(user.username).to.equal(username)
+            expect(user.password).to.equal(password)
+        })
 
         describe('when user already exists', () => {
             let name, surname, username, password, id
@@ -48,7 +47,7 @@ describe('User (model)', () => {
                 username = `username-${Math.random()}`
                 password = `password-${Math.random()}`
 
-                const user = new User({ name, surname, username, password })
+                const user = new User(name, surname, username, password)
 
                 id = user.id
 
@@ -73,27 +72,26 @@ describe('User (model)', () => {
 
                 const newName = `${name}-${Math.random()}`
 
-                const _user = new User({ name: newName, surname, username, password })
+                const _user = new User(newName, surname, username, password)
 
                 _user.id = id
 
-                return _user.save()
-                    .then(() => {
-                        json = fs.readFileSync(User._file)
+                _user.save()
 
-                        users = JSON.parse(json)
+                json = fs.readFileSync(User._file)
 
-                        expect(users.length).to.equal(1)
+                users = JSON.parse(json)
 
-                        user = users[0]
+                expect(users.length).to.equal(1)
 
-                        expect(user).to.exist
+                user = users[0]
 
-                        expect(user.name).to.equal(newName)
-                        expect(user.surname).to.equal(surname)
-                        expect(user.username).to.equal(username)
-                        expect(user.password).to.equal(password)
-                    })
+                expect(user).to.exist
+
+                expect(user.name).to.equal(newName)
+                expect(user.surname).to.equal(surname)
+                expect(user.username).to.equal(username)
+                expect(user.password).to.equal(password)
             })
         })
     })
@@ -107,21 +105,18 @@ describe('User (model)', () => {
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
 
-            fs.writeFileSync(User._file, JSON.stringify([new User({ name, surname, username, password })]))
+            fs.writeFileSync(User._file, JSON.stringify([new User(name, surname, username, password)]))
         })
 
-        it('should succeed on correct username', () =>
-            User.findByUsername(username)
-                .then(user => {
-                    expect(user).to.exist
-                    expect(user).to.be.instanceOf(User)
+        it('should succeed on correct username', () => {
+            const user = User.findByUsername(username)
 
-                    expect(user.name).to.equal(name)
-                    expect(user.surname).to.equal(surname)
-                    expect(user.username).to.equal(username)
-                    expect(user.password).to.equal(password)
-                })
+            expect(user).to.exist
 
-        )
+            expect(user.name).to.equal(name)
+            expect(user.surname).to.equal(surname)
+            expect(user.username).to.equal(username)
+            expect(user.password).to.equal(password)
+        })
     })
 })
