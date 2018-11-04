@@ -33,11 +33,11 @@ app.get('/', (req, res) => {
   res.render('landing')
 })
 
-app.get('/register', (req, res) => {
-  res.render('register', { error: req.session.error })
+app.get('/signup', (req, res) => {
+  res.render('signup', { error: req.session.error })
 })
 
-app.post('/register', formBodyParser, (req, res) => {
+app.post('/signup', formBodyParser, (req, res) => {
   const { name, surname, username, password } = req.body
 
   try {
@@ -45,17 +45,17 @@ app.post('/register', formBodyParser, (req, res) => {
       .then(() => {
         req.session.error = null
 
-        res.render('register-confirm', { name })
+        res.render('signup-confirm', { name })
       })
       .catch(({ message }) => {
         req.session.error = message
 
-        res.redirect('/register')
+        res.redirect('/signup')
       })
   } catch ({ message }) {
     error = message
 
-    res.redirect('/register')
+    res.redirect('/signup')
   }
 })
 
@@ -89,7 +89,7 @@ app.post('/login', formBodyParser, (req, res) => {
 
 app.get('/home', (req, res) => {
   const id = req.session.userId
-
+debugger
   if (id) {
     try {
       logic.retrieveUser(id)

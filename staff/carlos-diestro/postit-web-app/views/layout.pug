@@ -10,7 +10,12 @@ html
     link(href='/images/favicon.png', type='image/png', rel='Shortcut Icon')
   body
     .container
-      block content
+      div(class='row justify-content-center my-3')
+        div(class='col-6')
+          div(class='text-center mt-3 mb-1')
+            h2(class='font-weight-normal mt-3 mb-2') Post-
+              span(class='badge badge-warning') it
+          block content
     block scripts
     script(src='/vendor/jquery/3.3.1/jquery-3.3.1.slim.min.js')
     script(src='/vendor/popper/1.14.3/popper-1.14.3.min.js')
