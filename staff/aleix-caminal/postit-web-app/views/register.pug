@@ -1,14 +1,15 @@
 extends layout/default
 
 block content
-    section(classname='register')
-        h2(classname='register__title') Register to Cello
-        form(classname='form', onsubmit='{props.onSubmit}')
-            input(name='name')
-            input(name='username')
-            input(name='password', type='password')
-            input(name='confirm_password', type='password')
-            button(classname='form__button') Sign Up
-            p(classname='form__text')
-                | or 
-                button(classname='form__link', type='button', onclick='{props.onClick}') Log In
+    section(class='main__auth')
+        section(class='register')
+            h2(class='register__title') Register to Cello
+            form(class='form')
+                input(name='name')
+                input(name='username')
+                input(name='password', type='password')
+                input(name='confirm_password', type='password')
+                button(class='form__button') Sign Up
+                p(class='form__text')
+                    | or 
+                    button(class='form__link', type='button') Log In

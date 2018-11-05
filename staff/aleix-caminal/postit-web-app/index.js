@@ -35,7 +35,7 @@ function parseData(data) {
 }
 
 app.get('/', (req, res) => {
-    res.render('landing')
+    res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
 })
 
 app.get('/register', (req, res) => {
@@ -43,23 +43,7 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-    res.send(
-`<!DOCTYPE html>
-<html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="username">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit">Login</button>
-        </form>
-        <a href="/">go back</a>
-    </body>
-</html>`
-    )
+    res.render('login')
 })
 
 app.get('/logout', (req, res) => {
