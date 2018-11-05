@@ -72,6 +72,8 @@ app.post('/login', formBodyParser, (req, res) => {
             .then(id => {
                 req.session.userId = id
 
+                delete req.session.postitId 
+                
                 req.session.error = null
 
                 res.redirect('/home')
@@ -95,7 +97,7 @@ app.get('/home', (req, res) => {
         try {
             logic.retrieveUser(id)
                 .then(user => {
-                    res.render( 'home', {name: user.name})
+                    res.render('home', { name: user.name })
                 })
                 .catch(({ message }) => {
                     req.session.error = message
@@ -112,30 +114,13 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/postits', (req, res) => {
-    const id = req.session.userId
+    const { userId: id, postitId, error } = req.session
 
     if (id) {
         try {
             logic.retrieveUser(id)
-                .then(user => {
-                    res.render('postits', {postits: user.postits} )//, text: post.text, id: post.id})
-                    
-                    // res.send(buildView(`<p>Your postits</p>
-                    //     <a href="/logout">logout</a>
-                    //     <form action="/postits" method="POST" >
-                    //     <textarea type="text" name="text" placeholder="write text here"></textarea>
-                    //     <button type="submit">Create</button>
-                    //     <ul class = "list-group">
-                    //         ${user.postits.map(post => `<li class="list-group-item postit">${post.text} 
-                    //         <form action="/postits" method="POST">
-                    //         <input type="hidden" name="postitId" value="${post.id}">
-                    //         <button class= "trash" type="submit" name="action" value="delete"><i class="fas fa-trash-alt "></i>
-                    //         </form>
-                    //         </li>`).join('')}
-                    //     </ul>
-                        
-                    //     </form>`
-                    //))
+                .then(({ postits }) => {
+                    res.render('postits', { postits, postitId, error })
                 })
                 .catch(({ message }) => {
                     req.session.error = message
@@ -156,8 +141,8 @@ app.get('/postits', (req, res) => {
 app.post('/postits', formBodyParser, (req, res) => {
     let { text, action, postitId } = req.body
     const id = req.session.userId
-    if (!action) {
-        try {
+    try {
+        if (!action) {
             logic.createPostit(text, id)
                 .then(() => res.redirect('/postits'))
                 .catch(({ message }) => {
@@ -165,15 +150,7 @@ app.post('/postits', formBodyParser, (req, res) => {
 
                     res.redirect('/')
                 })
-
-        } catch ({ message }) {
-            req.session.error = message
-
-            res.redirect('/login')
-        }
-
-    } else if (action === "delete") {
-        try {
+        } else if (action === "delete") {
             logic.deletePostit(id, postitId)
                 .then(() => {
                     res.redirect('/postits')
@@ -183,16 +160,33 @@ app.post('/postits', formBodyParser, (req, res) => {
 
                     res.redirect('/')
                 })
+        } else if (action === "edit") {
+            req.session.postitId = postitId
 
-        } catch ({ message }) {
-            req.session.error = message
+            res.redirect('/postits')
+        } else if (action === "save") {
+            const {newText} = req.body
 
-            res.redirect('/login')
+            logic.saveEditPostit(id, postitId, newText)
+                .then(()=> {
+                    delete req.sesssion.postitId 
+
+                    res.redirect('/postits')
+                })
+                .catch(({ message }) => {
+                    req.session.error = message
+
+                    res.redirect('/')
+                })
         }
+        
+
+    } catch ({ message }) {
+        req.session.error = message
+
+        res.redirect('/login')
     }
-
 })
-
 app.get('/logout', (req, res) => {
     req.session.userId = null
 
