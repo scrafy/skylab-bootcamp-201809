@@ -7,11 +7,19 @@ form(action='/postits', method='POST')
     textarea(type='text', name='text', placeholder='write text here')
     button(type='submit') Create
     ul.list-group
-      script.
-        #{posits}.map(post => `
-          li.list-group-item.postit 
-            #{text} 
-          input(type='hidden', name='postitId', value='#{id}')
-          button.trash(type='submit', name='action', value='delete')
-            i.fas.fa-trash-alt`
-          ).join('')
+      p =postits
+      //- each post in postits
+      //-   form(action='/postit', method='POST')
+      //-     input(type='hidden', name='postitId', value= id)
+      //-     button.trash(type='submit', name='action', value='delete')
+      //-       i.fas.fa-trash-alt
+          
+    
+          
+        //- #{postits}.map(post => `
+        //-   li.list-group-item.postit 
+        //-     #{text} 
+        //-   input(type='hidden', name='postitId', value='#{id}')
+        //-   button.trash(type='submit', name='action', value='delete')
+        //-     i.fas.fa-trash-alt`
+        //-   ).join('')

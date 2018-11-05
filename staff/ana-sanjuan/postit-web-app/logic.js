@@ -67,7 +67,7 @@ const logic = {
 
                 userPostits.push(_postit)
 
-                user.save()
+                return user.save()
             })
 
     },
@@ -81,7 +81,7 @@ const logic = {
 
                 userPostits.splice(index, 1)
 
-                user.save()
+                return user.save()
             })
     }
 }
