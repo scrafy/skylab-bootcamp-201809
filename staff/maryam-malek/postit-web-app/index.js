@@ -34,7 +34,6 @@ app.get('/', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
-    const error = req.session.error
     res.render('register', { error: req.session.error })
 })
 

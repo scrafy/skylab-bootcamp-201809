@@ -78,6 +78,8 @@ const logic = {
             if(!user) throw Error (`user with id ${userId} not found`)
 
             const index = user.postits.findIndex(postit => postit.id === postitId)
+           
+            if(index < 0) throw Error (`postit with id ${postitId} not found in user id ${userId}`)
             
             user.postits[index].body = body
         
