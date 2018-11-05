@@ -165,11 +165,10 @@ app.post('/postits', formBodyParser, (req, res) => {
 
             res.redirect('/postits')
         } else if (action === "save") {
-            const {newText} = req.body
 
-            logic.saveEditPostit(id, postitId, newText)
+            logic.saveEditPostit(id, postitId, text)
                 .then(()=> {
-                    delete req.sesssion.postitId 
+                    delete req.session.postitId 
 
                     res.redirect('/postits')
                 })

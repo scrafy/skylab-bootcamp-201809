@@ -20,7 +20,7 @@ block content
                 i.fas.fa-trash-alt
           else 
             form(action='/postits', method='POST')
-              input(type = 'text' name='newText' value=postit.text)
+              input(type = 'text' name='text' value=postit.text)
               input(type='hidden', name='postitId', value= postit.id)
               button(type='submit', name='action', value='save') Save
               button(type='submit', name='action', value='delete')
