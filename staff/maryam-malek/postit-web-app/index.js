@@ -17,7 +17,7 @@ const formBodyParser = bodyParser.urlencoded({ extended: false })
 
 const mySession = session({
     secret: 'my super secret',
-    cookie: { maxAge: 60 * 60 * 24 },
+    cookie: { maxAge: 60 * 60 * 24 * 1000 },
     resave: true,
     saveUninitialized: true,
     store: new FileStore({
@@ -141,29 +141,29 @@ app.get('/postits', (req, res) => {
     } else res.redirect('/')
 })
 
-app.get('/deletePostit:id', (req, res) => {
-    const { postitId } = req.params.id
+// app.get('/deletePostit:id', (req, res) => {
+//     const { postitId } = req.params.id
 
-    const userId = req.session.userId
+//     const userId = req.session.userId
 
-    try {
-        logic.deletePostit(userId, postitId)
-            .then(() => {
-                res.redirect('/postits')
-            })
-            .catch(({ message }) => {
-                req.session.error = message
-                res.redirect('/postits')
-            })
+//     try {
+//         logic.deletePostit(userId, postitId)
+//             .then(() => {
+//                 res.redirect('/postits')
+//             })
+//             .catch(({ message }) => {
+//                 req.session.error = message
+//                 res.redirect('/postits')
+//             })
 
-    } catch ({ message }) {
+//     } catch ({ message }) {
 
-        req.session.error = message
+//         req.session.error = message
 
-        res.redirect('/postits')
-    }
+//         res.redirect('/postits')
+//     }
 
-})
+// })
 
 app.post('/postits', formBodyParser, (req, res) => {
     const { body, type, postitId } = req.body

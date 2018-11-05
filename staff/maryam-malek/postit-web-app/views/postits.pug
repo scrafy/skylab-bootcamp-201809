@@ -9,7 +9,7 @@ block content
     if error 
       p(class='error') #{error}
     div(class='postits-area')
-      if postits
+      if postits.length
         each postit in postits
           div(class = 'postit')
             form(action='/postits', method='POST')
