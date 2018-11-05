@@ -55,17 +55,17 @@ const logic = {
     },
 
     /**
-     * Creates a postit
+     * Adds a postit
      * 
      * @param {number} id The user id
      * @param {string} text The postit text
      * 
-     * @throws {TypeError} On non-numeric user id, or non-string postit text, 
+     * @throws {TypeError} On non-numeric user id, or non-string postit text
      * @throws {Error} On empty or blank postit text
      * 
      * @returns {Promise} Resolves on correct data, rejects on wrong user id
      */
-    createPostit(id, text) {
+    addPostit(id, text) {
         if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
@@ -79,6 +79,82 @@ const logic = {
                 const postit = new Postit({ text })
 
                 user.postits.push(postit)
+
+                return user.save()
+            })
+    },
+
+    /**
+     * Removes a postit
+     * 
+     * @param {number} id The user id
+     * @param {number} postitId The postit id
+     * 
+     * @throws {TypeError} On non-numeric user id, or non-numeric postit id
+     * 
+     * @returns {Promise} Resolves on correct data, rejects on wrong user id, or postit id
+     */
+    removePostit(id, postitId) {
+        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
+        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+
+                const { postits } = user
+
+                // by filtering
+
+                // const _postits = postits.filter(postit => postit.id !== postitId)
+
+                // if (_postits.length !== postits.length - 1) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
+
+                // user.postits = _postits
+
+                // by finding index
+
+                const index = postits.findIndex(postit => postit.id === postitId)
+
+                if (index < 0) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
+
+                postits.splice(index, 1)
+
+                return user.save()
+            })
+    },
+    /**
+     * edit a postit
+     * 
+     * @param {number} id The user id
+     * @param {number} postitId The postit id
+     * @param {text} text The new postit text
+     * 
+     * @throws {TypeError} On non-numeric user id, or non-numeric postit id, or non-string text
+     * 
+     * @returns {Promise} Resolves on correct data, rejects on wrong user id, or postit id
+     */
+
+    editPostit(id, postitId, text) {
+        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
+        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+
+        if (!text.trim().length) throw Error('text is empty or blank')
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+
+                const { postits } = user
+
+                // by finding index
+
+                const index = postits.findIndex(postit => postit.id === postitId)
+
+                if (index < 0) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
+
+                postits[index].text = text
 
                 return user.save()
             })

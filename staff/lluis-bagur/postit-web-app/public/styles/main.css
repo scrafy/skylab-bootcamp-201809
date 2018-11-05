@@ -1,7 +1,58 @@
 .title {
-    color: green;
+  color: green;
+  padding: 10px;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .error {
-    color: red;
+  color: red;
 }
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: white;
+  max-width: 900px;
+  max-height: 700px;
+}
+.container .login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.container .login .login__form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px;
+  border: 1px solid black;
+}
+.container .login .login__inputs {
+  margin-bottom: 10px;
+}
+.container .register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.container .register .register__form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px;
+  border: 1px solid black;
+}
+.container .register .register__input {
+  margin-bottom: 10px;
+}
+
+/*# sourceMappingURL=main.css.map */
