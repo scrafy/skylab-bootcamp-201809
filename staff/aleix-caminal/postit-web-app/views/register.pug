@@ -1,15 +1,14 @@
 extends layout/default
 
 block content
-    section(class='main__auth')
-        section(class='register')
-            h2(class='register__title') Register to Cello
-            form(class='form')
-                input(name='name')
-                input(name='username')
-                input(name='password', type='password')
-                input(name='confirm_password', type='password')
-                button(class='form__button') Sign Up
-                p(class='form__text')
-                    | or 
-                    button(class='form__link', type='button') Log In
+    section(class='auth')
+        h2(class='auth__title') Register to Cello
+        form(class='form')
+            input(class='form__input', name='name')
+            input(class='form__input', name='username')
+            input(class='form__input', name='password', type='password')
+            input(class='form__input', name='confirm_password', type='password')
+            button(class='form__button') Sign Up
+            p(class='form__text')
+                | or 
+                button(class='form__link', type='button') Log In

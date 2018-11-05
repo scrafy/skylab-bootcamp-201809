@@ -116,122 +116,122 @@ $color-text: #17394d;
 }
 
 body {
+    display: grid;
+    grid-template-rows: 60px calc(100vh - 60px);
+    background-color: $color_primary;
     margin: 0;
     overflow: hidden;
     font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
 
-    .main {
-        display: grid;
-        grid-template-rows: 60px calc(100vh - 60px);
-        background-color: $color_primary;
+    .header {
+        position: relative;
+        background-color: darken($color_primary, 10%);
 
-        .header {
-            position: relative;
-            background-color: darken($color_primary, 10%);
+        &__title {
+            margin: 0;
+            text-align: center;
+            font-size: 48px;
+            line-height: 60px;
+            color: #fff;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            height: 40px;
+            color: $color-text;
+
+            &__title {
+                @extend %title;
+                padding: 10px 15px;
+                line-height: 40px;
+                border-radius: 1rem;
+                background-color: $color-board;
+                text-transform: uppercase;
+            }
+
+            &__content {
+                position: absolute;
+                right: 0;
+                display: none;
+                border-radius: 1rem;
+                background-color: $color-board;
+            }
+
+            &__list {
+                width: max-content;
+                list-style-type: none;
+                margin: 0;
+                padding: 10px;
+            }
+
+            &__link {
+                @extend %link;
+                padding: .25rem .5rem;
+            }
+
+            &:hover .dropdown__content {
+                display: block;
+            }
+        }
+    }
+
+    .main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .auth {
+            @extend %board;
 
             &__title {
                 margin: 0;
-                text-align: center;
-                font-size: 48px;
-                line-height: 60px;
-                color: #fff;
+                font-size: 24px;
+                margin-bottom: .5rem;
             }
 
-            .dropdown {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                height: 40px;
-                color: $color-text;
+            .form {
+                display: flex;
+                flex-direction: column;
 
-                &__title {
-                    @extend %title;
-                    padding: 10px 15px;
-                    line-height: 40px;
-                    border-radius: 1rem;
-                    background-color: $color-board;
-                    text-transform: uppercase;
+                &__group {
+                    display: flex;
+                    flex-direction: column;
                 }
 
-                &__content {
-                    position: absolute;
-                    right: 0;
-                    display: none;
-                    border-radius: 1rem;
-                    background-color: $color-board;
-                }
-
-                &__list {
-                    width: max-content;
-                    list-style-type: none;
+                &__label {
                     margin: 0;
-                    padding: 10px;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+
+                &__input {
+                    @extend %input;
+                    width: 400px;
+                    height: 30px;
+                    line-height: 30px;
+                    font-size: 16px;
+                }
+
+                &__button {
+                    @extend %button;
+                    margin-bottom: .5rem
+                }
+
+                &__text {
+                    display: inline-block;
+                    margin: 0 .5rem;
+                    color: $color-text;
                 }
 
                 &__link {
                     @extend %link;
-                    padding: .25rem .5rem;
-                }
-
-                &:hover .dropdown__content {
-                    display: block;
                 }
             }
         }
 
-        &__auth {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            .login, .register {
-                @extend %board;
-
-                &__title {
-                    margin: 0;
-                    font-size: 24px;
-                    margin-bottom: .5rem;
-                }
-
-                .form {
-                    &__group {
-                        display: flex;
-                        flex-direction: column;
-                    }
-
-                    &__label {
-                        margin: 0;
-                        font-size: 14px;
-                        font-weight: 500;
-                    }
-
-                    &__input {
-                        @extend %input;
-                        width: 400px;
-                        height: 30px;
-                        line-height: 30px;
-                        font-size: 16px;
-                    }
-
-                    &__button {
-                        @extend %button;
-                    }
-
-                    &__text {
-                        display: inline-block;
-                        margin: 0 .5rem;
-                        color: $color-text;
-                    }
-
-                    &__link {
-                        @extend %link;
-                    }
-                }
-            }
-        }
-
-        &__boards {
-            display: flex;
+        &--boards {
             flex-direction: row;
             padding: 1rem;
             overflow-x: scroll;

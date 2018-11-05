@@ -19,7 +19,7 @@ const formBodyParser = bodyParser.urlencoded({extended: false})
 })
 app.use(mySession) */
 
-app.use(express.static('./public'))
+app.use(express.static('public'))
 app.set('view engine', 'pug')
 
 let auth = {}

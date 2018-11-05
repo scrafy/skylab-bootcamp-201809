@@ -1,12 +1,11 @@
 extends layout/default
 
 block content
-    section(class='main__auth')
-        section(class='login')
-        h2(class='login__title') Login to Cello
+    section(class='auth')
+        h2(class='auth__title') Login to Cello
         form(class='form')
-            input(name='username')
-            input(name='password', type='password')
+            input(class='form__input', name='username')
+            input(class='form__input', name='password', type='password')
             button(class='form__button') Log In
             p(class='form__text')
                 | or 
