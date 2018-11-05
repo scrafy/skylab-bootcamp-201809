@@ -83,6 +83,19 @@ const logic = {
 
                 return user.save()
             })
+    },
+
+    saveEditPostit(userId, postitId, newText) {
+        return User.findById(userId)
+            .then(user => {
+                const userPostits = user.postits
+
+                const postit = userPostits.find(post => post.id === parseFloat(postitId))
+
+                postit.text = newText
+
+                return user.save()
+            })
     }
 }
 

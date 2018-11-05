@@ -1,25 +1,27 @@
 
 extends layout
 block content  
-p Your postits
-form(action='/postits', method='POST')
-  a(href='/logout') logout
-    textarea(type='text', name='text', placeholder='write text here')
-    button(type='submit') Create
-    ul.list-group
-      p =postits
-      //- each post in postits
-      //-   form(action='/postit', method='POST')
-      //-     input(type='hidden', name='postitId', value= id)
-      //-     button.trash(type='submit', name='action', value='delete')
-      //-       i.fas.fa-trash-alt
-          
-    
-          
-        //- #{postits}.map(post => `
-        //-   li.list-group-item.postit 
-        //-     #{text} 
-        //-   input(type='hidden', name='postitId', value='#{id}')
-        //-   button.trash(type='submit', name='action', value='delete')
-        //-     i.fas.fa-trash-alt`
-        //-   ).join('')
+    p Your postits
+    a(href='/logout') logout
+    form(action='/postits', method='POST')
+      textarea(type='text', name='text', placeholder='write text here')
+      button(type='submit') Create
+    if error
+      p(class='error') #{error}
+    ul
+      each postit in postits
+        li.postit 
+          if (postitId != postit.id)
+            | #{postit.text}
+            form(action='/postits', method='POST')
+              input(type='hidden', name='postitId', value= postit.id)
+              button(type='submit', name='action', value='edit') Edit
+              button(type='submit', name='action', value='delete')
+                i.fas.fa-trash-alt
+          else 
+            form(action='/postits', method='POST')
+              input(type = 'text' name='newText' value=postit.text)
+              input(type='hidden', name='postitId', value= postit.id)
+              button(type='submit', name='action', value='save') Save
+              button(type='submit', name='action', value='delete')
+                i.fas.fa-trash-alt
