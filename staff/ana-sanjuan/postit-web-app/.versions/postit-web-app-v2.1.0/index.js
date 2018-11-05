@@ -72,8 +72,8 @@ app.post('/login', formBodyParser, (req, res) => {
             .then(id => {
                 req.session.userId = id
 
-                delete req.session.postitId
-
+                delete req.session.postitId 
+                
                 req.session.error = null
 
                 res.redirect('/home')
@@ -167,8 +167,8 @@ app.post('/postits', formBodyParser, (req, res) => {
         } else if (action === "save") {
 
             logic.saveEditPostit(id, postitId, text)
-                .then(() => {
-                    delete req.session.postitId
+                .then(()=> {
+                    delete req.session.postitId 
 
                     res.redirect('/postits')
                 })
@@ -178,7 +178,7 @@ app.post('/postits', formBodyParser, (req, res) => {
                     res.redirect('/')
                 })
         }
-
+        
 
     } catch ({ message }) {
         req.session.error = message
@@ -186,7 +186,6 @@ app.post('/postits', formBodyParser, (req, res) => {
         res.redirect('/login')
     }
 })
-
 app.get('/logout', (req, res) => {
     req.session.userId = null
 
