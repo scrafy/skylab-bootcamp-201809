@@ -1,4 +1,4 @@
-body .main--boards .add, body .main--boards .board, body .main .register, body .main .login {
+body .main .add, body .main .board, body .main .register, body .main .login {
   position: relative;
   height: fit-content;
   margin: 1rem;
@@ -7,7 +7,7 @@ body .main--boards .add, body .main--boards .board, body .main .register, body .
   border-radius: 1rem;
 }
 
-body .main--boards .board__input, body .main--boards .board .post {
+body .main .board__input, body .main .board .post {
   width: -webkit-fill-available;
   padding: 0.5rem;
   background-color: #fff;
@@ -15,11 +15,11 @@ body .main--boards .board__input, body .main--boards .board .post {
   border-radius: 0.5rem;
   box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.75);
 }
-body .main--boards .board__input:focus, body .main--boards .board .post:focus {
+body .main .board__input:focus, body .main .board .post:focus {
   outline: none;
 }
 
-body .main--boards .board .post__title, body .main--boards .board__title, body .header .dropdown__title {
+body .main .board .post__title, body .main .board__title, body .header .dropdown__title {
   margin: 0;
   font-size: 16px;
   background-color: transparent;
@@ -30,7 +30,7 @@ body .main--boards .board .post__title, body .main--boards .board__title, body .
   text-overflow: ellipsis;
 }
 
-body .main--boards .add__input, body .main--boards .board__title:focus, body .main .register .form__input, body .main .login .form__input {
+body .main .add__input, body .main .board__title:focus, body .main .register .form__input, body .main .login .form__input {
   width: -webkit-fill-available;
   height: 20px;
   margin: 0 0 0.5rem;
@@ -42,15 +42,15 @@ body .main--boards .add__input, body .main--boards .board__title:focus, body .ma
   border-radius: 0.5rem;
   transition: border-color 1s linear;
 }
-body .main--boards .is-invalid.add__input, body .main--boards .is-invalid.board__title:focus, body .main .register .is-invalid.form__input, body .main .login .is-invalid.form__input {
+body .main .is-invalid.add__input, body .main .is-invalid.board__title:focus, body .main .register .is-invalid.form__input, body .main .login .is-invalid.form__input {
   border-color: #d9534f;
   transition: border-color 0.1s linear;
 }
-body .main--boards .add__input:focus, body .main--boards .board__title:focus, body .main .register .form__input:focus, body .main .login .form__input:focus {
+body .main .add__input:focus, body .main .board__title:focus, body .main .register .form__input:focus, body .main .login .form__input:focus {
   outline: 0;
 }
 
-body .main--boards .add__button, body .main .register .form__button, body .main .login .form__button {
+body .main .add__button, body .main .register .form__button, body .main .login .form__button {
   padding: 0.5rem;
   border: none;
   border-radius: 0.5rem;
@@ -60,11 +60,11 @@ body .main--boards .add__button, body .main .register .form__button, body .main 
   font-size: 16px;
   transition: all 0.1s linear;
 }
-body .main--boards .add__button:hover, body .main .register .form__button:hover, body .main .login .form__button:hover {
+body .main .add__button:hover, body .main .register .form__button:hover, body .main .login .form__button:hover {
   cursor: pointer;
   background-color: #509a3d;
 }
-body .main--boards .add__button:focus, body .main .register .form__button:focus, body .main .login .form__button:focus {
+body .main .add__button:focus, body .main .register .form__button:focus, body .main .login .form__button:focus {
   outline: none;
 }
 
@@ -138,7 +138,16 @@ body .header .dropdown:hover .dropdown__content {
   display: block;
 }
 body .main {
+  max-width: 100vw;
+}
+body .main__content {
   display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  overflow-x: scroll;
+  height: calc(100vh - 2rem - 60px);
+}
+body .main--center {
   justify-content: center;
   align-items: center;
 }
@@ -174,30 +183,24 @@ body .main .register .form__text, body .main .login .form__text {
   margin: 0 0.5rem;
   color: #17394d;
 }
-body .main--boards {
-  flex-direction: row;
-  padding: 1rem;
-  overflow-x: scroll;
-  min-width: 0;
-}
-body .main--boards .board {
+body .main .board {
   min-width: 240px;
   max-width: 240px;
 }
-body .main--boards .board__title {
+body .main .board__title {
   height: 30px;
   margin-bottom: 0.5rem;
   color: #17394d;
 }
-body .main--boards .board .post {
+body .main .board .post {
   position: relative;
   margin-bottom: 0.5rem;
 }
-body .main--boards .board .post__title {
+body .main .board .post__title {
   font-size: 14px;
   font-weight: 400;
 }
-body .main--boards .board .post__button {
+body .main .board .post__button {
   position: absolute;
   top: 0;
   right: 0;
@@ -210,10 +213,10 @@ body .main--boards .board .post__button {
   color: #333;
   cursor: pointer;
 }
-body .main--boards .board .post__button:focus {
+body .main .board .post__button:focus {
   outline: 0;
 }
-body .main--boards .board__button {
+body .main .board__button {
   position: absolute;
   top: 0;
   right: 0;
@@ -226,10 +229,10 @@ body .main--boards .board__button {
   color: #333;
   cursor: pointer;
 }
-body .main--boards .board__button:focus {
+body .main .board__button:focus {
   outline: 0;
 }
-body .main--boards .add {
+body .main .add {
   min-width: 240px;
   max-width: 240px;
 }

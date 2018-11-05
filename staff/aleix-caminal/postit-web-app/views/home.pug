@@ -1,0 +1,23 @@
+extends layout
+
+mixin post(post)
+    article(class='post')
+        button(class='post__button') X
+        h3(class='post__title') #{post.title}
+
+mixin board(board)
+    section(class='board')
+        button(class='board__button') X
+        input(class='board__title', value=board.title)
+        each post in board.posts
+            +post(post)
+        input(class='board__input', placeholder='Add another post')
+
+block content
+    section(class='main__content')
+        each board in boards
+            +board(board)
+        section(class='add')
+            form(action='/board', method='post')
+                input(class='add__input', type='text', name='title', placeholder='Add another board')
+                button(class='add__button') Add Board
