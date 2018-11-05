@@ -1,0 +1,14 @@
+extends layout/default
+
+block content
+    section(classname='register')
+        h2(classname='register__title') Register to Cello
+        form(classname='form', onsubmit='{props.onSubmit}')
+            input(name='name')
+            input(name='username')
+            input(name='password', type='password')
+            input(name='confirm_password', type='password')
+            button(classname='form__button') Sign Up
+            p(classname='form__text')
+                | or 
+                button(classname='form__link', type='button', onclick='{props.onClick}') Log In

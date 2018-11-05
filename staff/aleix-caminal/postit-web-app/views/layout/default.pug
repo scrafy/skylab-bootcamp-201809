@@ -1,0 +1,17 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        title Postit Web App
+    body
+        header(classname='header')
+            h1(classname='header__title')
+                span(role='img', aria-label='jsx-a11y/accessible-emoji') 🎻
+                |  Cello
+            div(classname='dropdown')
+                span(classname='dropdown__title') aleixcam
+                div(classname='dropdown__content')
+                    ul(classname='dropdown__list')
+                        li
+                            button(classname='dropdown__link', onclick='{props.onLogout}') Log Out
+        block content

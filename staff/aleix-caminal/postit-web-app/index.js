@@ -1,13 +1,14 @@
 require('dotenv').config()
 const express = require('express')
-const app = express();
+const app = express()
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 const bodyParser = require('body-parser')
 
 const { argv: [, , port = process.env.PORT || 3000] } = process
 const formBodyParser = bodyParser.urlencoded({extended: false})
-const mySession = session({
+
+/* const mySession = session({
     secret: 'my super secret',
     cookie: { maxAge: 60 * 60 * 24 },
     resave: true,
@@ -16,8 +17,8 @@ const mySession = session({
         path: './.sessions'
     })
 })
+app.use(mySession) */
 
-app.use(mySession)
 app.use(express.static('./public'))
 app.set('view engine', 'pug')
 
@@ -38,25 +39,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
-    res.send(
-`<!DOCTYPE html>
-<html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <form action="/register" method="POST">
-            <input type="text" name="name" placeholder="Name">
-            <input type="text" name="surname" placeholder="Surname">
-            <input type="text" name="username" placeholder="username">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit">Register</button>
-        </form>
-        <a href="/">go back</a>
-    </body>
-</html>`
-    )
+    res.render('register')
 })
 
 app.get('/login', (req, res) => {
