@@ -26,8 +26,6 @@ describe('User (model)', () => {
 
                     const users = JSON.parse(json)
 
-                    debugger
-
                     expect(users.length).to.equal(1)
 
                     const [user] = users
@@ -112,6 +110,34 @@ describe('User (model)', () => {
 
         it('should succeed on correct username', () =>
             User.findByUsername(username)
+                .then(user => {
+                    expect(user).to.exist
+                    expect(user).to.be.instanceOf(User)
+
+                    expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
+                })
+
+        )
+    })
+
+    describe('findById', () => {
+        let name, surname, username, password
+
+        beforeEach(() => {
+            name = `name-${Math.random()}`
+            surname = `surname-${Math.random()}`
+            username = `username-${Math.random()}`
+            password = `password-${Math.random()}`
+            id=Math.random()
+
+            fs.writeFileSync(User._file, JSON.stringify([new User({ id, name, surname, username, password })]))
+        })
+
+        it('should succeed on correct username', () =>
+            User.findById(id)
                 .then(user => {
                     expect(user).to.exist
                     expect(user).to.be.instanceOf(User)
