@@ -9,11 +9,12 @@ html(lang='en')
             h1(class='header__title')
                 span(role='img', aria-label='jsx-a11y/accessible-emoji') 🎻
                 |  Cello
-            div(class='dropdown')
-                span(class='dropdown__title') aleixcam
-                div(class='dropdown__content')
-                    ul(class='dropdown__list')
-                        li
-                            button(class='dropdown__link') Log Out
+            if auth && Object.keys(auth).length > 0
+                div(class='dropdown')
+                    span(class='dropdown__title') #{auth.username}
+                    div(class='dropdown__content')
+                        ul(class='dropdown__list')
+                            li
+                                button(class='dropdown__link') Log Out
         section(class='main')
             block content

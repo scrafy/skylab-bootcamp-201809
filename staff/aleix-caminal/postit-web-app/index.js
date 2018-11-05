@@ -22,7 +22,7 @@ app.use(mySession) */
 app.use(express.static('public'))
 app.set('view engine', 'pug')
 
-let auth = {}
+let auth = {username: 'aleis'}
 
 function parseData(data) {
     let result = {}
@@ -39,11 +39,23 @@ app.get('/', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
-    res.render('register')
+    if (!auth || Object.keys(auth).length === 0) {
+        res.render('register', {
+            auth: auth
+        })
+    } else {
+        res.redirect('/home')
+    }
 })
 
 app.get('/login', (req, res) => {
-    res.render('login')
+    if (!auth || Object.keys(auth).length === 0) {
+        res.render('login', {
+            auth: auth
+        })
+    } else {
+        res.redirect('/home')
+    }
 })
 
 app.get('/logout', (req, res) => {
@@ -60,7 +72,7 @@ app.get('/home', (req, res) => {
         <title>Hello World!</title>
     </head>
     <body>
-        <h1>Welcome ${auth.name}!</h1>
+        <h1>Welcome ${auth.username}!</h1>
         <a href="/logout">logout</a>
     </body>
 </html>`
@@ -68,24 +80,6 @@ app.get('/home', (req, res) => {
     } else {
         res.redirect('/login')
     }
-})
-
-app.get('/users', (req, res) => {
-    res.send(
-`<!DOCTYPE html>
-<html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <ul>
-            ${users.map(user => `<li>${user.id} ${user.name} ${user.surname}</li>`).join('')}
-        </ul>
-        <a href="/">go back</a>
-    </body>
-</html>`
-    )
 })
 
 app.post('/register', (req, res) => {
