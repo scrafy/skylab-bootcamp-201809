@@ -116,17 +116,6 @@ app.get('/postits', (req, res) => {
             logic.retrieveUser(id)
                 .then(user => {
                     res.render('postits', { error: req.session.error, user: user, postits: user.postits })
-                    // res.send(buildView(`<p>${user.name}'s postits!</p>
-                    // <form action="/postits" method="POST">
-                    //     <input type="text" name="body" placeholder="Write here...">
-                    //     <button type="submit">Create postit</button>
-                    // </form>
-                    // ${error ? `<p class="error">${error}</p>` : ''}
-                    // <ul>
-                    // ${user.postits.map(postit => `<li>${postit.body}</li><a href="/deletePostit${postit.id}">Delete</a>`).join('')}
-                    // </ul>
-                    // <a href="/home">Go to home</a>
-                    // <a href="/logout">logout</a>`))
                 })
                 .catch(({ message }) => {
                     req.session.error = message
@@ -141,29 +130,6 @@ app.get('/postits', (req, res) => {
     } else res.redirect('/')
 })
 
-// app.get('/deletePostit:id', (req, res) => {
-//     const { postitId } = req.params.id
-
-//     const userId = req.session.userId
-
-//     try {
-//         logic.deletePostit(userId, postitId)
-//             .then(() => {
-//                 res.redirect('/postits')
-//             })
-//             .catch(({ message }) => {
-//                 req.session.error = message
-//                 res.redirect('/postits')
-//             })
-
-//     } catch ({ message }) {
-
-//         req.session.error = message
-
-//         res.redirect('/postits')
-//     }
-
-// })
 
 app.post('/postits', formBodyParser, (req, res) => {
     const { body, type, postitId } = req.body
