@@ -2,23 +2,21 @@ const fs = require('fs')
 
 class User {
     constructor(user) {
-
-        const { id, name, surname, username, password , postits} = user
+        const { id, name, surname, username, password, postits } = user
 
         this.id = id || Date.now()
+
         this.name = name
         this.surname = surname
         this.username = username
         this.password = password
+
         this.postits = postits || []
     }
 
     save() {
-
         return new Promise((resolve, reject) => {
-            
             fs.readFile(User._file, (err, json) => {
-                
                 if (err) return reject(err)
 
                 const users = JSON.parse(json)
@@ -30,10 +28,10 @@ class User {
 
                 json = JSON.stringify(users)
 
-                fs.writeFileSync(User._file, json, (err) => {
+                fs.writeFile(User._file, json, (err) => {
                     if (err) return reject(err)
 
-                    resolve(json)
+                    resolve()
                 })
             })
         })
@@ -45,23 +43,7 @@ class User {
         return { name, surname, username, password, postits }
     }
 
-    savePostits(userId, text) {
-
-        const postit = new Postits(text)
-
-        return new Promise((resolve, reject)=>{
-            User.findById(userId)
-                .then(user=>{
-                    user.postits.push(postit)
-                    user.save()
-                } )
-                .then(()=> resolve())
-                .catch(err=> reject(err))
-        })
-    }
-
     static findByUsername(username) {
-
         return new Promise((resolve, reject) => {
             fs.readFile(User._file, (err, json) => {
                 if (err) return reject(err)
@@ -76,25 +58,17 @@ class User {
     }
 
     static findById(id) {
-        
-        return new Promise((resolve, reject)=>{
-            fs.readFile(User._file, (err, json)=>{
-                if(err) return reject(err)
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
 
                 const users = JSON.parse(json)
-        
+
                 const user = users.find(user => user.id === id)
 
-                resolve(user? new User(user): undefined)
+                resolve(user ? new User(user) : undefined)
             })
         })
-    }
-}
-
-class Postits {
-    constructor(text) {
-        this.id = new Date()
-        this.text = text
     }
 }
 
