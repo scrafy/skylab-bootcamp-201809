@@ -1,13 +1,9 @@
 @import "https://file.myfontastic.com/TKhv4HW6qV8tGeVkfgpQ8R/icons.css";
 body {
-  margin: 0;
-  width: 100vw;
-  height: 100vh; }
+  margin: 0; }
 
 html {
-  margin: 0;
-  width: 100vw;
-  height: 100vh; }
+  margin: 0; }
 
 * {
   -webkit-box-sizing: border-box;
@@ -15,7 +11,8 @@ html {
 
 #root {
   background-color: bisque;
-  overflow: hidden; }
+  overflow: hidden;
+  height: 100vh; }
 
 .button {
   padding: 0.5em 1em;
@@ -32,11 +29,14 @@ html {
 .board {
   margin: 0 auto;
   margin-top: 2em;
-  width: 71.5%;
-  border-radius: 5px;
+  width: 58.5%;
   padding: 2em 2em;
-  min-height: 100vh;
-  background-image: url("/images/fondo.jpg"); }
+  border-radius: 5px;
+  height: 843px;
+  overflow-y: scroll;
+  background-image: url("/images/fondo.jpg");
+  background-size: contain;
+  background-repeat: no-repeat; }
   .board .board__forms .board__panel-buttons {
     display: -webkit-box;
     display: -ms-flexbox;

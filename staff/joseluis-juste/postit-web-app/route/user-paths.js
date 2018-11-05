@@ -13,8 +13,9 @@ function setUserPaths(app, route) {
 
     route.get("/register", urlencodedParser, function (req, res) {
 
-        res.render('register', { errorMessage: req.session.errorMessage }, (err, html) => {
-            delete req.session.errorMessage
+        res.render('register', { errorMessage: req.session.errorMessage, message:req.session.message }, (err, html) => {
+            req.session.errorMessage = null
+            req.session.message = null
             res.send(html)
         })
 
@@ -24,7 +25,8 @@ function setUserPaths(app, route) {
 
         Logic.register(req.body).then(data => {
 
-            res.redirect("/")
+            req.session.message = "The account has been created correctly"
+            res.redirect("/register")
 
         }).catch(err => {
             req.session.errorMessage = err

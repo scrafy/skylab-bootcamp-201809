@@ -2,14 +2,10 @@
 
 body{
     margin: 0;
-    width: 100vw;
-    height: 100vh;
 }
 
 html{
     margin: 0;
-    width: 100vw;
-    height: 100vh;
 }
 
 *{
@@ -21,6 +17,7 @@ html{
 
     background-color: bisque;
     overflow: hidden;
+    height: 100vh;
 }
 
 .button{
@@ -42,11 +39,14 @@ html{
 .board{
     margin: 0 auto;
     margin-top:2em;
-    width: 71.5%;
-    border-radius: 5px;
+    width:58.5%;
     padding: 2em 2em;
-    min-height: 100vh;
+    border-radius: 5px;
+    height: 843px;
+    overflow-y: scroll;
     background-image: url("/images/fondo.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
     & .board__forms{
         & .board__panel-buttons{
             display: flex;

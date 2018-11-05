@@ -25,8 +25,8 @@ function setAppPaths(app, route) {
             Logic.getUserPostIts(Number.parseInt(req.session.userId)).then(postits => {
 
                 res.render('landing', { postits: postits, errorMessage:req.session.errorMessage, message:req.session.message},(err, html) =>{
-                    delete req.session.errorMessage
-                    delete req.session.message
+                    req.session.errorMessage = null
+                    req.session.message = null
                     res.send(html)
                 })
 
