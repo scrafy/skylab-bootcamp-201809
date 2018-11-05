@@ -156,7 +156,26 @@ app.post('/delete-postit',formBodyParser,(req,res)=>{
     const id = req.session.userId
     if(id){
         try{
-            logic.deletePostit(postitId, id)
+            logic.deletePostit(id, postitId)
+                
+            res.redirect('/home')
+
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+
+})
+
+app.post('/edit-postit',formBodyParser,(req,res)=>{
+    
+    const {postitId} = req.body
+    const id = req.session.userId
+    if(id){
+        try{
+            logic.editPostit(postitId, id)
                 
             res.redirect('/home')
 

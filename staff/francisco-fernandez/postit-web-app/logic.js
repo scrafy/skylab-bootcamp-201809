@@ -66,19 +66,29 @@ const logic = {
         return User.findById(id)
             .then(user => {
                 if (!user) throw Error(`user with id ${id} not found`)
+                
+                user.postits.push(postit)
 
-                user.savePostit(postit)
+                return user.save()
 
             })
     },
 
-    deletePostit(postitId,id){
-        debugger
+    deletePostit(id, postitId){
+        
         return User.findById(id)
             .then(user => {
                 if (!user) throw Error(`user with id ${id} not found`)
-                
-                user.killPostit(postitId)
+
+                const { postits } = user
+
+                const index = postits.findIndex(postit => postit.id === Number(postitId))
+
+                if (index < 0) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
+
+                postits.splice(index, 1)
+
+                return user.save()
 
             })
 
