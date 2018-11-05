@@ -1,4 +1,4 @@
-body .main .add, body .main .board, body .main .register, body .main .login {
+body .main__content .add, body .main__content .board, body .main__content .register, body .main__content .login {
   position: relative;
   height: fit-content;
   margin: 1rem;
@@ -7,7 +7,7 @@ body .main .add, body .main .board, body .main .register, body .main .login {
   border-radius: 1rem;
 }
 
-body .main .board__input, body .main .board .post {
+body .main__content .board__input, body .main__content .board .post {
   width: -webkit-fill-available;
   padding: 0.5rem;
   background-color: #fff;
@@ -15,11 +15,11 @@ body .main .board__input, body .main .board .post {
   border-radius: 0.5rem;
   box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.75);
 }
-body .main .board__input:focus, body .main .board .post:focus {
+body .main__content .board__input:focus, body .main__content .board .post:focus {
   outline: none;
 }
 
-body .main .board .post__title, body .main .board__title, body .header .dropdown__title {
+body .main__content .board .post__title, body .main__content .board__title, body .header .dropdown__title {
   margin: 0;
   font-size: 16px;
   background-color: transparent;
@@ -30,7 +30,7 @@ body .main .board .post__title, body .main .board__title, body .header .dropdown
   text-overflow: ellipsis;
 }
 
-body .main .add__input, body .main .board__title:focus, body .main .register .form__input, body .main .login .form__input {
+body .main__content .add__input, body .main__content .board__title:focus, body .main__content .register .form__input, body .main__content .login .form__input {
   width: -webkit-fill-available;
   height: 20px;
   margin: 0 0 0.5rem;
@@ -42,15 +42,15 @@ body .main .add__input, body .main .board__title:focus, body .main .register .fo
   border-radius: 0.5rem;
   transition: border-color 1s linear;
 }
-body .main .is-invalid.add__input, body .main .is-invalid.board__title:focus, body .main .register .is-invalid.form__input, body .main .login .is-invalid.form__input {
+body .main__content .is-invalid.add__input, body .main__content .is-invalid.board__title:focus, body .main__content .register .is-invalid.form__input, body .main__content .login .is-invalid.form__input {
   border-color: #d9534f;
   transition: border-color 0.1s linear;
 }
-body .main .add__input:focus, body .main .board__title:focus, body .main .register .form__input:focus, body .main .login .form__input:focus {
+body .main__content .add__input:focus, body .main__content .board__title:focus, body .main__content .register .form__input:focus, body .main__content .login .form__input:focus {
   outline: 0;
 }
 
-body .main .add__button, body .main .register .form__button, body .main .login .form__button {
+body .main__content .add__button, body .main__content .register .form__button, body .main__content .login .form__button {
   padding: 0.5rem;
   border: none;
   border-radius: 0.5rem;
@@ -60,15 +60,15 @@ body .main .add__button, body .main .register .form__button, body .main .login .
   font-size: 16px;
   transition: all 0.1s linear;
 }
-body .main .add__button:hover, body .main .register .form__button:hover, body .main .login .form__button:hover {
+body .main__content .add__button:hover, body .main__content .register .form__button:hover, body .main__content .login .form__button:hover {
   cursor: pointer;
   background-color: #509a3d;
 }
-body .main .add__button:focus, body .main .register .form__button:focus, body .main .login .form__button:focus {
+body .main__content .add__button:focus, body .main__content .register .form__button:focus, body .main__content .login .form__button:focus {
   outline: none;
 }
 
-body .main .register .form__link, body .main .login .form__link, body .header .dropdown__link {
+body .main__content .register .form__link, body .main__content .login .form__link, body .header .dropdown__link {
   padding: 0;
   border: none;
   border-radius: 0.5rem;
@@ -77,11 +77,11 @@ body .main .register .form__link, body .main .login .form__link, body .header .d
   font-size: 16px;
   text-decoration: none;
 }
-body .main .register .form__link:hover, body .main .login .form__link:hover, body .header .dropdown__link:hover {
+body .main__content .register .form__link:hover, body .main__content .login .form__link:hover, body .header .dropdown__link:hover {
   cursor: pointer;
   text-decoration: underline;
 }
-body .main .register .form__link:focus, body .main .login .form__link:focus, body .header .dropdown__link:focus {
+body .main__content .register .form__link:focus, body .main__content .login .form__link:focus, body .header .dropdown__link:focus {
   outline: none;
 }
 
@@ -147,60 +147,57 @@ body .main__content {
   overflow-x: scroll;
   height: calc(100vh - 2rem - 60px);
 }
-body .main--center {
+body .main__content--center {
   justify-content: center;
   align-items: center;
 }
-body .main .register__title, body .main .login__title {
+body .main__content .register__title, body .main__content .login__title {
   margin: 0;
   font-size: 24px;
   margin-bottom: 0.5rem;
 }
-body .main .register .form, body .main .login .form {
+body .main__content .register .form, body .main__content .login .form {
   display: flex;
   flex-direction: column;
 }
-body .main .register .form__group, body .main .login .form__group {
+body .main__content .register .form__group, body .main__content .login .form__group {
   display: flex;
   flex-direction: column;
 }
-body .main .register .form__label, body .main .login .form__label {
+body .main__content .register .form__label, body .main__content .login .form__label {
   margin: 0;
   font-size: 14px;
   font-weight: 500;
 }
-body .main .register .form__input, body .main .login .form__input {
+body .main__content .register .form__input, body .main__content .login .form__input {
   width: 400px;
   height: 30px;
   line-height: 30px;
   font-size: 16px;
 }
-body .main .register .form__button, body .main .login .form__button {
-  margin-bottom: 0.5rem;
-}
-body .main .register .form__text, body .main .login .form__text {
+body .main__content .register .form__text, body .main__content .login .form__text {
   display: inline-block;
   margin: 0 0.5rem;
   color: #17394d;
 }
-body .main .board {
+body .main__content .board {
   min-width: 240px;
   max-width: 240px;
 }
-body .main .board__title {
+body .main__content .board__title {
   height: 30px;
   margin-bottom: 0.5rem;
   color: #17394d;
 }
-body .main .board .post {
+body .main__content .board .post {
   position: relative;
   margin-bottom: 0.5rem;
 }
-body .main .board .post__title {
+body .main__content .board .post__title {
   font-size: 14px;
   font-weight: 400;
 }
-body .main .board .post__button {
+body .main__content .board .post__button {
   position: absolute;
   top: 0;
   right: 0;
@@ -213,10 +210,10 @@ body .main .board .post__button {
   color: #333;
   cursor: pointer;
 }
-body .main .board .post__button:focus {
+body .main__content .board .post__button:focus {
   outline: 0;
 }
-body .main .board__button {
+body .main__content .board__button {
   position: absolute;
   top: 0;
   right: 0;
@@ -229,10 +226,10 @@ body .main .board__button {
   color: #333;
   cursor: pointer;
 }
-body .main .board__button:focus {
+body .main__content .board__button:focus {
   outline: 0;
 }
-body .main .add {
+body .main__content .add {
   min-width: 240px;
   max-width: 240px;
 }

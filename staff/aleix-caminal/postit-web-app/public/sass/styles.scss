@@ -187,114 +187,113 @@ body {
             padding: 1rem;
             overflow-x: scroll;
             height: calc(100vh - 2rem - 60px);
-        }
 
-        &--center {
-            justify-content: center;
-            align-items: center;
-        }
-
-        .register, .login {
-            @extend %board;
-
-            &__title {
-                margin: 0;
-                font-size: 24px;
-                margin-bottom: .5rem;
+            &--center {
+                justify-content: center;
+                align-items: center;
             }
 
-            .form {
-                display: flex;
-                flex-direction: column;
+            .register, .login {
+                @extend %board;
 
-                &__group {
-                    display: flex;
-                    flex-direction: column;
+                &__title {
+                    margin: 0;
+                    font-size: 24px;
+                    margin-bottom: .5rem;
                 }
 
-                &__label {
-                    margin: 0;
-                    font-size: 14px;
-                    font-weight: 500;
+                .form {
+                    display: flex;
+                    flex-direction: column;
+
+                    &__group {
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    &__label {
+                        margin: 0;
+                        font-size: 14px;
+                        font-weight: 500;
+                    }
+
+                    &__input {
+                        @extend %input;
+                        width: 400px;
+                        height: 30px;
+                        line-height: 30px;
+                        font-size: 16px;
+                    }
+
+                    &__button {
+                        @extend %button;
+                    }
+
+                    &__text {
+                        display: inline-block;
+                        margin: 0 .5rem;
+                        color: $color-text;
+                    }
+
+                    &__link {
+                        @extend %link;
+                    }
+                }
+            }
+
+            .board {
+                @extend %board;
+                min-width: 240px;
+                max-width: 240px;
+
+                &__title {
+                    @extend %title;
+                    height: 30px;
+                    margin-bottom: .5rem;
+                    color: $color-text;
+
+                    &:focus {
+                        @extend %input;
+                    }
+                }
+
+                .post{
+                    @extend %post;
+                    position: relative;
+                    margin-bottom: .5rem;
+
+                    &__title {
+                        @extend %title;
+                        font-size: 14px;
+                        font-weight: 400;
+                    }
+
+                    &__button {
+                        @include delete(20px);
+                    }
                 }
 
                 &__input {
+                    @extend %post;
+                }
+
+                &__button {
+                    @include delete(25px);
+                }
+            }
+
+            .add {
+                @extend %board;
+                min-width: 240px;
+                max-width: 240px;
+
+                &__input {
                     @extend %input;
-                    width: 400px;
-                    height: 30px;
-                    line-height: 30px;
-                    font-size: 16px;
                 }
 
                 &__button {
                     @extend %button;
-                    margin-bottom: .5rem
                 }
-
-                &__text {
-                    display: inline-block;
-                    margin: 0 .5rem;
-                    color: $color-text;
-                }
-
-                &__link {
-                    @extend %link;
-                }
-            }
-        }
-
-        .board {
-            @extend %board;
-            min-width: 240px;
-            max-width: 240px;
-
-            &__title {
-                @extend %title;
-                height: 30px;
-                margin-bottom: .5rem;
-                color: $color-text;
-
-                &:focus {
-                    @extend %input;
-                }
-            }
-
-            .post{
-                @extend %post;
-                position: relative;
-                margin-bottom: .5rem;
-
-                &__title {
-                    @extend %title;
-                    font-size: 14px;
-                    font-weight: 400;
-                }
-
-                &__button {
-                    @include delete(20px);
-                }
-            }
-
-            &__input {
-                @extend %post;
-            }
-
-            &__button {
-                @include delete(25px);
-            }
-        }
-
-        .add {
-            @extend %board;
-            min-width: 240px;
-            max-width: 240px;
-
-            &__input {
-                @extend %input;
-            }
-
-            &__button {
-                @extend %button;
             }
         }
     }

@@ -52,18 +52,9 @@ let boards = [
                 title: 'Styles'
             }
         ]
-    },
-    {
-        id: 4,
-        title: 'NOT Tested',
-        posts: [
-            {
-                id: 3,
-                title: 'Styles'
-            }
-        ]
     }
 ]
+
 function parseData(data) {
     let result = {}
     data.split('&').forEach(keyValue => {
