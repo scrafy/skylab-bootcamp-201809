@@ -1,8 +1,25 @@
+require('dotenv').config()
 const express = require('express')
 const app = express();
+const session = require('express-session')
+const FileStore = require('session-file-store')(session)
+const bodyParser = require('body-parser')
 
-const { argv: [, , port] } = process
-const users = []
+const { argv: [, , port = process.env.PORT || 3000] } = process
+const formBodyParser = bodyParser.urlencoded({extended: false})
+const mySession = session({
+    secret: 'my super secret',
+    cookie: { maxAge: 60 * 60 * 24 },
+    resave: true,
+    saveUninitialized: true,
+    store: new FileStore({
+        path: './.sessions'
+    })
+})
+
+app.use(mySession)
+app.use(express.static('./public'))
+app.set('view engine', 'pug')
 
 let auth = {}
 
@@ -17,18 +34,7 @@ function parseData(data) {
 }
 
 app.get('/', (req, res) => {
-    res.send(
-`<!DOCTYPE html>
-<html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <a href="/login">Login</a> or <a href="/register">Register</a>
-    </body>
-</html>`
-    )
+    res.render('landing')
 })
 
 app.get('/register', (req, res) => {
@@ -147,4 +153,4 @@ app.post('/login', (req, res) => {
     })
 })
 
-app.listen(port || 3000)
+app.listen(port, () => console.log(`Server up and running on port ${port}`))

@@ -1,19 +1,12 @@
 {
     "name": "postit-web-app",
     "version": "1.0.0",
-    "private": true,
     "main": "index.js",
     "author": "Aleix Caminal",
     "license": "ISC",
-    "eslintConfig": {
-        "extends": "react-app"
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ],
     "dependencies": {
         "body-parser": "^1.18.3",
         "dotenv": "^6.1.0",
