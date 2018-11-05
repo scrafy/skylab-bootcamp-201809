@@ -86,6 +86,7 @@ $color-text: #17394d;
     background-color: transparent;
     color: $color-text;
     font-size: 16px;
+    text-decoration: none;
 
     &:hover {
         cursor: pointer;
@@ -182,7 +183,7 @@ body {
         justify-content: center;
         align-items: center;
 
-        .auth {
+        .register, .login {
             @extend %board;
 
             &__title {

@@ -1,4 +1,4 @@
-body .main--boards .add, body .main--boards .board, body .main .auth {
+body .main--boards .add, body .main--boards .board, body .main .register, body .main .login {
   position: relative;
   height: fit-content;
   margin: 1rem;
@@ -30,7 +30,7 @@ body .main--boards .board .post__title, body .main--boards .board__title, body .
   text-overflow: ellipsis;
 }
 
-body .main--boards .add__input, body .main--boards .board__title:focus, body .main .auth .form__input {
+body .main--boards .add__input, body .main--boards .board__title:focus, body .main .register .form__input, body .main .login .form__input {
   width: -webkit-fill-available;
   height: 20px;
   margin: 0 0 0.5rem;
@@ -42,15 +42,15 @@ body .main--boards .add__input, body .main--boards .board__title:focus, body .ma
   border-radius: 0.5rem;
   transition: border-color 1s linear;
 }
-body .main--boards .is-invalid.add__input, body .main--boards .is-invalid.board__title:focus, body .main .auth .is-invalid.form__input {
+body .main--boards .is-invalid.add__input, body .main--boards .is-invalid.board__title:focus, body .main .register .is-invalid.form__input, body .main .login .is-invalid.form__input {
   border-color: #d9534f;
   transition: border-color 0.1s linear;
 }
-body .main--boards .add__input:focus, body .main--boards .board__title:focus, body .main .auth .form__input:focus {
+body .main--boards .add__input:focus, body .main--boards .board__title:focus, body .main .register .form__input:focus, body .main .login .form__input:focus {
   outline: 0;
 }
 
-body .main--boards .add__button, body .main .auth .form__button {
+body .main--boards .add__button, body .main .register .form__button, body .main .login .form__button {
   padding: 0.5rem;
   border: none;
   border-radius: 0.5rem;
@@ -60,27 +60,28 @@ body .main--boards .add__button, body .main .auth .form__button {
   font-size: 16px;
   transition: all 0.1s linear;
 }
-body .main--boards .add__button:hover, body .main .auth .form__button:hover {
+body .main--boards .add__button:hover, body .main .register .form__button:hover, body .main .login .form__button:hover {
   cursor: pointer;
   background-color: #509a3d;
 }
-body .main--boards .add__button:focus, body .main .auth .form__button:focus {
+body .main--boards .add__button:focus, body .main .register .form__button:focus, body .main .login .form__button:focus {
   outline: none;
 }
 
-body .main .auth .form__link, body .header .dropdown__link {
+body .main .register .form__link, body .main .login .form__link, body .header .dropdown__link {
   padding: 0;
   border: none;
   border-radius: 0.5rem;
   background-color: transparent;
   color: #17394d;
   font-size: 16px;
+  text-decoration: none;
 }
-body .main .auth .form__link:hover, body .header .dropdown__link:hover {
+body .main .register .form__link:hover, body .main .login .form__link:hover, body .header .dropdown__link:hover {
   cursor: pointer;
   text-decoration: underline;
 }
-body .main .auth .form__link:focus, body .header .dropdown__link:focus {
+body .main .register .form__link:focus, body .main .login .form__link:focus, body .header .dropdown__link:focus {
   outline: none;
 }
 
@@ -141,34 +142,34 @@ body .main {
   justify-content: center;
   align-items: center;
 }
-body .main .auth__title {
+body .main .register__title, body .main .login__title {
   margin: 0;
   font-size: 24px;
   margin-bottom: 0.5rem;
 }
-body .main .auth .form {
+body .main .register .form, body .main .login .form {
   display: flex;
   flex-direction: column;
 }
-body .main .auth .form__group {
+body .main .register .form__group, body .main .login .form__group {
   display: flex;
   flex-direction: column;
 }
-body .main .auth .form__label {
+body .main .register .form__label, body .main .login .form__label {
   margin: 0;
   font-size: 14px;
   font-weight: 500;
 }
-body .main .auth .form__input {
+body .main .register .form__input, body .main .login .form__input {
   width: 400px;
   height: 30px;
   line-height: 30px;
   font-size: 16px;
 }
-body .main .auth .form__button {
+body .main .register .form__button, body .main .login .form__button {
   margin-bottom: 0.5rem;
 }
-body .main .auth .form__text {
+body .main .register .form__text, body .main .login .form__text {
   display: inline-block;
   margin: 0 0.5rem;
   color: #17394d;
