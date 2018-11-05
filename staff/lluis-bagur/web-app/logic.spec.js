@@ -25,21 +25,21 @@ describe('logic', () => {
             password = `password-${Math.random()}`
         })
 
-        it('should succeed on correct data', () => {
-            debugger
+        it('should succeed on correct data', () =>
             logic.registerUser(name, surname, username, password)
+                .then(() => {
+                    const json = fs.readFileSync(User._file)
 
-            const json = fs.readFileSync(User._file)
+                    const users = JSON.parse(json)
 
-            const users = JSON.parse(json)
+                    const [user] = users
 
-            const [user] = users
-
-            expect(user.name).to.equal(name)
-            expect(user.surname).to.equal(surname)
-            expect(user.username).to.equal(username)
-            expect(user.password).to.equal(password)
-        })
+                    expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
+                })
+        )
 
         it('should fail on undefined name', () => {
             expect(() => logic.registerUser(undefined, surname, username, password)).to.throw(TypeError, 'undefined is not a string')
@@ -52,7 +52,7 @@ describe('logic', () => {
         let user
 
         beforeEach(() => {
-            user = new User('John', 'Doe', 'jd', '123')
+            user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
             fs.writeFileSync(User._file, JSON.stringify([user]))
         })
@@ -60,18 +60,19 @@ describe('logic', () => {
         it('should authenticate on correct credentials', () => {
             const { username, password } = user
 
-            const id = logic.authenticateUser(username, password)
+            return logic.authenticateUser(username, password)
+                .then(id => {
+                    expect(id).to.exist
+                    expect(id).to.be.a('number')
 
-            expect(id).to.exist
-            expect(id).to.be.a('number')
+                    const json = fs.readFileSync(User._file)
 
-            const json = fs.readFileSync(User._file)
+                    const users = JSON.parse(json)
 
-            const users = JSON.parse(json)
+                    const [_user] = users
 
-            const [_user] = users
-
-            expect(_user.id).to.equal(id)
+                    expect(_user.id).to.equal(id)
+                })
         })
 
         it('should fail on undefined username', () => {
@@ -85,24 +86,60 @@ describe('logic', () => {
         let user
 
         beforeEach(() => {
-            user = new User('John', 'Doe', 'jd', '123')
+            user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
             fs.writeFileSync(User._file, JSON.stringify([user]))
         })
 
-        it('should succeed on valid id', () => {
-            const _user = logic.retrieveUser(user.id)
+        it('should succeed on valid id', () =>
+            logic.retrieveUser(user.id)
+                .then(_user => {
+                    expect(_user).not.to.be.instanceof(User)
 
-            expect(_user).to.be.instanceof(User)
+                    const { id, name, surname, username, password } = _user
 
-            const { id, name, surname, username, password } = _user
+                    expect(id).to.exist
+                    expect(id).to.equal(user.id)
+                    expect(name).to.equal(user.name)
+                    expect(surname).to.equal(user.surname)
+                    expect(username).to.equal(user.username)
+                    expect(password).to.be.undefined
+                })
+        )
+    })
+})
 
-            expect(id).to.exist
-            expect(id).to.equal(user.id)
-            expect(name).to.equal(user.name)
-            expect(surname).to.equal(user.surname)
-            expect(username).to.equal(user.username)
-            expect(password).to.be.undefined
+// .......................... POSTIT LOGIC ...........................
+
+
+describe('logic', () => {
+    describe('postit', () => {
+        let user
+
+        beforeEach(() => {
+            user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+
+            fs.writeFileSync(User._file, JSON.stringify([user]))
+
+            text = `text-${math.random()}`
         })
+
+        it('should succeed on correct data')
+        logic.createPostit(userId, text)
+            .then(() => {
+                const json = fs.readFileSync(User._file)
+
+                const users = JSON.parse(json)
+
+                const [_user] = users
+
+                expect(_user.id).to.equal(user.id)
+
+                const {postits} = _user
+
+                const [postit] = users.postits
+
+                expect(postit.text).to.equal(text)
+            })
     })
 })

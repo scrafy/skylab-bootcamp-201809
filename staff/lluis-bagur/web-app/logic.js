@@ -1,6 +1,5 @@
 const { User, Postit } = require('./data')
 
-
 const logic = {
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -13,13 +12,14 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        let user = User.findByUsername(username)
+        return User.findByUsername(username)
+            .then(user => {
+                if (user) throw Error(`username ${username} already registered`)
 
-        if (user) throw Error(`username ${username} already registered`)
+                user = new User({ name, surname, username, password })
 
-        user = new User(name, surname, username, password)
-
-        user.save()
+                return user.save()
+            })
     },
 
     authenticateUser(username, password) {
@@ -29,134 +29,52 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        const user = User.findByUsername(username)
+        return User.findByUsername(username)
+            .then(user => {
+                if (!user || user.password !== password) throw Error('invalid username or password')
 
-        if (!user || user.password !== password) throw Error('invalid username or password')
-
-        return user.id
+                return user.id
+            })
     },
 
     retrieveUser(id) {
         if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
 
-        const user = User.findById(id)
-        debugger
-        if (!user) throw Error(`user with id ${id} not found`)
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
 
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username,
-        )
-        _user.postits = user.postits
-        _user.id = user.id
+                const _user = user.toObject()
 
-        delete _user.password
+                _user.id = id
 
-        return _user
-    },
+                delete _user.password
 
-
-    //::::::::::::::::::::::::::: POSTIT LOGIC ::::::::::::::::::::::::://
-
-
-    createPostit(text, userId) {
-        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
-        if (!text.trim()) throw Error('text is empty or blank')
-
-        if (typeof userId !== 'number') throw new TypeError(`${userId} is not a number`)
-
-      
-        const postit = new Postit(text)
-
-        let _user = User.findById(userId)
-
-        let user = new User(_user.name,_user.surname,_user.username,_user.password)
-        debugger
-        user.id = _user.id
-        user.savePostit(postit)
-        //this._postits.push(new Postit(text))
-
-        
-    },
-
-    deletePostit(id, userId) {
-        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
-
-        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
-
-        if (!userId.trim()) throw Error('userId is empty or blank')
-
-        let _user = User.findById(userId)
-
-        _user.postits = _user.postits.filter(postit => postit.id !== id)
-
-        
-    },
-
-
-
-
-
-
-
-    listPostitsByUser(userId, token) {
-        debugger
-        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
-
-        if (!userId.trim()) throw Error('userId is empty or blank')
-
-        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
-
-        if (!token.trim()) throw Error('token is empty or blank')
-
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) throw Error(res.error)
-
-                return this._postits = res.data.postits || []
+                return _user
             })
     },
 
-    
 
-    updatePostit(id, text, userId,token) {
-        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
+    // .......................... POSTIT LOGIC ...........................
 
-        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+    createPostit(id, text) {
+        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
+        if (typeof id !== 'text') throw TypeError(`${text} is not a string`)
 
-        if (!text.trim()) throw Error('text is empty or blank')
-        
-        let posit = this._postits.find(text => text.id === id)
+        if (!taxt.trim()) throw Error('text is empty or blank')
 
-        let blabla = posit.text
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
 
-        let index = this._postits.findIndex(text => text.id === id )
+                const _user = user.toObject()
 
-        this._postits[index].text = blabla
-        
+                const postit = new Postit({text})
 
+                user.postit.push(postit)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ postits: this._postits })
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) throw Error(res.error)
+                return user.save()
             })
-      
     }
 }
 
