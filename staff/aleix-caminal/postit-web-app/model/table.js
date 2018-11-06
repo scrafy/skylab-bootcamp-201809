@@ -3,15 +3,46 @@ const fs = require('fs')
 
 class Table {
     constructor(table) {
+        this.table = table
         this.database = process.env.DB + table + '.json'
-        this.table = JSON.parse(fs.readFileSync(this.database, 'utf8')) || []
+        this.query = JSON.parse(fs.readFileSync(this.database, 'utf8')) || []
+        this.data = Object.freeze(this.query)
         this.primaryKey = 'id'
+        this.foreignKeys = {}
+    }
+
+    hasMany(table) {
+        this.hasMany[table] = require('./table/' + table)
+    }
+
+    belongsTo(table) {
+        this.foreignKeys = Object.assign(this.foreignKeys, table)
+    }
+
+    contains(table) {
+        const foreignTable = new this.hasMany[table]
+        this.query.forEach((element, index) => {
+            this.query[index][table] = foreignTable.where({
+                [foreignTable.foreignKeys[this.table]]: element[this.primaryKey]
+            }).all()
+        })
+
+        return this
+    }
+
+    where(query) {
+        for (var key in query) {
+            this.query = this.query.filter(element => element[key] == query[key])
+        }
+
+        return this
     }
 
     save(entity) {
-        const index = this.table.findIndex(element => element.id === entity.id)
-        index < 0 ? this.table.push(entity) : this.table[index] = entity
-        fs.writeFile(this.database, JSON.stringify(this.table), 'utf-8', err => {
+        let data = this.data.slice()
+        const index = data.findIndex(element => element[this.primaryKey] === entity[this.primaryKey])
+        index < 0 ? data.push(entity) : data[index] = entity
+        fs.writeFile(this.database, JSON.stringify(data), 'utf-8', err => {
             if (err) throw err;
         })
 
@@ -19,32 +50,25 @@ class Table {
     }
 
     delete(entity) {
-        this.table.filter(element => element.id !== entity.id)
-        fs.writeFile(this.database, JSON.stringify(this.table), 'utf-8', err => {
+        let data = this.data.slice()
+        data = data.filter(element => element[this.primaryKey] !== entity[this.primaryKey])
+        fs.writeFile(this.database, JSON.stringify(data), 'utf-8', err => {
             if (err) throw err;
         })
 
         return true
     }
 
-    where(query) {
-        for (var key in query) {
-            this.table = this.table.filter(entity => entity[key] == query[key])
-        }
-
-        return this
-    }
-
     all() {
-        return this.table
+        return this.query
     }
 
     first() {
-        return this.table[0]
+        return this.query[0]
     }
 
-    get(id) {
-        return this.where({id}).first()
+    get(value) {
+        return this.where({ [this.primaryKey]: value }).first()
     }
 }
 

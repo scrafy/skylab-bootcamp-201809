@@ -16,7 +16,7 @@ mixin board(board)
             input(class='board__title', name='title', value=board.title, onblur='this.parentElement.submit()')
             input(type='hidden', name='id', value=board.id)
             input(type='hidden', name='action', value='update')
-        if post && post.length > 0
+        if board.posts && board.posts.length > 0
             each post in board.posts
                 +post(post)
         form(action='/post', method='post')

@@ -4,6 +4,7 @@ const User = require('../entity/user')
 class UsersTable extends Table {
     constructor() {
         super('users')
+        this.hasMany('boards')
     }
 
     newEntity(query) {
