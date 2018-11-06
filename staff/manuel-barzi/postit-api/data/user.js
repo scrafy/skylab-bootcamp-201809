@@ -1,8 +1,9 @@
 const fs = require('fs')
+const uid = require('uuid/v4')
 
 class User {
     constructor({ id, name, surname, username, password, postits }) {
-        this.id = id || Date.now()
+        this.id = id || uid()
 
         this.name = name
         this.surname = surname
