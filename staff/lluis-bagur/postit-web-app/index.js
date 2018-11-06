@@ -70,8 +70,9 @@ app.post('/login', formBodyParser, (req, res) => {
         logic.authenticateUser(username, password)
             .then(id => {
                 req.session.userId = id
+                delete req.session.error
+                delete req.session.postitId
 
-                req.session.error = null
 
                 res.redirect('/home')
             })
@@ -123,7 +124,7 @@ app.post('/postits', formBodyParser, (req, res) => {
 
                 logic.addPostit(req.session.userId, text)
                     .then(() => {
-                        delete req.session.postitId
+                        delete req.session.error
                         res.redirect('/home')
                     })
 
