@@ -1,22 +1,35 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react'; 
 
-class Post extends Component {
-    // state = { postId:this.props.postId, user: this.props.user, url:this.props.url, text: this.props.text, like: false }
+class Post extends Component{
+
+    state = { text: this.props.text }
 
 
-    // handleLikePost = () => {
-    //     logic.likedPost(postId)
-    //     this.setState({ like: true })
-    // }
+    handleChange = event => {
+        const text = event.target.value
 
-    // render() {
-    //     return <article className="post">
-    //         <p>{this.state.user}</p>
-    //         <img src={url}></img>
-    //         <p>{this.state.text}</p>
-    //         <button onClick={() => this.handleLikePost}>{!this.state.like ? <i className="far fa-heart"></i> : <i class="fas fa-heart"></i>}</button>
-    //     </article>
-    // }
+        this.setState({ text })
+    }
+
+    handleBlur = () => {
+        this.props.onUpdatePost(this.props.id, this.props.index, this.state.text)
+    }
+
+    handleEdit= () => {
+        this.props.onEdit(this.props.id)
+    }
+
+    handleDelete= () => {
+        this.props.onDelete(this.props.id)
+    }
+
+    render(){
+            return <article onClick={this.handleEdit} onBlur={this.handleBlur} className="post">
+                        <textarea onChange={this.handleChange} id={this.props.id} className="transparent" defaultValue={this.props.text}></textarea> 
+                        <button onClick={this.handleDelete}>x</button>
+                    </article>
+            }
 }
 
+// module.exports = Post
 export default Post

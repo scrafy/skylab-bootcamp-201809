@@ -1,82 +1,66 @@
 import React, { Component } from 'react'
-import Register from './components/Register'
 import Login from './components/Login'
-import Profile from './components/Profile'
-import AddPost from './components/AddPost'
+import Register from './components/Register'
 import Home from './components/Home'
 import Error from './components/Error'
-import Landing from './components/Landing'
 import logic from './logic'
-import { Route, withRouter, Redirect } from 'react-router-dom'
-
 
 class App extends Component {
-    state = { error: null, post : false, profile: false }
+    state = { register : false, login : false, error: null, user: null, token : null}
 
-    handleRegisterClick = () => this.props.history.push('/register')
+    handleRegister = () =>{
+        this.setState({register :true })
+    }
+    handleLogin = () =>{
+        this.setState({login :true })
+    }
 
-    handleLoginClick = () => this.props.history.push('/login')
-
-    handleRegister = (name, surname, username, password) => {
+    handleRegisterClick = (name, surname, email, user, password) => {
+        
         try {
-            logic.registerUser(name, surname, username, password)
-                .then(() => {
-                    this.setState({ error: null }, () => this.props.history.push('/login'))
+            logic.createUser(name, surname, email, user, password)
+                .then(() => this.setState({ login: true, register: false, error: null }))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
+    }
+
+    handleLoginClick = (username, password) => {
+        
+        try {
+            logic.loginUser(username, password)
+                .then(({id, token}) => {
+                    sessionStorage.setItem('userId', id)
+                    sessionStorage.setItem('token', token)
+                    
+                    this.setState({ user: id, token, login: false, register: false, error: null })
                 })
                 .catch(err => this.setState({ error: err.message }))
         } catch (err) {
             this.setState({ error: err.message })
         }
-    }
-
-    handleLogin = (username, password) => {
-        try {
-            logic.login(username, password)
-                .then(() =>  {
-                    this.setState({error : null}, () => this.props.history.push('/home'))
-                } )
-                .catch(err => this.setState({ error: err.message }))
-        } catch (err) {
-            this.setState({ error: err.message })
-        }
-    }
-
-    handlePost = () =>{
-        debugger
-        this.props.history.push('/addpost')
-        this.setState({post: true})
-    }
-
-    handleAddPost = (url, text) =>{
-        logic.createPost(url, text)
+        
     }
 
     handleLogoutClick = () => {
-        logic.logout()
+        this.setState({ user: null })
 
-        this.props.history.push('/')
-    }
-
-    handleGoBack = () => this.props.history.push('/')
-    handleGoBack2 = () => {
-        this.props.history.push('/home')
-        this.setState({post : false, profile: false})
+        sessionStorage.removeItem('userId')
     }
 
     render() {
-        const { error, post, profile } = this.state
-
-        return <div>
-            <Route exact path="/" render={() => !logic.loggedIn ? <Landing onRegisterClick={this.handleRegisterClick} onLoginClick={this.handleLoginClick} /> : <Redirect to="/home" />} />
-            <Route path="/register" render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/home" />} />
-            <Route path="/login" render={() => !logic.loggedIn ? <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/home" />} />
-            {error && <Error message={error} />}
-            {logic.loggedIn && <section><button onClick={this.handleLogoutClick}>Logout</button></section>}
-            <Route path="/home" render={() => logic.loggedIn && !post && !profile ? <Home onPost={this.handlePost} onProfile={this.handleProfile} onGoBack={this.handleGoBack}/> : <Redirect to="/" />} />
-            <Route path="/addpost" render={() => logic.loggedIn && post && !profile ? <AddPost onPost={this.handleAddPost} onGoBack={this.handleGoBack2}/> : <Redirect to="/home" />} />
-            <Route path="/profile" render={() =>!logic.loggedIn && profile && !post? <Profile onGoBack={this.handleGoBack2}/> : <Redirect to="/home" />} />
-        </div>
+        const {register, login, user, error, token} = this.state
+        return <section className="landing">
+                {!register && !login && !user && <button type="button" className="btn btn-primary btn-lg btn-padding" onClick={this.handleRegister}>Register</button>}
+                {!register && !login && !user && <button type="button" className="btn btn-secondary btn-lg" onClick={this.handleLogin}>Login</button>}
+                {register && <Register onRegisterClick={this.handleRegisterClick} />}
+                {login && <Login onLoginClick={this.handleLoginClick} />}
+                {error && <Error message={error} />}
+                {user && <section><button onClick={this.handleLogoutClick}>Logout</button></section>}
+                {user && <Home userId={user} token={token} />}
+            </section>
     }
-}
-
-export default withRouter(App)
+} 
+// module.exports = App
+export default App;
