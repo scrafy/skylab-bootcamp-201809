@@ -52,6 +52,8 @@ const logic = {
 
                 delete _user.password
 
+                delete _user.postits
+
                 return _user
             })
     },
@@ -59,10 +61,10 @@ const logic = {
     /**
      * Adds a postit
      * 
-     * @param {number} id The user id
+     * @param {string} id The user id
      * @param {string} text The postit text
      * 
-     * @throws {TypeError} On non-numeric user id, or non-string postit text
+     * @throws {TypeError} On non-string user id, or non-string postit text
      * @throws {Error} On empty or blank postit text
      * 
      * @returns {Promise} Resolves on correct data, rejects on wrong user id
@@ -90,10 +92,10 @@ const logic = {
     /**
      * Removes a postit
      * 
-     * @param {number} id The user id
-     * @param {number} postitId The postit id
+     * @param {string} id The user id
+     * @param {string} postitId The postit id
      * 
-     * @throws {TypeError} On non-numeric user id, or non-numeric postit id
+     * @throws {TypeError} On non-string user id, or non-string postit id
      * 
      * @returns {Promise} Resolves on correct data, rejects on wrong user id, or postit id
      */
@@ -109,16 +111,6 @@ const logic = {
                 if (!user) throw Error(`user with id ${id} not found`)
 
                 const { postits } = user
-
-                // by filtering
-
-                // const _postits = postits.filter(postit => postit.id !== postitId)
-
-                // if (_postits.length !== postits.length - 1) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
-
-                // user.postits = _postits
-
-                // by finding index
 
                 const index = postits.findIndex(postit => postit.id === postitId)
 
@@ -152,6 +144,19 @@ const logic = {
                 postit.text = text
 
                 return user.save()
+            })
+    },
+
+    listPostits(id) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw Error('id is empty or blank')
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+
+                return user.postits
             })
     }
 }
