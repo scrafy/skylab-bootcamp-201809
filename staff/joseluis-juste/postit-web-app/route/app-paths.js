@@ -3,7 +3,7 @@ let Logic = require("../logic/logic")
 function setAppPaths(app, route) {
 
     route.use(function (req, res, next) {
-
+           
         next();
 
     });
@@ -27,6 +27,9 @@ function setAppPaths(app, route) {
                 res.render('landing', { postits: postits, errorMessage:req.session.errorMessage, message:req.session.message},(err, html) =>{
                     req.session.errorMessage = null
                     req.session.message = null
+                    res.set("Cache-Control", "no-cache, no-store, must-revalidate")
+                    res.set("Pragma", "no-cache")
+                    res.set("Expires", "0")   
                     res.send(html)
                 })
 
