@@ -4,15 +4,13 @@ const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 const bodyParser = require('body-parser')
 const { sha256 } = require('js-sha256')
-
 const UsersTable = require('./model/table/users')
 const BoardsTable = require('./model/table/boards')
 const PostsTable = require('./model/table/posts')
 
 const { argv: [, , port = process.env.PORT || 3000] } = process
 const app = express()
-
-/* const mySession = session({
+const mySession = session({
     secret: 'my super secret',
     cookie: { maxAge: 60 * 60 * 24 },
     resave: true,
@@ -21,47 +19,45 @@ const app = express()
         path: './.sessions'
     })
 })
-app.use(mySession) */
 
+app.use(mySession)
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static('public'))
 app.set('view engine', 'pug')
 
-let auth = {}
-
 app.get('/', (req, res) => {
-    res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
+    res.redirect(req.session.auth && Object.keys(req.session.auth).length > 0 ? '/home' : '/login')
 })
 
 app.get('/register', (req, res) => {
-    if (!auth || Object.keys(auth).length === 0) {
-        res.render('register', { auth })
+    if (!req.session.auth || Object.keys(req.session.auth).length === 0) {
+        res.render('register', { auth: null })
     } else {
         res.redirect('/home')
     }
 })
 
 app.get('/login', (req, res) => {
-    if (!auth || Object.keys(auth).length === 0) {
-        res.render('login', { auth })
+    if (!req.session.auth || Object.keys(req.session.auth).length === 0) {
+        res.render('login', { auth: null })
     } else {
         res.redirect('/home')
     }
 })
 
 app.get('/logout', (req, res) => {
-    auth = {}
+    req.session.auth = {}
     res.redirect('/login')
 })
 
 app.get('/home', (req, res) => {
-    if (auth && Object.keys(auth).length > 0) {
+    if (req.session.auth && Object.keys(req.session.auth).length > 0) {
         const boardsTable = new BoardsTable()
         var boards = boardsTable.where({
-            userId: auth.id
+            userId: req.session.auth.id
         }).all()
 
-        res.render('home', { auth, boards })
+        res.render('home', { auth: req.session.auth, boards })
     } else {
         res.redirect('/login')
     }
@@ -81,12 +77,12 @@ app.post('/register', (req, res) => {
 
 app.post('/login', (req, res) => {
     const usersTable = new UsersTable()
-    auth = usersTable.where({
+    req.session.auth = usersTable.where({
         username: req.body.username,
         password: sha256(req.body.password)
     }).first()
 
-    res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
+    res.redirect(req.session.auth && Object.keys(req.session.auth).length > 0 ? '/home' : '/login')
 })
 
 app.post('/board', (req, res) => {
@@ -95,7 +91,7 @@ app.post('/board', (req, res) => {
         case 'add':
             var board = boardsTable.newEntity({
                 title: req.body.title,
-                userId: auth.id,
+                userId: req.session.auth.id,
             })
 
             boardsTable.save(board)
