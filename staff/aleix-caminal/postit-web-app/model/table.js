@@ -29,9 +29,9 @@ class Table {
 
     where(query) {
         for (var key in query) {
-            this.table = this.table.filter(entity => entity[key] === query[key])
+            this.table = this.table.filter(entity => entity[key] == query[key])
         }
-        
+
         return this
     }
 

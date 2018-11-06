@@ -28,37 +28,6 @@ app.use(express.static('public'))
 app.set('view engine', 'pug')
 
 let auth = {}
-let boards = [
-    {
-        id: 1,
-        title: 'TODO',
-        posts: []
-    },
-    {
-        id: 2,
-        title: 'WIP',
-        posts: [
-            {
-                id: 1,
-                title: 'Migrate to Pug'
-            },
-            {
-                id: 2,
-                title: 'Logic'
-            }
-        ]
-    },
-    {
-        id: 3,
-        title: 'DONE',
-        posts: [
-            {
-                id: 3,
-                title: 'Styles'
-            }
-        ]
-    }
-]
 
 app.get('/', (req, res) => {
     res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
@@ -87,6 +56,11 @@ app.get('/logout', (req, res) => {
 
 app.get('/home', (req, res) => {
     if (auth && Object.keys(auth).length > 0) {
+        const boardsTable = new BoardsTable()
+        var boards = boardsTable.where({
+            userId: auth.id
+        }).all()
+
         res.render('home', { auth, boards })
     } else {
         res.redirect('/login')
@@ -113,6 +87,51 @@ app.post('/login', (req, res) => {
     }).first()
 
     res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
+})
+
+app.post('/board', (req, res) => {
+    const boardsTable = new BoardsTable()
+    switch (req.body.action) {
+        case 'add':
+            var board = boardsTable.newEntity({
+                title: req.body.title,
+                userId: auth.id,
+            })
+
+            boardsTable.save(board)
+            break;
+        case 'update':
+            var board = boardsTable.get(req.body.id)
+            board.title = req.body.title
+            boardsTable.save(board)
+            break;
+        case 'delete':
+            var board = boardsTable.get(req.body.id)
+            boardsTable.delete(board)
+            break;
+    }
+
+    res.redirect('/home')
+})
+
+app.post('/post', (req, res) => {
+    const postsTable = new PostsTable()
+    switch (req.body.action) {
+        case 'add':
+            var post = postsTable.newEntity({
+                title: req.body.title,
+                boardId: req.body.board_id,
+            })
+
+            postsTable.save(post)
+            break;
+        case 'delete':
+            var post = postsTable.get(req.body.id)
+            postsTable.delete(post)
+            break;
+    }
+
+    res.redirect('/home')
 })
 
 app.listen(port, () => console.log(`Server up and running on port ${port}`))
