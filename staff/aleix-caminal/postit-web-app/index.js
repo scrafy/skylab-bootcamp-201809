@@ -107,7 +107,6 @@ app.post('/register', (req, res) => {
 
 app.post('/login', (req, res) => {
     const usersTable = new UsersTable()
-    console.log(req.body);
     auth = usersTable.where({
         username: req.body.username,
         password: sha256(req.body.password)

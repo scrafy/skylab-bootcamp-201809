@@ -28,8 +28,10 @@ class Table {
     }
 
     where(query) {
-        // const filter = this.table => this.table.filter(entity => entity[key] == query[key])
-        // for (var key in query) this.table = filter(this.table)
+        for (var key in query) {
+            this.table = this.table.filter(entity => entity[key] === query[key])
+        }
+        
         return this
     }
 
