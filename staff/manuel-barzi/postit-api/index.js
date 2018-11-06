@@ -1,113 +1,103 @@
 require('dotenv').config()
+
 const express = require('express')
-const session = require('express-session')
-const FileStore = require('session-file-store')(session)
 const bodyParser = require('body-parser')
 const logic = require('./logic')
 const package = require('./package.json')
+const jwt = require('jsonwebtoken')
 
-const { argv: [, , port = process.env.PORT || 8080] } = process
+const { env: { PORT, JWT_SECRET } } = process
+
+const { argv: [, , port = PORT || 8080] } = process
 
 const app = express()
 
-app.use(express.static('./public'))
-app.set('view engine', 'pug')
+const jsonBodyParser = bodyParser.json()
 
-const formBodyParser = bodyParser.urlencoded({ extended: false })
-
-const mySession = session({
-    secret: 'my super secret',
-    cookie: { maxAge: 60 * 60 * 24 * 1000 },
-    resave: true,
-    saveUninitialized: true,
-    store: new FileStore({
-        path: './.sessions'
-    })
-})
-
-app.use(mySession)
-
-app.get('/', (req, res) => {
-    req.session.error = null
-
-    res.render('landing')
-})
-
-app.get('/register', (req, res) => {
-    res.render('register', { error: req.session.error })
-})
-
-app.post('/register', formBodyParser, (req, res) => {
+app.post('/api/user', jsonBodyParser, (req, res) => {
     const { name, surname, username, password } = req.body
 
     try {
         logic.registerUser(name, surname, username, password)
-            .then(() => {
-                req.session.error = null
-
-                res.render('register-confirm', { name })
-            })
-            .catch(({ message }) => {
-                req.session.error = message
-
-                res.redirect('/register')
-            })
+            .then(() =>
+                res.json({
+                    status: 'OK',
+                    message: `${username} successfully registered`
+                })
+            )
+            .catch(({ message }) =>
+                res.json({
+                    status: 'KO',
+                    message
+                })
+            )
     } catch ({ message }) {
-        error = message
-
-        res.redirect('/register')
+        res.json({
+            status: 'KO',
+            message
+        })
     }
 })
 
-app.get('/login', (req, res) => {
-    res.render('login', { error: req.session.error })
-})
-
-app.post('/login', formBodyParser, (req, res) => {
+app.post('/api/auth', jsonBodyParser, (req, res) => {
     const { username, password } = req.body
 
     try {
         logic.authenticateUser(username, password)
             .then(id => {
-                req.session.userId = id
+                const token = jwt.sign({ sub: id }, JWT_SECRET)
 
-                //req.session.error = null
-                delete req.session.error
-
-                delete req.session.postitId
-
-                res.redirect('/home')
+                res.json({
+                    status: 'OK',
+                    data: {
+                        id,
+                        token
+                    }
+                })
             })
-            .catch(({ message }) => {
-                req.session.error = message
-
-                res.redirect('/login')
-            })
+            .catch(({ message }) =>
+                res.json({
+                    status: 'KO',
+                    message
+                })
+            )
     } catch ({ message }) {
-        error = message
-
-        res.redirect('/login')
+        res.json({
+            status: 'KO',
+            message
+        })
     }
 })
 
-app.get('/home', (req, res) => {
-    const { userId, postitId, error } = req.session
+app.get('/api/user/:id', (req, res) => {
+    const { params: { id }, headers: { authorization } } = req
 
-    if (userId) {
-        try {
-            logic.retrieveUser(userId)
-                .then(({ name, postits }) => res.render('home', { name, postits, postitId, error, private: true }))
-                .catch(({ message }) => {
-                    req.session.error = message
+    const token = authorization.split(' ')[1]
 
-                    res.redirect('/')
+    try {
+        const { sub } = jwt.verify(token, JWT_SECRET)
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        logic.retrieveUser(id)
+            .then(user =>
+                res.json({
+                    status: 'OK',
+                    data: user
                 })
-        } catch ({ message }) {
-            req.session.error = message
-
-            res.redirect('/')
-        }
-    } else res.redirect('/')
+            )
+            .catch(({ message }) =>
+                res.json({
+                    status: 'KO',
+                    message
+                })
+            )
+    } catch ({ message }) {
+        res.json({
+            status: 'KO',
+            message
+        })
+    }
 })
 
 app.get('/logout', (req, res) => {
@@ -116,7 +106,7 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-app.post('/postits', formBodyParser, (req, res) => {
+app.post('/postits', jsonBodyParser, (req, res) => {
     const { operation } = req.body
 
     try {
@@ -184,4 +174,4 @@ app.post('/postits', formBodyParser, (req, res) => {
     }
 })
 
-app.listen(port, () => console.log(`Server ${package.version} up and running on port ${port}`))
+app.listen(port, () => console.log(`${package.name} ${package.version} up and running on port ${port}`))
