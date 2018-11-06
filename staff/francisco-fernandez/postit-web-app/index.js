@@ -20,9 +20,9 @@ const mySession = session({
     cookie: { maxAge: 60 * 60 * 24 * 1000 },
     resave: true,
     saveUninitialized: true,
-    store: new FileStore({
-        path: './.sessions'
-    })
+    // store: new FileStore({
+    //     path: './.sessions'
+    // })
 })
 
 app.use(mySession)
