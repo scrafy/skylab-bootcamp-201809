@@ -1,12 +1,15 @@
 require('dotenv').config()
 const express = require('express')
-const app = express()
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 const bodyParser = require('body-parser')
 
+const UsersTable = require('./model/table/users')
+const BoardsTable = require('./model/table/boards')
+const PostsTable = require('./model/table/posts')
+
 const { argv: [, , port = process.env.PORT || 3000] } = process
-const formBodyParser = bodyParser.urlencoded({extended: false})
+const app = express()
 
 /* const mySession = session({
     secret: 'my super secret',
@@ -19,10 +22,11 @@ const formBodyParser = bodyParser.urlencoded({extended: false})
 })
 app.use(mySession) */
 
+app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static('public'))
 app.set('view engine', 'pug')
 
-let auth = {username: 'aleis'}
+let auth = {username: 'aleixcam'}
 let boards = [
     {
         id: 1,
@@ -54,16 +58,6 @@ let boards = [
         ]
     }
 ]
-
-function parseData(data) {
-    let result = {}
-    data.split('&').forEach(keyValue => {
-        const [key, value] = keyValue.split('=')
-        result[key] = value
-    })
-
-    return result
-}
 
 app.get('/', (req, res) => {
     res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
@@ -99,35 +93,25 @@ app.get('/home', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-    let data = ''
-
-    req.on('data', chunk => data += chunk)
-
-    req.on('end', () => {
-        const register = parseData(data)
-        const user = {
-            id: Date.now(),
-            name: register.name,
-            surname: register.surname,
-            username: register.username,
-            password: register.password
-        }
-
-        users.push(user)
-        res.redirect('/login')
+    const usersTable = new UsersTable()
+    let user = usersTable.newEntity({
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name
     })
+
+    usersTable.save(user)
+    res.redirect('/login')
 })
 
 app.post('/login', (req, res) => {
-    let data = ''
-
-    req.on('data', chunk => data += chunk)
-
-    req.on('end', () => {
-        const login = parseData(data)
-        auth = users.find(user => user.username === login.username && user.password === login.password) || {}
-        res.redirect('/home')
-    })
+    const usersTable = new UsersTable()
+    auth = usersTable.where({
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name
+    }).first()
+    res.redirect('/home')
 })
 
 app.listen(port, () => console.log(`Server up and running on port ${port}`))

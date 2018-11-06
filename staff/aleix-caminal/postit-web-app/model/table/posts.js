@@ -2,12 +2,12 @@ const Table = require('../table')
 const Post = require('../entity/post')
 
 class PostsTable extends Table {
+    constructor(query) {
+        super(query)
+    }
+    
     newEntity(query) {
         return new Post(query)
-    }
-
-    find() {
-        return this._find('posts')
     }
 
     save(post) {

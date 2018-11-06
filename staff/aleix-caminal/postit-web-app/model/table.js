@@ -1,7 +1,7 @@
 class Table {
-    _find(table) {
+    constructor(query) {
         this.table = JSON.parse(sessionStorage.getItem(table)) || []
-        return this
+        this.primaryKey = 'id'
     }
 
     _save(table, entity) {
@@ -17,8 +17,8 @@ class Table {
     }
 
     where(query) {
-        const filter = this.table => this.table.filter(entity => entity[key] == query[key])
-        for (var key in query) this.table = filter(this.table)
+        // const filter = this.table => this.table.filter(entity => entity[key] == query[key])
+        // for (var key in query) this.table = filter(this.table)
         return this
     }
 
@@ -31,7 +31,7 @@ class Table {
     }
 
     get(id) {
-        return this.find().where({id}).first())
+        return this.where({id}).first()
     }
 }
 

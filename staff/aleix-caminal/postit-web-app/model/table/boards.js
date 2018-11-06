@@ -2,12 +2,12 @@ const Table = require('../table')
 const Board = require('../entity/board')
 
 class BoardsTable extends Table {
+    constructor(query) {
+        super(query)
+    }
+    
     newEntity(query) {
         return new Board(query)
-    }
-
-    find() {
-        return this._find('boards')
     }
 
     save(board) {
