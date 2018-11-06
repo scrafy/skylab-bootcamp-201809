@@ -68,10 +68,10 @@ const logic = {
      * @returns {Promise} Resolves on correct data, rejects on wrong user id
      */
     addPostit(id, text) {
-        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (!text.trim().length) throw Error('id is empty or blank')
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
         if (!text.trim().length) throw Error('text is empty or blank')
 
         return User.findById(id)
@@ -97,8 +97,8 @@ const logic = {
      * @returns {Promise} Resolves on correct data, rejects on wrong user id, or postit id
      */
     removePostit(id, postitId) {
-        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
-        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+        if (typeof id !== 'string') throw TypeError(`${id} id is not a string`)
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} postitId is not a string`)
 
         return User.findById(id)
             .then(user => {
@@ -127,11 +127,13 @@ const logic = {
     },
 
     modifyPostit(id, postitId, text) {
-        if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
-        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (!id.trim().length) throw Error('id is empty or blank')
+
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
+        if (!postitId.trim().length) throw Error('postitId is empty or blank')
 
         if(typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
         if (!text.trim().length) throw Error('text is empty or blank')
 
         return User.findById(id)

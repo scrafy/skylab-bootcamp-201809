@@ -106,72 +106,171 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-app.post('/postits', jsonBodyParser, (req, res) => {
-    const { operation } = req.body
+app.put('/api/user/:id',  jsonBodyParser, (req, res) => {
+    const { text } = req.body
+    const { params: { id }, headers: { authorization } } = req
+
+    const token = authorization.split(' ')[1]
 
     try {
-        switch (operation) {
-            case 'add':
-                const { text } = req.body
+        const { sub } = jwt.verify(token, JWT_SECRET)
 
-                logic.addPostit(req.session.userId, text)
-                    .then(() => {
-                        delete req.session.error
+        if (id !== sub) throw Error('token sub does not match user id')
 
-                        res.redirect('/home')
-                    })
-                    .catch(({ message }) => {
-                        req.session.error = message
-
-                        res.redirect('/home')
-                    })
-
-                break
-            case 'remove':
-                const { postitId } = req.body
-
-                logic.removePostit(req.session.userId, Number(postitId))
-                    .then(() => res.redirect('/home'))
-                    .catch(({ message }) => {
-                        req.session.error = message
-
-                        res.redirect('/home')
-                    })
-                break
-            case 'edit':
-                {
-                    const { postitId } = req.body
-
-                    req.session.postitId = postitId
-                }
-
-                res.redirect('/home')
-                break
-            case 'save':
-                {
-                    const { postitId, text } = req.body
-
-                    logic.modifyPostit(req.session.userId, Number(postitId), text)
-                        .then(() => {
-                            delete req.session.postitId
-
-                            res.redirect('/home')
-                        })
-                        .catch(({ message }) => {
-                            req.session.error = message
-
-                            res.redirect('/home')
-                        })
-                }
-                break
-            default:
-                res.redirect('/home')
-        }
+        logic.addPostit(sub, text)
+            .then(user =>
+                res.json({
+                    status: 'OK',
+                    data: user
+                })
+            )
+            .catch(({ message }) =>
+                res.json({
+                    status: 'KO',
+                    message
+                })
+            )
     } catch ({ message }) {
-        req.session.error = message
-
-        res.redirect('/home')
+        res.json({
+            status: 'KO',
+            message
+        })
     }
+
 })
+
+app.delete('/api/user/:id',  jsonBodyParser, (req, res) => {
+    const { postitId } = req.body
+    const { params: { id }, headers: { authorization } } = req
+
+    const token = authorization.split(' ')[1]
+
+    try {
+        const { sub } = jwt.verify(token, JWT_SECRET)
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        logic.removePostit(id, postitId)
+            .then(user =>
+                res.json({
+                    status: 'OK',
+                    data: user
+                })
+            )
+            .catch(({ message }) =>
+                res.json({
+                    status: 'KO',
+                    message
+                })
+            )
+    } catch ({ message }) {
+        res.json({
+            status: 'KO',
+            message
+        })
+    }
+
+})
+
+app.patch('/api/user/:id',  jsonBodyParser, (req, res) => {
+    const { postitId, text } = req.body
+    const { params: { id }, headers: { authorization } } = req
+
+    const token = authorization.split(' ')[1]
+
+    try {
+        const { sub } = jwt.verify(token, JWT_SECRET)
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        logic.modifyPostit(id, postitId, text)
+            .then(user =>
+                res.json({
+                    status: 'OK',
+                    data: user
+                })
+            )
+            .catch(({ message }) =>
+                res.json({
+                    status: 'KO',
+                    message
+                })
+            )
+    } catch ({ message }) {
+        res.json({
+            status: 'KO',
+            message
+        })
+    }
+
+})
+
+// app.post('/postits', jsonBodyParser, (req, res) => {
+//     const { operation } = req.body
+
+//     try {
+//         switch (operation) {
+//             case 'add':
+//                 const { text } = req.body
+
+//                 logic.addPostit(req.session.userId, text)
+//                     .then(() => {
+//                         delete req.session.error
+
+//                         res.redirect('/home')
+//                     })
+//                     .catch(({ message }) => {
+//                         req.session.error = message
+
+//                         res.redirect('/home')
+//                     })
+
+//                 break
+//             case 'remove':
+//                 const { postitId } = req.body
+
+//                 logic.removePostit(req.session.userId, Number(postitId))
+//                     .then(() => res.redirect('/home'))
+//                     .catch(({ message }) => {
+//                         req.session.error = message
+
+//                         res.redirect('/home')
+//                     })
+//                 break
+//             case 'edit':
+//                 {
+//                     const { postitId } = req.body
+
+//                     req.session.postitId = postitId
+//                 }
+
+//                 res.redirect('/home')
+//                 break
+//             case 'save':
+//                 {
+//                     const { postitId, text } = req.body
+
+//                     logic.modifyPostit(req.session.userId, Number(postitId), text)
+//                         .then(() => {
+//                             delete req.session.postitId
+
+//                             res.redirect('/home')
+//                         })
+//                         .catch(({ message }) => {
+//                             req.session.error = message
+
+//                             res.redirect('/home')
+//                         })
+//                 }
+//                 break
+//             default:
+//                 res.redirect('/home')
+//         }
+//     } catch ({ message }) {
+//         req.session.error = message
+
+//         res.redirect('/home')
+//     }
+// })
 
 app.listen(port, () => console.log(`${package.name} ${package.version} up and running on port ${port}`))
