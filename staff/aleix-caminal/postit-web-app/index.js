@@ -59,6 +59,7 @@ app.get('/home', (req, res) => {
             userId: req.session.auth.id
         }).all()
 
+        console.log(boards);
         res.render('home', { auth: req.session.auth, boards })
     } else {
         res.redirect('/login')

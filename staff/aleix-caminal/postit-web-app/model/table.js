@@ -20,8 +20,8 @@ class Table {
     }
 
     contains(table) {
-        const foreignTable = new this.hasMany[table]
         this.query.forEach((element, index) => {
+            const foreignTable = new this.hasMany[table]
             this.query[index][table] = foreignTable.where({
                 [foreignTable.foreignKeys[this.table]]: element[this.primaryKey]
             }).all()
