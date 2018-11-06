@@ -1,18 +1,29 @@
+require('dotenv').config()
+const fs = require('fs')
+
 class Table {
-    constructor(query) {
-        this.table = JSON.parse(sessionStorage.getItem(table)) || []
+    constructor(table) {
+        this.database = process.env.DB + table + '.json'
+        this.table = JSON.parse(fs.readFileSync(this.database, 'utf8')) || []
         this.primaryKey = 'id'
     }
 
-    _save(table, entity) {
+    save(entity) {
         const index = this.table.findIndex(element => element.id === entity.id)
         index < 0 ? this.table.push(entity) : this.table[index] = entity
-        sessionStorage.setItem(table, JSON.stringify(this.table))
+        fs.writeFile(this.database, JSON.stringify(this.table), 'utf-8', err => {
+            if (err) throw err;
+        })
+
         return entity
     }
 
-    _delete(table, entity) {
-        sessionStorage.setItem(table, JSON.stringify(this.table.filter(element => element.id !== entity.id)))
+    delete(entity) {
+        this.table.filter(element => element.id !== entity.id)
+        fs.writeFile(this.database, JSON.stringify(this.table), 'utf-8', err => {
+            if (err) throw err;
+        })
+
         return true
     }
 

@@ -3,6 +3,7 @@ const express = require('express')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 const bodyParser = require('body-parser')
+const { sha256 } = require('js-sha256')
 
 const UsersTable = require('./model/table/users')
 const BoardsTable = require('./model/table/boards')
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static('public'))
 app.set('view engine', 'pug')
 
-let auth = {username: 'aleixcam'}
+let auth = {}
 let boards = [
     {
         id: 1,
@@ -106,12 +107,13 @@ app.post('/register', (req, res) => {
 
 app.post('/login', (req, res) => {
     const usersTable = new UsersTable()
+    console.log(req.body);
     auth = usersTable.where({
         username: req.body.username,
-        password: req.body.password,
-        name: req.body.name
+        password: sha256(req.body.password)
     }).first()
-    res.redirect('/home')
+
+    res.redirect(auth && Object.keys(auth).length > 0 ? '/home' : '/login')
 })
 
 app.listen(port, () => console.log(`Server up and running on port ${port}`))
