@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Register from './components/Register'
-import Login from './components/Login'
+import Register from './components/register'
+import Login from './components/login'
 import Postits from './components/Postits'
 import Error from './components/Error'
 import logic from './logic'
