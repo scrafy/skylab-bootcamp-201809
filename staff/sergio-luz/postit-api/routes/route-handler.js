@@ -15,7 +15,7 @@ function routeHandler(callback, res) {
                 }
 
                 res.json({
-                    message
+                    error:message
                 })
             })
     } catch (err) {
@@ -28,7 +28,7 @@ function routeHandler(callback, res) {
         }
 
         res.json({
-            message
+           error:message
         })
     }
 }
