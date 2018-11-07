@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken')
-
 const { env: { JWT_SECRET } } = process
+
+const jwt = require('jsonwebtoken')
 
 function jwtVerifier(req, res, next) {
     try {
