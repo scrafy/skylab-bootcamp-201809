@@ -91,17 +91,21 @@ app.post('/board', (req, res) => {
     const boardsTable = new BoardsTable()
     switch (req.body.action) {
         case 'add':
-            var board = boardsTable.newEntity({
-                title: req.body.title,
-                userId: req.session.auth.id,
-            })
+            if (req.body.title) {
+                var board = boardsTable.newEntity({
+                    title: req.body.title,
+                    userId: req.session.auth.id,
+                })
 
-            boardsTable.save(board)
+                boardsTable.save(board)
+            }
             break;
         case 'update':
-            var board = boardsTable.get(req.body.id)
-            board.title = req.body.title
-            boardsTable.save(board)
+            if (req.body.title) {
+                var board = boardsTable.get(req.body.id)
+                board.title = req.body.title
+                boardsTable.save(board)
+            }
             break;
         case 'delete':
             var board = boardsTable.get(req.body.id)
@@ -116,12 +120,14 @@ app.post('/post', (req, res) => {
     const postsTable = new PostsTable()
     switch (req.body.action) {
         case 'add':
-            var post = postsTable.newEntity({
-                title: req.body.title,
-                boardId: req.body.board_id,
-            })
+            if (req.body.title) {
+                var post = postsTable.newEntity({
+                    title: req.body.title,
+                    boardId: req.body.board_id,
+                })
 
-            postsTable.save(post)
+                postsTable.save(post)
+            }
             break;
         case 'delete':
             var post = postsTable.get(req.body.id)
