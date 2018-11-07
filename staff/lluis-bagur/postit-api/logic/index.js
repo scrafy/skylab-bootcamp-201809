@@ -18,7 +18,7 @@ const logic = {
                 if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
                 user = new User({ name, surname, username, password })
-                
+
                 return user.save()
             })
     },
