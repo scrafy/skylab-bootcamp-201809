@@ -8,7 +8,7 @@ const logic = require('./logic')
 
 const { expect } = require('chai')
 
-let flag = false
+let flag = true
 
 // running test from CLI
 // normal -> $ mocha src/logic.spec.js --timeout 10000
@@ -16,7 +16,7 @@ let flag = false
 
 describe('logic', () => {
     describe('users', () => {
-        !flag && describe('register', () => {
+        flag && describe('register', () => {
             it('should succeed on correct data', () =>
                 logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
                     .then(() => expect(true).to.be.true)
@@ -29,7 +29,7 @@ describe('logic', () => {
                     .then(() => logic.registerUser('John', 'Doe', username, '123'))
                     .catch(err => {
                         expect(err).not.to.be.undefined
-                        expect(err.message).to.equal(`user with username "${username}" already exists`)
+                        expect(err.message).to.equal(`username ${username} already registered`)
                     })
             })
 
@@ -66,7 +66,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal(`user with username "${username}" does not exist`)
+                            expect(err.message).to.equal(`invalid username or password`)
                         })
                 })
 
@@ -76,7 +76,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal('username and/or password wrong')
+                            expect(err.message).to.equal('invalid username or password')
                         })
                 })
             })
@@ -171,7 +171,7 @@ describe('logic', () => {
             })
         })
 
-        flag && describe('delete', () => {
+        !flag && describe('delete', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -202,7 +202,7 @@ describe('logic', () => {
             })
         })
 
-        flag && describe('update', () => {
+        !flag && describe('update', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
