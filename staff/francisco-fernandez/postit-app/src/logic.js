@@ -1,5 +1,5 @@
-// import data from './data'
-const data = require('./data')
+import data from './data'
+// const data = require('./data')
 
 const { Postit } = data
 
@@ -105,17 +105,17 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                return this._postits = res.data.postits || []
+                return res.data
             })
     },
 
     deletePostit(id) {
-        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
+        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
-        this._postits = this._postits.filter(postit => postit.id !== id)
+        if (!id.trim().length) throw Error('id is empty or blank')
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits/${id}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
@@ -129,23 +129,21 @@ const logic = {
     },
 
     updatePostit(id, text) {
-        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
+        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw Error('id is empty or blank')
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        const postit = this._postits.find(postit => postit.id === id)
-
-        postit.text = text
-
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ postits: this._postits })
+            body: JSON.stringify({ text })
         })
             .then(res => res.json())
             .then(res => {
@@ -154,5 +152,5 @@ const logic = {
     }
 }
 
-// export default logic
-module.exports = logic
+export default logic
+// module.exports = logic

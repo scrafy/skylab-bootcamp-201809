@@ -171,7 +171,7 @@ describe('logic', () => {
             })
         })
 
-        !flag && describe('delete', () => {
+        flag && describe('delete', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -202,7 +202,7 @@ describe('logic', () => {
             })
         })
 
-        !flag && describe('update', () => {
+        flag && describe('update', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -238,7 +238,7 @@ describe('logic', () => {
                             })
                             .then(postits => {
                                 expect(postits).not.to.be.undefined
-                                // expect(postits.length).to.equal(1)
+                                expect(postits.length).to.equal(1)
 
                                 const [postit] = postits
 
