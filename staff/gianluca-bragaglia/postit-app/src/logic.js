@@ -73,7 +73,7 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    createPostit(text) {
+    addPostit(text) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
@@ -109,7 +109,7 @@ const logic = {
             })
     },
 
-    deletePostit(id) {
+    removePostit(id) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
         this._postits = this._postits.filter(postit => postit.id !== id)
@@ -125,16 +125,12 @@ const logic = {
             })
     },
 
-    updatePostit(id, text) {
+    modifyPostit(id, text) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
-
-        const postit = this._postits.find(postit => postit.id === id)
-
-        postit.text = text
 
         return fetch(`http://localhost:5000/api/users/${this._userId}/postits/${id}`, {
             method: 'PUT',
