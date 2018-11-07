@@ -1,5 +1,5 @@
-import data from './data'
-// const data = require('./data')
+// import data from './data'
+const data = require('./data')
 
 const { Postit } = data
 
@@ -19,7 +19,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch('https://skylabcoders.herokuapp.com/api/user', {
+        return fetch('http://localhost:5000/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -154,5 +154,5 @@ const logic = {
     }
 }
 
-export default logic
-// module.exports = logic
+// export default logic
+module.exports = logic
