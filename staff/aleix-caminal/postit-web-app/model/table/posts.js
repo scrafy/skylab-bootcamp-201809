@@ -1,4 +1,4 @@
-const Table = require('../table')
+const { Table } = require('lilli')
 
 class PostsTable extends Table {
     constructor() {
