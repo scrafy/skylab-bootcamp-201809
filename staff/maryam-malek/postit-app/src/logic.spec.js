@@ -1,10 +1,13 @@
-// import logic from './logic'
+//import logic from './logic'
 
 require('isomorphic-fetch')
 
 global.sessionStorage = require('sessionstorage')
 
 const logic = require('./logic')
+
+logic.url = 'http://localhost:5000/api'
+// logic.url = 'http://192.168.0.82:5000' // DEV server!
 
 const { expect } = require('chai')
 
@@ -64,7 +67,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal(`user with username "${username}" does not exist`)
+                            expect(err.message).to.equal(`invalid username or password`)
                         })
                 })
 
@@ -108,7 +111,7 @@ describe('logic', () => {
     })
 
     describe('postits', () => {
-        false && describe('create', () => {
+        !false && describe('add', () => {
             describe('with existing user', () => {
                 let username, password, text
 
@@ -131,8 +134,8 @@ describe('logic', () => {
             })
         })
 
-        describe('list', () => {
-            false && describe('with existing user', () => {
+        !false && describe('list', () => {
+            !false && describe('with existing user', () => {
                 let username, password, text
 
                 beforeEach(() => {
@@ -169,7 +172,7 @@ describe('logic', () => {
             })
         })
 
-        false && describe('delete', () => {
+        !false && describe('remove', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -186,7 +189,7 @@ describe('logic', () => {
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() => 
+                    beforeEach(() =>
                         logic.createPostit(text)
                             .then(() => logic.listPostits())
                             .then(postits => postitId = postits[0].id)
@@ -200,7 +203,7 @@ describe('logic', () => {
             })
         })
 
-        false && describe('update', () => {
+        !false && describe('modify', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
