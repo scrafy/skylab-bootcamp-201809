@@ -2,263 +2,130 @@ require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
+
+const jsonBodyParser = bodyParser.json()
+const router = express.Router()
+const app = express()
+
 const logic = require('./logic')
 const package = require('./package.json')
-const jwt = require('jsonwebtoken')
+const routeHandler = require('./routes/route-handler')
+const bearerTokenParser = require('./utils/bearer-token-parser')
+const jwtVerifier = require('./routes/jwt-verifier')
 
 const { env: { PORT, JWT_SECRET } } = process
 
 const { argv: [, , port = PORT || 8080] } = process
 
-const app = express()
+app.use('/api', router)
 
-const jsonBodyParser = bodyParser.json()
 
-app.post('/api/user', jsonBodyParser, (req, res) => {
-    const { name, surname, username, password } = req.body
+router.post('/users', jsonBodyParser, (req, res) => {
+    routeHandler(() => {
+        const { name, surname, username, password } = req.body
 
-    try {
-        logic.registerUser(name, surname, username, password)
-            .then(() =>
+        return logic.registerUser(name, surname, username, password)
+            .then(() => {
+                res.status(201)
                 res.json({
-                    status: 'OK',
                     message: `${username} successfully registered`
                 })
+            }
             )
-            .catch(({ message }) =>
-                res.json({
-                    status: 'KO',
-                    message
-                })
-            )
-    } catch ({ message }) {
-        res.json({
-            status: 'KO',
-            message
-        })
-    }
+    }, res)
+
 })
 
-app.post('/api/auth', jsonBodyParser, (req, res) => {
-    const { username, password } = req.body
+router.post('/auth', jsonBodyParser, (req, res) => {
+    routeHandler(() => {
+        const { username, password } = req.body
 
-    try {
-        logic.authenticateUser(username, password)
+        return logic.authenticateUser(username, password)
             .then(id => {
                 const token = jwt.sign({ sub: id }, JWT_SECRET)
 
                 res.json({
-                    status: 'OK',
                     data: {
                         id,
                         token
                     }
                 })
             })
-            .catch(({ message }) =>
-                res.json({
-                    status: 'KO',
-                    message
-                })
-            )
-    } catch ({ message }) {
-        res.json({
-            status: 'KO',
-            message
-        })
-    }
+    }, res)
 })
 
-app.get('/api/user/:id', (req, res) => {
-    const { params: { id }, headers: { authorization } } = req
 
-    const token = authorization.split(' ')[1]
-
-    try {
-        const { sub } = jwt.verify(token, JWT_SECRET)
+router.get('/users/:id', [bearerTokenParser, jwtVerifier], (req, res) => {
+    routeHandler(() => {
+        const { params: { id }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
-
-        logic.retrieveUser(id)
+        return logic.retrieveUser(id)
             .then(user =>
                 res.json({
-                    status: 'OK',
                     data: user
                 })
             )
-            .catch(({ message }) =>
-                res.json({
-                    status: 'KO',
-                    message
-                })
-            )
-    } catch ({ message }) {
-        res.json({
-            status: 'KO',
-            message
-        })
-    }
+    }, res)
 })
 
-app.post('/api/postit/', jsonBodyParser, (req, res) => {
-    const { headers: { authorization } } = req
 
-    const token = authorization.split(' ')[1]
+router.post('/users/:id/postits', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id }, body: { text } } = req
 
-    const { text } = req.body
+        if (id !== sub) throw Error('token sub does not match user id')
 
-    try {
-        const { sub } = jwt.verify(token, JWT_SECRET)
-
-        logic.addPostit(sub, text)
+        return logic.addPostit(id, text)
             .then(() =>
                 res.json({
-                    status: 'OK'
+                    status: 'postit added'
                 })
             )
-            .catch(({ message }) =>
-                res.json({
-                    status: 'KO',
-                    message
-                })
-            )
-    } catch ({ message }) {
-        res.json({
-            status: 'KO',
-            message
-        })
-    }
+    }, res)
 })
 
-app.delete('/api/postit/:id', jsonBodyParser, (req, res) => {
-    const { params: { id }, headers: { authorization } } = req
+router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id, postitId } } = req
 
-    const token = authorization.split(' ')[1]
+        if(id!== sub) throw Error('token sub does not match user id')
 
-    try {
-        const { sub } = jwt.verify(token, JWT_SECRET)
-
-        logic.removePostit(sub, id)
+        return logic.removePostit(sub, postitId)
             .then(() =>
                 res.json({
-                    status: 'OK'
+                    status: 'postit removed'
                 })
             )
-            .catch(({ message }) =>
-                res.json({
-                    status: 'KO',
-                    message
-                })
-            )
-    } catch ({ message }) {
-        res.json({
-            status: 'KO',
-            message
-        })
-    }
+    }, res)
 })
 
-app.put('/api/postit/:id', jsonBodyParser, (req, res) => {
-    const { params: { id }, headers: { authorization } } = req
+router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id } } = req
 
-    const token = authorization.split(' ')[1]
-    
-    const { text } = req.body
+        if (id !== sub) throw Error('token sub does not match user id')
 
-    try {
-        const { sub } = jwt.verify(token, JWT_SECRET)
-
-        logic.modifyPostit(sub, id, text)
-            .then(() =>
-                res.json({
-                    status: 'OK'
-                })
-            )
-            .catch(({ message }) =>
-                res.json({
-                    status: 'KO',
-                    message
-                })
-            )
-    } catch ({ message }) {
-        res.json({
-            status: 'KO',
-            message
-        })
-    }
+        return logic.listPostits(id)
+            .then(postits => res.json({
+                data: postits
+            }))
+    }, res)
 })
 
-app.get('/logout', (req, res) => {
+router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id, postitId }, body: { text } } = req
 
-    res.redirect('/')
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.modifyPostit(id, postitId, text)
+            .then(() => res.json({
+                message: 'postit modified'
+            }))
+    }, res)
 })
 
-// app.post('/postits', jsonBodyParser, (req, res) => {
-//     const { operation } = req.body
-
-//     try {
-//         switch (operation) {
-//             case 'add':
-//                 const { text } = req.body
-
-//                 logic.addPostit(req.session.userId, text)
-//                     .then(() => {
-//                         delete req.session.error
-
-//                         res.redirect('/home')
-//                     })
-//                     .catch(({ message }) => {
-//                         req.session.error = message
-
-//                         res.redirect('/home')
-//                     })
-
-//                 break
-//             case 'remove':
-//                 const { postitId } = req.body
-
-//                 logic.removePostit(req.session.userId, Number(postitId))
-//                     .then(() => res.redirect('/home'))
-//                     .catch(({ message }) => {
-//                         req.session.error = message
-
-//                         res.redirect('/home')
-//                     })
-//                 break
-//             case 'edit':
-//                 {
-//                     const { postitId } = req.body
-
-//                     req.session.postitId = postitId
-//                 }
-
-//                 res.redirect('/home')
-//                 break
-//             case 'save':
-//                 {
-//                     const { postitId, text } = req.body
-
-//                     logic.modifyPostit(req.session.userId, Number(postitId), text)
-//                         .then(() => {
-//                             delete req.session.postitId
-
-//                             res.redirect('/home')
-//                         })
-//                         .catch(({ message }) => {
-//                             req.session.error = message
-
-//                             res.redirect('/home')
-//                         })
-//                 }
-//                 break
-//             default:
-//                 res.redirect('/home')
-//         }
-//     } catch ({ message }) {
-//         req.session.error = message
-
-//         res.redirect('/home')
-//     }
-// })
 
 app.listen(port, () => console.log(`${package.name} ${package.version} up and running on port ${port}`))
