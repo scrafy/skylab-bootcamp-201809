@@ -30,6 +30,7 @@ block content
             each board in boards
                 +board(board)
         section(class='add')
-            form(action='/board', method='post')
+            form(id='add_board_form', action='/board', method='post')
                 input(class='add__input', type='text', name='title', placeholder='Add another board')
                 button(class='add__button', name='action', value='add') Add Board
+    script(src="/js/home.js")

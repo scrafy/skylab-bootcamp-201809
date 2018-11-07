@@ -47,7 +47,6 @@ $color-text: #17394d;
     background-color: #fff;
     border: 2px solid $color-primary;
     border-radius: .5rem;
-    transition: border-color 1s linear;
 
     &.is-invalid {
         border-color: $color-danger;
@@ -289,6 +288,7 @@ body {
 
                 &__input {
                     @extend %input;
+                    transition: border-color 1s linear;
                 }
 
                 &__button {

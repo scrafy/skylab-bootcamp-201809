@@ -40,7 +40,6 @@ body .main__content .add__input, body .main__content .board__title:focus, body .
   background-color: #fff;
   border: 2px solid #026aa7;
   border-radius: 0.5rem;
-  transition: border-color 1s linear;
 }
 body .main__content .is-invalid.add__input, body .main__content .is-invalid.board__title:focus, body .main__content .register .is-invalid.form__input, body .main__content .login .is-invalid.form__input {
   border-color: #d9534f;
@@ -232,6 +231,9 @@ body .main__content .board__button:focus {
 body .main__content .add {
   min-width: 240px;
   max-width: 240px;
+}
+body .main__content .add__input {
+  transition: border-color 1s linear;
 }
 
 /*# sourceMappingURL=styles.css.map */

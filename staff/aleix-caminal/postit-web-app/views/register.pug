@@ -4,7 +4,7 @@ block content
     section(class='main__content main__content--center')
         section(class='register')
             h2(class='register__title') Register to Cello
-            form(class='form', action='/register', method='post')
+            form(id='register_form', class='form', action='/register', method='post')
                 div(class='form__group')
                     label(class='form__label') Name
                     input(class='form__input', name='name', type='text')
@@ -22,3 +22,4 @@ block content
                     p(class='form__text')
                         | or 
                         a(href='/login', class='form__link') Log In
+    script(src="/js/register.js")
