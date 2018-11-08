@@ -50,11 +50,9 @@ class Postits extends Component {
 
             <InputForm onSubmit={this.handleSubmit} />
 
-            <div >
                 <section className='board__postits'>
                     {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                 </section>
-            </div>
 
             <Error message={this.state.error}></Error>
         </div>

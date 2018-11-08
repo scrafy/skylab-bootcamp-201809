@@ -68,8 +68,9 @@ class Profile extends Component {
     render() {
         const { error } = this.state
 
-        return <div>
-            <form onSubmit={this.handleSubmit}>
+        return <div className='profile__body'>
+            <h1>Profile <i className="fas fa-sticky-note"></i></h1>
+            <form onSubmit={this.handleSubmit} className='profile__options'>
                 <input type="text" name="name" placeholder="name" onChange={this.handleNameChange}></input>
                 <input type="text" name="surname" placeholder="surname" onChange={this.handleSurnmeChange}></input>
                 <input type="text" name="username" placeholder="username" onChange={this.handleUsernameChange}></input>

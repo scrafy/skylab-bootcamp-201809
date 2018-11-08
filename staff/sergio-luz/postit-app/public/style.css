@@ -8,6 +8,9 @@ body{
     width: 100px;
     height: 100px;
     margin: 10px;
+    box-shadow: 4px 6px 5px #aaaa8f80;
+    display: flex;
+    flex-direction: column;
 }
 
 .post textarea {
@@ -16,6 +19,14 @@ body{
     width: inherit;
     height: inherit;
     resize: none;
+}
+
+.post button {
+    border-width: 1px;
+    border-style: outset;
+    border-color: #FF9800;
+    background: #ffed89;
+    cursor: pointer;
 }
 
 .fa-sticky-note {
@@ -74,5 +85,19 @@ body{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
+}
+
+.profile__body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 97vh;
+}
+
+.profile__options{
+    display: flex;
+    flex-direction: column;
     justify-content: center;
 }
