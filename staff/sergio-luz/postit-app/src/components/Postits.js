@@ -49,12 +49,12 @@ class Postits extends Component {
             <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
 
             <InputForm onSubmit={this.handleSubmit} />
+            <Error message={this.state.error}></Error>
 
                 <section className='board__postits'>
                     {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                 </section>
 
-            <Error message={this.state.error}></Error>
         </div>
     }
 }
