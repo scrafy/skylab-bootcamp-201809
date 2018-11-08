@@ -1,27 +1,22 @@
-.article{
+.post {
     background-color: yellow;
-    display: flex;
-    width: 25vw;
-    height: 25vh;
+    width: 100px;
+    height: 100px;
     margin: 10px;
-    padding: 10px;
-    flex-direction: column;
 }
-textarea{
-    margin-bottom: 10px;
-    background-color: #00ffff00;
-    border-color: #00ffff00;
+
+.post textarea {
+    background: transparent;
+    border: none;
+    width: inherit;
+    height: inherit;
     resize: none;
 }
 
-.container{
-    margin: auto;
-    text-align: center;
+.fa-sticky-note {
+    color: gold;
 }
 
-.posts-container{
-    display: flex;
-    flex-wrap: wrap;
-    text-align: left;
-    justify-content: center;
+.error {
+    color: red;
 }
