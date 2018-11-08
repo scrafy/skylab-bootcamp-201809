@@ -52,19 +52,19 @@ class Profile extends Component {
         event.preventDefault()
         
         const {name, surname, username, newPassword, repeatPassword, password } = this.state
-
+debugger
         logic.modifyProfile(name, surname, username, newPassword, repeatPassword, password)
     }
 
     render() {
         return <div>
             <form onSubmit={this.handleSubmit}>
-                <input type="text" name="name" placeholder="name"></input>
-                <input type="text" name="surname" placeholder="surname"></input>
-                <input type="text" name="username" placeholder="username"></input>
-                <input type="password" name="newPassword" placeholder="new password"></input>
-                <input type="password" name="repeatPassword" placeholder="repeat new password"></input>
-                <input type="password" name="password" placeholder="password"></input>
+                <input type="text" name="name" placeholder="name" onChange={this.handleNameChange}></input>
+                <input type="text" name="surname" placeholder="surname" onChange={this.handleSurnmeChange}></input>
+                <input type="text" name="username" placeholder="username" onChange={this.handleUsernameChange}></input>
+                <input type="password" name="newPassword" placeholder="new password" onChange={this.handleNewPasswordChange}></input>
+                <input type="password" name="repeatPassword" placeholder="repeat new password" onChange={this.handleRepeatPassword}></input>
+                <input type="password" name="password" placeholder="password" onChange={this.handlePassword}></input>
 
                 <button type="submit">Save changes</button>
             </form>

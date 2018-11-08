@@ -118,8 +118,9 @@ router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, json
     }, res)
 })
 
-router.put('/users/:id/modifyProfile', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.put('/users/:id/modifyUser', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
+        debugger
         const { sub, params: { id }, body: { name, surname, username, newPassword, repeatPassword, password } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')

@@ -1,5 +1,5 @@
 const { User, Postit } = require('../data')
-const { AlreadyExistsError, NotFoundError, ValueError } = require('../errors')
+const { AlreadyExistsError, NotFoundError, ValueError, AuthError  } = require('../errors')
 
 const logic = {
     registerUser(name, surname, username, password) {
@@ -59,49 +59,51 @@ const logic = {
 
     modifyUser(id, name, surname, username, newPassword, repeatPassword, password) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-
-        if (!id.trim().length) throw new ValueError('id is empty or blank')
-
-        // if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
-
-        // if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
-
-        // if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
-
-        // if (typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
-
-        // if (typeof repeatPassword !== 'string') throw TypeError(`${repeatPassword} is not a string`)
-
+        if (name != null && typeof name !== 'string') throw TypeError(`${name} is not a string`)
+        if (surname != null && typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (username != null && typeof username !== 'string') throw TypeError(`${username} is not a string`)
+        if (newPassword != null && typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
+        if (repeatPassword != null && typeof repeatPassword !== 'string') throw TypeError(`${repeatPassword} is not a string`)
         if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+        if (name != null && !name.trim().length) throw new ValueError('name is empty or blank')
+        if (surname != null && !surname.trim().length) throw new ValueError('surname is empty or blank')
+        if (username != null && !username.trim().length) throw new ValueError('username is empty or blank')
+        if (newPassword != null && !newPassword.trim().length) throw new ValueError('newPassword is empty or blank')
+        if (repeatPassword != null && !repeatPassword.trim().length) throw new ValueError('repeatPassword is empty or blank')
         if (!password.trim().length) throw new ValueError('password is empty or blank')
-
+        debugger
         return User.findById(id)
             .then(user => {
+                debugger
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                const oldPassword=user.password
+                if (user.password !== password) throw new AuthError('invalid password')
 
-                if(name)
-                    user.name=name
-                if(surname)
-                    user.surname=surname
-                if(username)
-                    user.username=username
+                if (newPassword !== repeatPassword) throw new AuthError('New password is not the same in both fields')
 
-                if(newPassword){
-                    if(newPassword!==repeatPassword)
-                        throw Error ('New password does not match the repeat password')
-                    else{
-                        user.password=newPassword
-                    }
+                if (username) {
+                    return User.findByUsername(username)
+                        .then(_user => {
+                            if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
+
+                            name != null && (user.name = name)
+                            surname != null && (user.surname = surname)
+                            user.username != null && (user.username = username)
+                            newPassword != null && (user.password = newPassword)
+
+                            return user.save()
+                        })
                 }
-                if(password===oldPassword){
-                   return user.save()}
-                else{
-                    throw Error ('Password is invalid')
-                }
+                else {
+                    name != null && (user.name = name)
+                    surname != null && (user.surname = surname)
+                    username != null && (user.username = username)
+                    newPassword != null && (user.password = newPassword)
 
+                    return user.save()
+                }
             })
     },
 
@@ -187,14 +189,14 @@ const logic = {
 
     modifyPostit(id, postitId, text) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-        
-        if(!id.trim().length) throw new ValueError('is is empty or blank')
+
+        if (!id.trim().length) throw new ValueError('is is empty or blank')
 
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
 
-        if(!postitId.trim().length) throw new ValueError('postit id is empty or blank')
+        if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        if(typeof text !== 'string') throw TypeError(`${text} is not a string`)
+        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim().length) throw new ValueError('text is empty or blank')
 

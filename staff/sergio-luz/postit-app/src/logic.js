@@ -145,6 +145,7 @@ const logic = {
 
     modifyProfile( name, surname, username, newPassword, repeatPassword, password) {
         const id=this._userId
+        debugger
 
         return fetch(`${this.url}/users/${this._userId}/modifyUser`, {
             method: 'PUT',
