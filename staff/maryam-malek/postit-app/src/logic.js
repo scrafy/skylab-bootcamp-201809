@@ -1,8 +1,6 @@
-
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
-    _postits: [],
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -56,6 +54,32 @@ const logic = {
             })
     },
 
+    updateUser(name, surname, newPassword, currentPassword) {
+        if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+        if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
+        if (typeof currentPassword !== 'string') throw TypeError(`${currentPassword} is not a string`)
+
+        if (!currentPassword.trim()) throw Error('currentPassword is empty or blank')
+        return fetch(`http://localhost:5000/api/users/${this._userId}/`, {
+            method:'PATCH',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({
+                name,
+                surname,
+                newPassword,
+                currentPassword
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.error) throw Error(res.error)
+        })
+    },
+
     get loggedIn() {
         return !!this._userId
     },
@@ -73,7 +97,6 @@ const logic = {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
-        debugger
 
         return fetch(`http://localhost:5000/api/users/${this._userId}/postits`, {
             method: 'POST',

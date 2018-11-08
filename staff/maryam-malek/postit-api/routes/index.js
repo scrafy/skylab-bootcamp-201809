@@ -20,7 +20,6 @@ router.post('/users', jsonBodyParser, (req, res) => {
         return logic.registerUser(name, surname, username, password)
             .then(() =>
                 res.json({
-                    status: 'OK',
                     message: `${username} successfully registered`
                 })
             )
@@ -36,7 +35,6 @@ router.post('/auth', jsonBodyParser, (req, res) => {
                 const token = jwt.sign({ sub: id }, JWT_SECRET)
 
                 res.json({
-                    status: 'OK',
                     data: {
                         id,
                         token
@@ -56,8 +54,25 @@ router.get('/users/:id', [bearerTokenParser, jwtVerifier], (req, res) => {
         return logic.retrieveUser(id)
             .then(user =>
                 res.json({
-                    status: 'OK',
                     data: user
+                })
+            )
+    }, res)
+})
+
+router.patch('/users/:id', [jsonBodyParser, bearerTokenParser, jwtVerifier], (req, res) => {
+    const { params: { id }, sub } = req
+    debugger
+    const { name, surname, newPassword, currentPassword } = req.body
+
+    routeHandler(() => {
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.updateUser(id, name, surname, newPassword, currentPassword)
+            .then(() =>
+                res.json({
+                    message: 'user successfully updated'
                 })
             )
     }, res)
@@ -74,7 +89,6 @@ router.post('/users/:id/postits', [jsonBodyParser, bearerTokenParser, jwtVerifie
         return logic.addPostit(id, text)
             .then(() =>
                 res.json({
-                    status: 'OK',
                     message: 'postit successfully added'
                 })
             )
@@ -90,7 +104,6 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier], 
         return logic.removePostit(id, postitId)
             .then(() =>
                 res.json({
-                    status: 'OK',
                     message: 'postit successfully deleted'
                 })
             )
@@ -108,7 +121,6 @@ router.patch('/users/:id/postits/:postitId', [jsonBodyParser, bearerTokenParser,
         return logic.modifyPostit(id, postitId, text)
             .then(() =>
                 res.json({
-                    status: 'OK',
                     message: 'postit successfully updated'
                 })
             )
@@ -124,7 +136,6 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
         return logic.listPostits(id)
             .then(postits =>
                 res.json({
-                    status: 'OK',
                     data: postits
                 })
             )
