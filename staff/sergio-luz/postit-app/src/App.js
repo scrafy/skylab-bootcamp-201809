@@ -5,6 +5,7 @@ import Postits from './components/Postits'
 import Error from './components/Error'
 import Landing from './components/Landing'
 import logic from './logic'
+import Profile from './components/Profile'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 
 logic.url = 'http://localhost:5000/api'
@@ -59,6 +60,8 @@ class App extends Component {
                 <section><button onClick={this.handleLogoutClick}>Logout</button></section>
                 <Postits />
             </div> : <Redirect to="/" />} />
+
+            <Profile></Profile>
 
         </div>
     }

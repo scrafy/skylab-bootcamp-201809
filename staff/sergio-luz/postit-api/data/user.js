@@ -58,9 +58,10 @@ class User {
 
     static findById(id) {
         return new Promise((resolve, reject) => {
+            debugger
             fs.readFile(User._file, (err, json) => {
                 if (err) return reject(err)
-
+                debugger
                 const users = JSON.parse(json)
 
                 const user = users.find(user => user.id === id)

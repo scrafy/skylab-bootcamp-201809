@@ -57,6 +57,54 @@ const logic = {
             })
     },
 
+    modifyUser(id, name, surname, username, newPassword, repeatPassword, password) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        // if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+
+        // if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+
+        // if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+
+        // if (typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
+
+        // if (typeof repeatPassword !== 'string') throw TypeError(`${repeatPassword} is not a string`)
+
+        if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
+
+        if (!password.trim().length) throw new ValueError('password is empty or blank')
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                const oldPassword=user.password
+
+                if(name)
+                    user.name=name
+                if(surname)
+                    user.surname=surname
+                if(username)
+                    user.username=username
+
+                if(newPassword){
+                    if(newPassword!==repeatPassword)
+                        throw Error ('New password does not match the repeat password')
+                    else{
+                        user.password=newPassword
+                    }
+                }
+                if(password===oldPassword){
+                   return user.save()}
+                else{
+                    throw Error ('Password is invalid')
+                }
+
+            })
+    },
+
     /**
      * Adds a postit
      * 

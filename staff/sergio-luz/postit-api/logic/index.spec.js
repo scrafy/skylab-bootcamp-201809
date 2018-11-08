@@ -15,7 +15,7 @@ describe('logic', () => {
 
     beforeEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
 
-    afterEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
+    // afterEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
 
     describe('user', () => {
         !false && describe('register', () => {
@@ -91,7 +91,7 @@ describe('logic', () => {
 
             beforeEach(() => {
                 postit = new Postit('hello text')
-                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
+                user = new User({  name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
 
                 fs.writeFileSync(User._file, JSON.stringify([user]))
             })
@@ -117,6 +117,43 @@ describe('logic', () => {
                         expect(_postit.id).to.equal(postit.id)
                         expect(_postit.text).to.equal(postit.text)
                     })
+            )
+        })
+
+        !false && describe('modify user', () => {
+            let user, newPassword, repeatPassword
+
+            beforeEach(() => {
+                user = new User({ name: `John-${Math.random()}`, surname: 'Doe', username: 'jd', password: '123', postits: [] })
+                newPassword = `password-${Math.random()}`
+                repeatPassword = newPassword
+
+                fs.writeFileSync(User._file, JSON.stringify([user]))
+            })
+
+            it('should succeed on valid data', () =>{
+                let { name, surname, username, password, id } = user
+                username="holamundo"
+
+                debugger
+                logic.modifyUser(id, name, surname, username, newPassword, repeatPassword, password)
+                    .then(() => {
+                        
+                        const json = fs.readFileSync(User._file)
+                        
+                        const users = JSON.parse(json)
+                        
+                        const [user] = users
+                        
+                        expect(user.id).to.be.a('string')
+                        expect(user.id).to.be.equal(id)
+                        debugger
+                        
+                        expect(user.name).to.equal(name)
+                        expect(user.surname).to.equal(surname)
+                        expect(user.username).to.equal(username)
+                        expect(user.password).to.equal(newPassword)
+                    })}
             )
         })
     })

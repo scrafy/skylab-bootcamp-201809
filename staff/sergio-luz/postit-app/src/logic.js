@@ -141,6 +141,23 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
+    },
+
+    modifyProfile( name, surname, username, newPassword, repeatPassword, password) {
+        const id=this._userId
+
+        return fetch(`${this.url}/users/${this._userId}/modifyUser`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ id, name, surname, username, newPassword, repeatPassword, password })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
     }
 }
 
