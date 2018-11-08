@@ -114,4 +114,17 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, j
 
 })
 
+router.put('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id }, body: { passwordUser, newPassword } } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.updatePassword(id, passwordUser, newPassword)
+            .then(() => res.json({
+                message: 'password updated'
+            }))
+    }, res)
+})
+
 module.exports = router

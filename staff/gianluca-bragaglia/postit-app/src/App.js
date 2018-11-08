@@ -4,6 +4,7 @@ import Login from './components/Login'
 import Postits from './components/Postits'
 import Error from './components/Error'
 import Landing from './components/Landing'
+import Profile from './components/Profile'
 import logic from './logic'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 
@@ -43,7 +44,13 @@ class App extends Component {
         this.props.history.push('/')
     }
 
+    handleProfileClick = () => {
+
+        this.props.history.push('/profile')
+    }
+
     handleGoBack = () => this.props.history.push('/')
+    handleGoBackPostits = () => this.props.history.push('/postits')
 
     render() {
         const { error } = this.state
@@ -56,7 +63,12 @@ class App extends Component {
 
             <Route path="/postits" render={() => logic.loggedIn ? <div>
                 <section><button onClick={this.handleLogoutClick}>Logout</button></section>
+                <section><button onClick={this.handleProfileClick}>Profile</button></section>
                 <Postits />
+            </div> : <Redirect to="/" />} />
+            <Route path="/profile" render={() => logic.loggedIn ? <div>
+                
+                <Profile onGoBackPostits={this.handleGoBackPostits} />
             </div> : <Redirect to="/" />} />
 
         </div>

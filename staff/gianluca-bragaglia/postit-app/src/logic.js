@@ -1,12 +1,11 @@
-import data from './data'
-// const data = require('./data')
 
-const { Postit } = data
 
 const logic = {
+
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
     _postits: [],
+    url: 'NO-URL',
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -73,6 +72,20 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
+    getUser() {
+        return fetch(`http://localhost:5000/api/users/${this._userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+        })
+            .then(res => res.json())
+            .then(res => {
+                return res.data
+            })
+    },
+
     addPostit(text) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
@@ -105,7 +118,7 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                return res.data
+                return  res.data
             })
     },
 

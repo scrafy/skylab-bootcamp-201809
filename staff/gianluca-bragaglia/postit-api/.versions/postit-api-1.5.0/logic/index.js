@@ -176,6 +176,20 @@ const logic = {
 
                 return user.save()
             })
+    }, 
+
+    updatePassword(id, passwordUser, newPassword) {
+        User.findById(id)
+            .then(user => {
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                const { password } = user
+
+                if(passwordUser == password) {
+                    password = newPassword
+                    return user.save()
+                }
+            })                              
     }
 }
 
