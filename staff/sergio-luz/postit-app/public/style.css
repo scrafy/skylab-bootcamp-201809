@@ -1,5 +1,10 @@
+body{
+        background-image: url("http://blog.hostbaby.com/wp-content/uploads/2014/03/PaintSquares_1400x900-1024x658.jpg");
+
+}
+
 .post {
-    background-color: yellow;
+    background-color: #ffed89;
     width: 100px;
     height: 100px;
     margin: 10px;
@@ -19,4 +24,55 @@
 
 .error {
     color: red;
+}
+
+.landing{
+    display: flex;
+    justify-content: center;
+    background-size: cover;
+}
+
+.landing__options{
+    width: 25vw;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.options__container{
+    height: 20vh;
+    width: 20vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(to bottom right, #5d9323,#3e838a, #c98a3b,#8ebd57,#246166);
+}
+
+.login-register{
+    height: 100vh;
+    width:100vw;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+}
+
+.home__body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board__postits{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }

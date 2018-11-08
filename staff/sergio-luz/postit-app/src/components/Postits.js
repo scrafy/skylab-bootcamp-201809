@@ -5,7 +5,7 @@ import Post from './Post'
 import Error from './Error';
 
 class Postits extends Component {
-    state = { postits: [] , error:''}
+    state = { postits: [], error: '' }
 
     componentDidMount() {
         logic.listPostits()
@@ -15,16 +15,15 @@ class Postits extends Component {
     }
 
     handleSubmit = text => {
-        try{
-        logic.addPostit(text)
-            .catch(err => { console.log(err.message) })
-            .then(() => logic.listPostits())
-            .then(postits => this.setState({ postits }))
-        } catch(err)
-        {
-            this.setState({error:err.message})
+        try {
+            logic.addPostit(text)
+                .catch(err => { console.log(err.message) })
+                .then(() => logic.listPostits())
+                .then(postits => this.setState({ postits }))
+        } catch (err) {
+            this.setState({ error: err.message })
         }
-            
+
     }
 
     // TODO error handling!
@@ -46,14 +45,16 @@ class Postits extends Component {
 
 
     render() {
-        return <div>
+        return <div className='home__body'>
             <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
 
             <InputForm onSubmit={this.handleSubmit} />
 
-            <section>
-                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
-            </section>
+            <div >
+                <section className='board__postits'>
+                    {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                </section>
+            </div>
 
             <Error message={this.state.error}></Error>
         </div>

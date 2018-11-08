@@ -65,7 +65,7 @@ class App extends Component {
 
 
             <Route path="/postits" render={() => logic.loggedIn ? <div>
-                <section>
+                <section className='navbar'>
                     <button onClick={this.handleLogoutClick}>Logout</button>
 
                     <button onClick={this.handleProfileClick} >Profile</button>
