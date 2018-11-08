@@ -164,6 +164,23 @@ const logic = {
 
                 return user.save()
             })
+    },
+
+    updateProfile(id, name, surname, newPassword, currentPassword) {
+        if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+        if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (typeof newPassword !== 'string') throw TypeError(`new password is not a string`)
+        if (typeof currentPassword !== 'string') throw TypeError(`password is not a string`)
+
+        return User.findById(id)
+            .then(user => {
+                if ( user.password !== currentPassword) throw Error('invalid password')
+                if(name && name.trim().length) user.name = name
+                if(surname&& surname.trim().length) user.surname = surname
+                if(newPassword && newPassword.trim().length) user.password = newPassword
+                return user.save()
+            })
+        
     }
 }
 

@@ -6,10 +6,10 @@ import Error from './components/Error'
 import Landing from './components/Landing'
 import logic from './logic'
 import { Route, withRouter, Redirect } from 'react-router-dom'
-
+import Profile from './components/Profile'
 
 class App extends Component {
-    state = { error: null }
+    state = { error: null , apiFeedback: null}
 
     handleRegisterClick = () => this.props.history.push('/register')
 
@@ -30,7 +30,16 @@ class App extends Component {
     handleLogin = (username, password) => {
         try {
             logic.login(username, password)
-                .then(() =>  this.props.history.push('/postits'))
+                .then(() => this.setState({ error: null }, () => this.props.history.push('/postits')))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
+    }
+    handleProfileEdit = (name, surname, newPassword, repNewPassword, currentPassword) => {
+        try {
+            logic.profileUpdate(name, surname, newPassword, repNewPassword, currentPassword)
+                .then(res => this.setState({apiFeedback:res.message, error: null }))
                 .catch(err => this.setState({ error: err.message }))
         } catch (err) {
             this.setState({ error: err.message })
@@ -43,8 +52,11 @@ class App extends Component {
         this.props.history.push('/')
     }
 
-    handleGoBack = () => this.props.history.push('/')
 
+    handleGoBack = () => {
+        this.setState({ error: null }, this.props.history.push('/'))
+    }
+    
     render() {
         const { error } = this.state
 
@@ -56,6 +68,8 @@ class App extends Component {
 
             <Route path="/postits" render={() => logic.loggedIn ? <div>
                 <section><button onClick={this.handleLogoutClick}>Logout</button></section>
+                <Profile onProfileEdit={this.handleProfileEdit} />
+                <p className="apiFeedback">{this.state.apiFeedback}</p>
                 <Postits />
             </div> : <Redirect to="/" />} />
 

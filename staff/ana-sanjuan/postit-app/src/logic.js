@@ -108,8 +108,8 @@ const logic = {
     deletePostit(id) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-
+        if (!id.trim()) throw Error('id is empty or blank')
+        
         this._postits = this._postits.filter(postit => postit.id !== id)
 
         return fetch(`http://localhost:5000/api/users/${this._userId}/postits/${id}`, {
@@ -128,11 +128,9 @@ const logic = {
 
     updatePostit(id, text) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
-
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-
+        if (!id.trim()) throw Error('id is empty or blank')
+        
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
         if (!text.trim()) throw Error('text is empty or blank')
 
         const postit = this._postits.find(postit => postit.id === id)
@@ -151,7 +149,33 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
-    }
+    },
+
+    profileUpdate(name, surname, newPassword, repNewPassword, currentPassword) { 
+        if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+        if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (typeof newPassword !== 'string') throw TypeError(`newPassword is not a string`)
+        if (typeof repNewPassword !== 'string') throw TypeError(`the repeted password is not a string`)
+        if (typeof currentPassword !== 'string') throw TypeError(`password is not a string`)
+
+        if(newPassword !== repNewPassword) throw Error('new password and repeated password do not match')
+        if(newPassword === currentPassword) throw Error('new password has to be different from currentPassword')
+
+        return fetch(`http://localhost:5000/api/users/${this._userId}/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ name, surname, newPassword, currentPassword })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+                return res
+            })
+    },
+
 }
 
 // export default logic

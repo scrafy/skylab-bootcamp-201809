@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { User, Postit } = require('../data')
 const logic = require('.')
+const uid = require('uuid/v4')
 
 const { expect } = require('chai')
 
@@ -15,9 +16,9 @@ describe('logic', () => {
 
     beforeEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
 
-    afterEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
+    // afterEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
 
-    describe('user', () => {
+    false && describe('user', () => {
         !false && describe('register', () => {
             let name, surname, username, password
 
@@ -122,7 +123,7 @@ describe('logic', () => {
     })
 
     false && describe('postits', () => {
-        false && describe('add', () => {
+        !false && describe('add', () => {
             let user, text
 
             beforeEach(() => {
@@ -159,7 +160,7 @@ describe('logic', () => {
             // TODO other test cases
         })
 
-        false && describe('remove', () => {
+        !false && describe('remove', () => {
             let user, postit
 
             beforeEach(() => {
@@ -189,7 +190,7 @@ describe('logic', () => {
             )
         })
 
-        false && describe('modify', () => {
+        !false && describe('modify', () => {
             let user, postit, newText
 
             beforeEach(() => {
@@ -224,5 +225,50 @@ describe('logic', () => {
                     })
             )
         })
+    })
+
+    !false && describe('update profile', () => {
+        let user, id
+
+        beforeEach(() => {
+            id = uid()
+            user = new User({ id, name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [] })
+
+            fs.writeFileSync(User._file, JSON.stringify([user]))
+        })
+
+        it('should succed on correct credentials', () => {
+            const name = 'update'
+            const surname = 'profile'
+            const newPassword = '1234'
+            const currentPassword = '123'
+
+            return logic.updateProfile(id, name, surname, newPassword, currentPassword)
+                .then(() => {
+                    const json = fs.readFileSync(User._file)
+
+                    const users = JSON.parse(json)
+
+                    const [_user] = users
+
+                    expect(_user.id).to.equal(id)
+                    expect(_user.name).to.equal(name)
+                    expect(_user.surname).to.equal(surname)
+                    expect(_user.password).to.equal(newPassword)
+                })
+
+        })
+
+        it('should fail on incorrect password', () => {
+            const name = 'update'
+            const surname = 'profile'
+            const newPassword = '1'
+            const currentPassword = '12'
+
+            expect(() => logic.updateProfile(id, name, surname, newPassword, currentPassword)).to.throw(Error, 'invalid password')
+
+        })
+
+
     })
 })

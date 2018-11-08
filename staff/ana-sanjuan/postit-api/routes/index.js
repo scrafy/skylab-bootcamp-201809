@@ -50,7 +50,7 @@ function jwtVerifier(req, res, next) {
 router.post('/users', jsonBodyParser, (req, res) => {
     const { name, surname, username, password } = req.body
 
-    routeHandler(() => 
+    routeHandler(() =>
         logic.registerUser(name, surname, username, password)
             .then(() =>
                 res.json({
@@ -58,7 +58,7 @@ router.post('/users', jsonBodyParser, (req, res) => {
                     message: `${username} successfully registered`
                 })
             )
-    , res)        
+        , res)
 })
 
 router.post('/auth', jsonBodyParser, (req, res) => {
@@ -78,8 +78,8 @@ router.post('/auth', jsonBodyParser, (req, res) => {
                     }
                 })
             })
-    },res)
-            
+    }, res)
+
 })
 
 router.get('/users/:id', [bearerTokenParser, jwtVerifier], (req, res) => {
@@ -96,7 +96,7 @@ router.get('/users/:id', [bearerTokenParser, jwtVerifier], (req, res) => {
                     data: user
                 })
             )
-            
+
     }, res)
 })
 
@@ -116,7 +116,7 @@ router.post('/users/:id/postits', [bearerTokenParser, jwtVerifier, jsonBodyParse
                 })
             )
     }
-    , res)
+        , res)
 
 })
 
@@ -134,7 +134,7 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
                     data: postits
                 })
             )
-    
+
     }, res)
 })
 
@@ -165,13 +165,34 @@ router.patch('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, js
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.modifyPostit(id, postitId, text)
-            .then(user =>
+            .then(() =>
                 res.json({
                     status: 'OK',
                     message: 'postit modified'
                 })
             )
-            
+
+    }, res)
+
+})
+
+router.put('/users/:id/profile', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    
+    const { name, surname, newPassword, currentPassword } = req.body
+
+    const { params: { id }, sub } = req
+
+    routeHandler(() => {
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.updateProfile(id, name, surname, newPassword, currentPassword)
+            .then(() => {
+                res.json({
+                    status: 'OK',
+                    message: 'user updated'
+                })
+            })
+
     }, res)
 
 })
