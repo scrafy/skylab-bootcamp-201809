@@ -74,7 +74,7 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                if (!user || user.password !== currentPassword) throw new ValueError('invalid password')
+                if (user.password !== currentPassword) throw new ValueError('invalid password')
 
                 name.trim() ? user.name = name: user.name
                 surname.trim() ? user.surname = surname: user.surname
