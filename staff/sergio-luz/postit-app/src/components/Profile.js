@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import { throws } from 'assert';
 
+
 class Profile extends Component {
     state = {
         name: "",
@@ -36,10 +37,10 @@ class Profile extends Component {
         this.setState({ newPassword })
     }
 
-    handleRepeatPassword=event=>{
-        const repeatPassword=event.target.value
+    handleRepeatPassword = event => {
+        const repeatPassword = event.target.value
 
-        this.setState({repeatPassword})
+        this.setState({ repeatPassword })
     }
 
     handlePassword = event => {
@@ -50,10 +51,13 @@ class Profile extends Component {
 
     handleSubmit = event => {
         event.preventDefault()
+
+        const { name, surname, username, newPassword, repeatPassword, password } = this.state
         
-        const {name, surname, username, newPassword, repeatPassword, password } = this.state
-debugger
         logic.modifyProfile(name, surname, username, newPassword, repeatPassword, password)
+            .then(() => {
+                this.props.history.push('/postits')
+            })
     }
 
     render() {
@@ -68,6 +72,9 @@ debugger
 
                 <button type="submit">Save changes</button>
             </form>
+
+            <a href="#" onClick={this.props.onGoBack}>back</a>
+
         </div>
     }
 }
