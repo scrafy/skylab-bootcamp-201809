@@ -149,6 +149,48 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
+    },
+
+    listProfile() {
+        return fetch(`http://localhost:5000/api/users/${this._userId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+
+                return res.data
+            })
+    },
+
+    modifyProfile(name, surname, newPassword, password){
+            debugger
+            if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+            if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+            if (typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
+            if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
+    
+            if (!name.trim()) throw Error('name is empty or blank')
+            if (!surname.trim()) throw Error('surname is empty or blank')
+            if (!newPassword.trim()) throw Error('newPassword is empty or blank')
+            if (!password.trim()) throw Error('password is empty or blank')
+    
+            return fetch(`http://localhost:5000/api/users/${this._userId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Authorization': `Bearer ${this._token}`
+                },
+                body: JSON.stringify({ name, surname, newPassword, password })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.error) throw Error(res.error)
+                })
+
     }
 }
 

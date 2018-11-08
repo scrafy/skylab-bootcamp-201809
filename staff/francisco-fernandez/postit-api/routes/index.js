@@ -114,4 +114,18 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, j
 
 })
 
+router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id }, body: { newname, newsurname, newpassword, password } } = req
+        debugger
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.modifyProfile(id, newname, newsurname, newpassword, password)
+            .then(() => res.json({
+                message: 'profile modified'
+            }))
+
+    }, res)
+})
+
 module.exports = router
