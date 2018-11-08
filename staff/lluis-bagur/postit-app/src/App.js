@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Profile from './components/Profile'
 import Register from './components/Register'
 import Login from './components/Login'
 import Postits from './components/Postits'
@@ -6,6 +7,8 @@ import Error from './components/Error'
 import Landing from './components/Landing'
 import logic from './logic'
 import { Route, withRouter, Redirect } from 'react-router-dom'
+
+logic.url = 'http://localhost:5000/api'
 
 
 class App extends Component {
@@ -43,6 +46,19 @@ class App extends Component {
         this.props.history.push('/')
     }
 
+    handleProfileClick = () => {
+        this.props.history.push('/profile')
+    }
+
+    handleUpdateProfile = (name, surname, newPassword, repeatNewPassword, password) => {
+        try {
+            logic.updateProfile(name, surname, newPassword, repeatNewPassword, password)
+                .catch(err => this.setState({ error: err.message }))
+        }catch (err) {
+            this.setState({ error: err.message })
+        }
+    }
+
     handleGoBack = () => this.props.history.push('/')
 
     render() {
@@ -55,9 +71,14 @@ class App extends Component {
             {error && <Error message={error} />}
 
             <Route path="/postits" render={() => logic.loggedIn ? <div>
-                <section><button onClick={this.handleLogoutClick}>Logout</button></section>
+                <section><button onClick={this.handleLogoutClick}>Logout</button><button onClick={this.handleProfileClick}>Profile</button></section>
                 <Postits />
             </div> : <Redirect to="/" />} />
+                
+            <Route path="/profile" render={() => logic.loggedIn ? <div>
+                <Profile onUpdateProfile={this.handleUpdateProfile} />
+                </div>: <Redirect to="/" />} />
+
 
         </div>
     }

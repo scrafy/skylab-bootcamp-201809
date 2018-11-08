@@ -6,6 +6,8 @@ global.sessionStorage = require('sessionstorage')
 
 const logic = require('./logic')
 
+logic.url = 'http://localhost:5000/api'
+
 const { expect } = require('chai')
 
 // running test from CLI

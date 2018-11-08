@@ -58,6 +58,30 @@ const logic = {
             })
     },
 
+    updateUser(id, name, surname, newPassword, password) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+        if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+        if (!name.trim()) throw new ValueError('name is empty or blank')
+        if (!surname.trim()) throw new ValueError('surname is empty or blank')
+        if (!password.trim()) throw new ValueError('password is empty or blank')
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+                if(user.password !== password) throw Error('invalid password')
+
+                    user.name = name
+                    user.surname = surname
+                    user.password = newPassword
+             
+                return user.save()
+            })
+    },
+
     /**
      * Adds a postit
      * 
