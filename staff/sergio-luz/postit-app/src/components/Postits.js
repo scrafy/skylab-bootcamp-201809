@@ -20,6 +20,7 @@ class Postits extends Component {
                 .catch(err => { console.log(err.message) })
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
+                .then(()=> this.setState({error:''}))
         } catch (err) {
             this.setState({ error: err.message })
         }
