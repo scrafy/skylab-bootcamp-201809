@@ -60,6 +60,7 @@ class App extends Component {
             <Route path="/register" render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
 
             <Route path="/login" render={() => !logic.loggedIn ? <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
+            
             {error && <Error message={error} />}
 
 
@@ -69,7 +70,7 @@ class App extends Component {
 
                     <button onClick={this.handleProfileClick} >Profile</button>
                 </section>
-                <Postits />
+                <Postits message={error}/>
             </div> : <Redirect to="/" />} />
 
             <Route path="/profile" render={() =>  <Profile onGoBack={this.handleGoBack}/> } />

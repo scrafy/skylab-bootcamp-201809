@@ -125,7 +125,7 @@ router.put('/users/:id/modifyUser', [bearerTokenParser, jwtVerifier, jsonBodyPar
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.modifyUser(id, name, surname, username, newPassword, repeatPassword, password)
+        return logic.updateUser(id, name, surname, username, newPassword, repeatPassword, password)
             .then(() => res.json({
                 message: 'user modified'
             }))

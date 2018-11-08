@@ -120,41 +120,132 @@ describe('logic', () => {
             )
         })
 
-        !false && describe('modify user', () => {
-            let user, newPassword, repeatPassword
+        !false && describe('update', () => {
+            let user
 
             beforeEach(() => {
-                user = new User({ name: `John-${Math.random()}`, surname: 'Doe', username: 'jd', password: '123', postits: [] })
-                newPassword = `password-${Math.random()}`
-                repeatPassword = newPassword
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
                 fs.writeFileSync(User._file, JSON.stringify([user]))
             })
 
-            it('should succeed on valid data', () =>{
-                let { name, surname, username, password, id } = user
-                username="holamundo"
+            it('should update on correct data and password', () => {
+                const { id, name, surname, username, password } = user
 
-                debugger
-                logic.modifyUser(id, name, surname, username, newPassword, repeatPassword, password)
+                const newName = `${name}-${Math.random()}`
+                const newSurname = `${surname}-${Math.random()}`
+                const newUsername = `${username}-${Math.random()}`
+                const newPassword = `${password}-${Math.random()}`
+                const repeatPassword = newPassword
+
+                return logic.updateUser(id, newName, newSurname, newUsername, newPassword, repeatPassword,  password)
                     .then(() => {
-                        
                         const json = fs.readFileSync(User._file)
-                        
+
                         const users = JSON.parse(json)
-                        
-                        const [user] = users
-                        
-                        expect(user.id).to.be.a('string')
-                        expect(user.id).to.be.equal(id)
-                        debugger
-                        
-                        expect(user.name).to.equal(name)
-                        expect(user.surname).to.equal(surname)
-                        expect(user.username).to.equal(username)
-                        expect(user.password).to.equal(newPassword)
-                    })}
-            )
+
+                        const [_user] = users
+
+                        expect(_user.id).to.equal(id)
+
+                        const { name, surname, username, password } = _user
+
+                        expect(name).to.equal(newName)
+                        expect(surname).to.equal(newSurname)
+                        expect(username).to.equal(newUsername)
+                        expect(password).to.equal(newPassword)
+                    })
+            })
+
+            it('should update on correct id, name and password (other fields null)', () => {
+                const { id, name, surname, username, password } = user
+
+                const newName = `${name}-${Math.random()}`
+
+                return logic.updateUser(id, newName, null, null, null, null, password)
+                    .then(() => {
+                        const json = fs.readFileSync(User._file)
+
+                        const users = JSON.parse(json)
+
+                        const [_user] = users
+
+                        expect(_user.id).to.equal(id)
+
+                        expect(_user.name).to.equal(newName)
+                        expect(_user.surname).to.equal(surname)
+                        expect(_user.username).to.equal(username)
+                        expect(_user.password).to.equal(password)
+                    })
+            })
+
+            it('should update on correct id, surname and password (other fields null)', () => {
+                const { id, name, surname, username, password } = user
+
+                const newSurname = `${surname}-${Math.random()}`
+
+                return logic.updateUser(id, null, newSurname, null, null, null, password)
+                    .then(() => {
+                        const json = fs.readFileSync(User._file)
+
+                        const users = JSON.parse(json)
+
+                        const [_user] = users
+
+                        expect(_user.id).to.equal(id)
+
+                        expect(_user.name).to.equal(name)
+                        expect(_user.surname).to.equal(newSurname)
+                        expect(_user.username).to.equal(username)
+                        expect(_user.password).to.equal(password)
+                    })
+            })
+
+            // TODO other combinations of valid updates
+
+            it('should fail on undefined id', () => {
+                const { id, name, surname, username, password } = user
+
+                expect(() => logic.updateUser(undefined, name, surname, username, password, repeatPassword, password)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            // TODO other test cases
+
+            describe('with existing user', () => {
+                let user2
+
+                beforeEach(() => {
+                    user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                    user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
+
+                    fs.writeFileSync(User._file, JSON.stringify([user, user2]))
+                })
+
+                it('should update on correct data and password', () => {
+                    const { id, name, surname, username, password } = user2
+
+                    const newUsername = 'jd'
+
+                    return logic.updateUser(id, null, null, newUsername, null, password)
+                        .then(() => expect(true).to.be.false)
+                        .catch(err => {
+                            expect(err).to.be.instanceof(AlreadyExistsError)
+
+                            const json = fs.readFileSync(User._file)
+
+                            const users = JSON.parse(json)
+
+                            const [, _user] = users
+
+                            expect(_user.id).to.equal(id)
+
+                            expect(_user.name).to.equal(name)
+                            expect(_user.surname).to.equal(surname)
+                            expect(_user.username).to.equal(username)
+                            expect(_user.password).to.equal(password)
+                        })
+                })
+            })
         })
     })
 

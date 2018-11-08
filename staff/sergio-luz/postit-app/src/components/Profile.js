@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import logic from '../logic'
-import { throws } from 'assert';
+import Error from './Error'
 
 
 class Profile extends Component {
@@ -10,7 +10,8 @@ class Profile extends Component {
         username: "",
         newPassword: "",
         repeatPassword: "",
-        password: ""
+        password: "",
+        error: ""
     }
 
     handleNameChange = event => {
@@ -53,14 +54,20 @@ class Profile extends Component {
         event.preventDefault()
 
         const { name, surname, username, newPassword, repeatPassword, password } = this.state
-        
+
         logic.modifyProfile(name, surname, username, newPassword, repeatPassword, password)
             .then(() => {
+                this.setState({ error: "" })
                 this.props.history.push('/postits')
+            })
+            .catch(err => {
+                this.setState({ error: err.message })
             })
     }
 
     render() {
+        const { error } = this.state
+
         return <div>
             <form onSubmit={this.handleSubmit}>
                 <input type="text" name="name" placeholder="name" onChange={this.handleNameChange}></input>
@@ -74,6 +81,9 @@ class Profile extends Component {
             </form>
 
             <a href="#" onClick={this.props.onGoBack}>back</a>
+
+            {error && <Error message={error} />}
+
 
         </div>
     }

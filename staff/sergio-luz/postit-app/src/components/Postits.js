@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
+import Error from './Error';
 
 class Postits extends Component {
-    state = { postits: [] }
+    state = { postits: [] , error:''}
 
     componentDidMount() {
         logic.listPostits()
@@ -13,10 +14,18 @@ class Postits extends Component {
         // TODO error handling!
     }
 
-    handleSubmit = text =>
+    handleSubmit = text => {
+        try{
         logic.addPostit(text)
+            .catch(err => { console.log(err.message) })
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
+        } catch(err)
+        {
+            this.setState({error:err.message})
+        }
+            
+    }
 
     // TODO error handling!
 
@@ -45,6 +54,8 @@ class Postits extends Component {
             <section>
                 {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
             </section>
+
+            <Error message={this.state.error}></Error>
         </div>
     }
 }

@@ -57,7 +57,7 @@ const logic = {
             })
     },
 
-    modifyUser(id, name, surname, username, newPassword, repeatPassword, password) {
+    updateUser(id, name, surname, username, newPassword, repeatPassword, password) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
         if (name != null && typeof name !== 'string') throw TypeError(`${name} is not a string`)
         if (surname != null && typeof surname !== 'string') throw TypeError(`${surname} is not a string`)

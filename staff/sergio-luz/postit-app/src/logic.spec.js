@@ -108,6 +108,101 @@ describe('logic', () => {
 
             // TODO other cases
         })
+
+        !false && describe('update profile', () => {
+            describe('with existing user', () => {
+                let username, password, name, surname, username2, password2
+
+                beforeEach(() => {
+                    name = 'John'
+                    surname = 'Doe'
+
+                    username = `jd-${Math.random()}`
+                    password = `123-${Math.random()}`
+
+                    return logic.registerUser(name, surname, username, password)
+                        .then(() => {
+                            return logic.login(username, password)
+                        })
+
+                })
+
+                it('should succeed on correct data', () =>
+                    logic.modifyProfile("manolo", "escobar", `usernamejd-${Math.random()}`, password, password, password)
+                        .then(() => expect(true).to.be.true)
+                )
+
+                it('should fail on existing username', () => {
+
+                    username2 = `jd-${Math.random()}`
+                    password2 = `123-${Math.random()}`
+
+                    return logic.registerUser(name, surname, username2, password2)
+                        .then(() => {
+                            return logic.login(username, password)
+                                .then(() => {
+                                    return logic.modifyProfile(name, surname, username2, password, password, password)
+                                        .catch(err => {
+                                            expect(err).not.to.be.undefined
+                                            expect(err.message).to.equal(`username ${username2} already exists`)
+                                        })
+                                })
+                        })
+                })
+
+                it('should fail on wrong password', () => {
+
+                    username2 = `jd-${Math.random()}`
+                    password2 = `123-${Math.random()}`
+
+                    return logic.registerUser(name, surname, username2, password2)
+                        .then(() => {
+                            return logic.login(username, password)
+                                .then(() => {
+                                    return logic.modifyProfile(name, surname, username2, password, password, "no-password")
+                                        .catch(err => {
+                                            expect(err).not.to.be.undefined
+                                            expect(err.message).to.equal(`invalid password`)
+                                        })
+                                })
+                        })
+                })
+
+                it('should succed on undefined username', () => {
+
+                    return logic.login(username, password)
+                        .then(() => {
+                            return logic.modifyProfile(name, surname, undefined, password, password, password)
+                                .then(() => expect(true).to.be.true)
+                        })
+                })
+
+                it('should fail on boolean username', () => {
+
+                    return logic.login(username, password)
+                        .then(() => {
+                            return logic.modifyProfile(name, surname, undefined, password, password, password)
+                                .catch(err => {
+                                    expect(err).not.to.be.undefined
+                                    expect(err.message).to.equal(`${undefined} is not a string`)
+                                })
+                        })
+                })
+
+                it('should fail on numeric username', () => {
+                    return logic.login(username, password)
+                        .then(() => {
+                            return logic.modifyProfile(name, surname, 123, password, password, password)
+                                .catch(err => {
+                                    expect(err).not.to.be.undefined
+                                    expect(err.message).to.equal(`${123} is not a string`)
+                                })
+                        })
+                })
+
+                // TODO other cases
+            })
+        })
     })
 
     describe('postits', () => {
