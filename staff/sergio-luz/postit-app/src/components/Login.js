@@ -25,7 +25,7 @@ class Login extends Component {
 
     render() {
         return<div className='login-register'>
-             <form onSubmit={this.handleSubmit} >
+             <form onSubmit={this.handleSubmit} className='profile__body'>
                 <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
                 <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
                 {/* <button type="submit">Login</button> <a href="/#/">back</a> */}

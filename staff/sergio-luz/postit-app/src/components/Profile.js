@@ -5,12 +5,12 @@ import Error from './Error'
 
 class Profile extends Component {
     state = {
-        name: "",
-        surname: "",
-        username: "",
-        newPassword: "",
-        repeatPassword: "",
-        password: "",
+        name: null,
+        surname: null,
+        username: null,
+        newPassword: null,
+        repeatPassword: null,
+        password: null,
         error: ""
     }
 
@@ -58,7 +58,7 @@ class Profile extends Component {
         logic.modifyProfile(name, surname, username, newPassword, repeatPassword, password)
             .then(() => {
                 this.setState({ error: "" })
-                this.props.history.push('/postits')
+                // this.props.history.push('/postits')
             })
             .catch(err => {
                 this.setState({ error: err.message })

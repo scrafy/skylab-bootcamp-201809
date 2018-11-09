@@ -58,13 +58,13 @@ const logic = {
     },
 
     updateUser(id, name, surname, username, newPassword, repeatPassword, password) {
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (typeof id !== 'string') throw TypeError(`id ${id} is not a string`)
         if (name != null && typeof name !== 'string') throw TypeError(`${name} is not a string`)
         if (surname != null && typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
         if (username != null && typeof username !== 'string') throw TypeError(`${username} is not a string`)
         if (newPassword != null && typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
         if (repeatPassword != null && typeof repeatPassword !== 'string') throw TypeError(`${repeatPassword} is not a string`)
-        if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
+        if (typeof password !== 'string') throw TypeError(`password ${password} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
         if (name != null && !name.trim().length) throw new ValueError('name is empty or blank')
