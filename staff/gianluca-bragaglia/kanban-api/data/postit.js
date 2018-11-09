@@ -4,7 +4,7 @@ class Postit {
     constructor({ id, text }) {
         this.id = id || uid()
         this.text = text
-        this.status = "TODO"
+        this.status = ""
     }
 }
 
