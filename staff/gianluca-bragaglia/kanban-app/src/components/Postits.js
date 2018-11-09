@@ -43,14 +43,31 @@ class Postits extends Component {
 
     render() {
         return <div>
-            <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
-
-            <InputForm onSubmit={this.handleSubmit} />
-
-            <section>
-                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
-            </section>
-        </div>
+                <InputForm onSubmit={this.handleSubmit} />
+                <div className='postits-container'>
+                    <div className='postits-container__item'>
+                        <p className='postits-container__item__task'>TODO</p>
+                        <div>
+                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        </div>
+                    </div>
+                    <div className='postits-container__item'>
+                        <div>
+                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        </div>
+                    </div>
+                    <div className='postits-container__item'>
+                        <div>
+                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        </div>
+                    </div>
+                    <div className='postits-container__item'>
+                        <div>
+                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        </div>
+                    </div>
+                </div>
+            </div>
     }
 }
 

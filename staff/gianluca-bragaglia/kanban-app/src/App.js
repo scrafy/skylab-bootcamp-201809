@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
+import { Route, withRouter, Redirect } from 'react-router-dom'
+import logic from './logic'
+import Navbar from './components/Navbar'
 import Register from './components/Register'
 import Login from './components/Login'
 import Postits from './components/Postits'
 import Error from './components/Error'
 import Landing from './components/Landing'
-import logic from './logic'
-import { Route, withRouter, Redirect } from 'react-router-dom'
+
 
 logic.url = 'http://localhost:5000/api'
 
@@ -50,15 +52,23 @@ class App extends Component {
         const { error } = this.state
 
         return <div>
-            <Route exact path="/" render={() => !logic.loggedIn ? <Landing onRegisterClick={this.handleRegisterClick} onLoginClick={this.handleLoginClick} /> : <Redirect to="/postits" />} />
-            <Route path="/register" render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
-            <Route path="/login" render={() => !logic.loggedIn ? <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
+            <Navbar></Navbar>
+            
+            <Route exact path="/" render={() => !logic.loggedIn ? 
+                <Landing onRegisterClick={this.handleRegisterClick} onLoginClick={this.handleLoginClick} /> : <Redirect to="/postits" />} />
+            
+            <Route path="/register" render={() => !logic.loggedIn ? 
+                <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
+
+            <Route path="/login" render={() => !logic.loggedIn ? 
+                <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
             {error && <Error message={error} />}
 
-            <Route path="/postits" render={() => logic.loggedIn ? <div>
-                <section><button onClick={this.handleLogoutClick}>Logout</button></section>
-                <Postits />
-            </div> : <Redirect to="/" />} />
+            <Route path="/postits" render={() => logic.loggedIn ? 
+                <div>
+                    <section><button onClick={this.handleLogoutClick}>Logout</button></section>
+                    <Postits />
+                </div> : <Redirect to="/" />} />
 
         </div>
     }
