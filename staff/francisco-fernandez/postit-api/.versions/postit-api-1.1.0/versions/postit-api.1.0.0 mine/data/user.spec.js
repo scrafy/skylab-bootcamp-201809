@@ -1,25 +1,10 @@
-require('dotenv').config()
-
-const { MongoClient } = require('mongodb')
+const fs = require('fs')
 const { expect } = require('chai')
 const { User } = require('.')
 
-const { env: { MONGO_URL } } = process
-
 describe('User (model)', () => {
-    let client, users
-
     before(() => {
-        client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
-
-        return client.connect()
-            .then(() => {
-                const db = client.db('postit-test')
-
-                users = db.collection('users')
-
-                User._collection = users
-            })
+        User._file = './data/users.spec.json'
     })
 
     describe('save', () => {
@@ -31,17 +16,21 @@ describe('User (model)', () => {
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
 
-            return users.deleteMany()
+            fs.writeFileSync(User._file, JSON.stringify([]))
         })
 
         it('should succeed on correct data', () =>
-
             new User({ name, surname, username, password }).save()
-                .then(() => users.find().toArray())
-                .then(_users => {
-                    expect(_users.length).to.equal(1)
-                    
-                    const [user] = _users
+                .then(() => {
+                    const json = fs.readFileSync(User._file)
+
+                    const users = JSON.parse(json)
+
+                    debugger
+
+                    expect(users.length).to.equal(1)
+
+                    const [user] = users
 
                     expect(user.name).to.equal(name)
                     expect(user.surname).to.equal(surname)
@@ -51,7 +40,6 @@ describe('User (model)', () => {
         )
 
         describe('when user already exists', () => {
-
             let name, surname, username, password, id
 
             beforeEach(() => {
@@ -64,32 +52,48 @@ describe('User (model)', () => {
 
                 id = user.id
 
-                return user.save()
+                fs.writeFileSync(User._file, JSON.stringify([user]))
             })
 
             it('should succeed on correct username', () => {
+                let json = fs.readFileSync(User._file)
 
-                newName = `name-${Math.random()}`
+                let users = JSON.parse(json)
+
+                expect(users.length).to.equal(1)
+
+                let [user] = users
+
+                expect(user).to.exist
+
+                expect(user.name).to.equal(name)
+                expect(user.surname).to.equal(surname)
+                expect(user.username).to.equal(username)
+                expect(user.password).to.equal(password)
+
+                const newName = `${name}-${Math.random()}`
 
                 const _user = new User({ name: newName, surname, username, password })
 
                 _user.id = id
 
                 return _user.save()
-
                     .then(() => {
-                        return users.find().toArray()
-                            .then(_users => {
+                        json = fs.readFileSync(User._file)
 
-                                expect(_users.length).to.equal(1)
+                        users = JSON.parse(json)
 
-                                const [user] = _users
+                        expect(users.length).to.equal(1)
 
-                                expect(user.name).to.equal(newName)
-                                expect(user.surname).to.equal(surname)
-                                expect(user.username).to.equal(username)
-                                expect(user.password).to.equal(password)
-                            })
+                        user = users[0]
+
+                        expect(user).to.exist
+
+                        expect(user.name).to.equal(newName)
+                        expect(user.surname).to.equal(surname)
+                        expect(user.username).to.equal(username)
+                        expect(user.password).to.equal(password)
+                    })
             })
         })
     })
@@ -103,7 +107,7 @@ describe('User (model)', () => {
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
 
-            // fs.writeFileSync(User._file, JSON.stringify([new User({ name, surname, username, password })]))
+            fs.writeFileSync(User._file, JSON.stringify([new User({ name, surname, username, password })]))
         })
 
         it('should succeed on correct username', () =>
@@ -120,5 +124,4 @@ describe('User (model)', () => {
 
         )
     })
-})
 })
