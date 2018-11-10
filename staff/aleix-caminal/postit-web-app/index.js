@@ -136,4 +136,12 @@ app.post('/post', (req, res) => {
     res.redirect('/home')
 })
 
+app.patch('/post', bodyParser.json(), (req, res) => {
+    const postsTable = new PostsTable()
+    var post = postsTable.get(req.body.id)
+    post.boardId = req.body.board_id
+    post = postsTable.save(post)
+    return res.send({ post })
+})
+
 app.listen(port, () => console.log(`Server up and running on port ${port}`))
