@@ -44,8 +44,9 @@ class User {
             })
     }
 
-    static findById(_id) {
-        return User._collection.findOne({id:_id})
+    static findById(id) {
+        return this._collection.findOne({ id })
+            .then(user => user ? new User(user) : undefined)
     }
 }
 

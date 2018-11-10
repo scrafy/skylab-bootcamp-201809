@@ -48,30 +48,7 @@ describe('User (model)', () => {
                     expect(user.password).to.equal(password)
                 })
         )
-        
-        // it('should succeed on correct username', () => {
-        //     const user2 = new User({ name, surname, username: username2, password })
 
-        //     user2.save()
-        //         .then(() => {
-        //             users.find().toArray()
-        //                 .then(_users => {
-
-        //                     expect(_users.length).to.equal(2)
-
-        //                     let _user = _users[1]
-
-        //                     expect(_user).to.exist
-
-        //                     expect(_user.name).to.equal(name)
-        //                     expect(_user.surname).to.equal(surname)
-        //                     expect(_user.username).to.equal(username2)
-        //                     expect(_user.password).to.equal(password)
-
-        //                 })
-
-        //         })
-        // })
         describe('when user already exists', () => {
             let name, surname, username, password, id
 
@@ -81,42 +58,35 @@ describe('User (model)', () => {
                 username = `username-${Math.random()}`
                 password = `password-${Math.random()}`
 
-                
-                
                 const user = new User({ name, surname, username, password })
-                
+
                 id = user.id
-                
-                return user.save()
+
+                return users.insertOne(user)
             })
-            
-            it('should succeed on update correct username', () => {
-                const newName = `newName-${Math.random()}`
+
+            it('should succeed on correct username', () => {
+                const newName = `${name}-${Math.random()}`
+
                 const _user = new User({ name: newName, surname, username, password })
 
-                _user.id=id
+                _user.id = id
 
                 return _user.save()
-                    .then(() => {
-                        return users.find().toArray()
-                            .then(_users => {
+                    .then(() => users.find().toArray())
+                    .then(_users => {
+                        expect(_users.length).to.equal(1)
 
-                                expect(_users.length).to.equal(1)
+                        const [user] = _users
 
-                                let _user = _users[0]
+                        expect(user).to.exist
 
-                                expect(_user).to.exist
-
-                                expect(_user.name).to.equal(newName)
-                                expect(_user.surname).to.equal(surname)
-                                expect(_user.username).to.equal(username)
-                                expect(_user.password).to.equal(password)
-
-                            })
-
+                        expect(user.name).to.equal(newName)
+                        expect(user.surname).to.equal(surname)
+                        expect(user.username).to.equal(username)
+                        expect(user.password).to.equal(password)
                     })
             })
-
         })
     })
 
@@ -129,51 +99,53 @@ describe('User (model)', () => {
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
 
-            return new User({ name, surname, username, password }).save()
+            return users.insertOne(new User({ name, surname, username, password }))
         })
 
-        it('should succeed on correct username', () => {
-            
+        it('should succeed on correct username', () =>
             User.findByUsername(username)
-                .then(_user => {
-                    expect(_user).to.exist
-                    expect(_user).to.be.instanceOf(User)
+                .then(user => {
+                    expect(user).to.exist
+                    expect(user).to.be.instanceOf(User)
 
-                    expect(_user.name).to.equal(name)
-                    expect(_user.surname).to.equal(surname)
-                    expect(_user.username).to.equal(username)
-                    expect(_user.password).to.equal(password)
+                    expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
                 })
-
-        })
+        )
     })
 
     describe('findById', () => {
-        let name, surname, username, password
+        let name, surname, username, password, id
 
         beforeEach(() => {
             name = `name-${Math.random()}`
             surname = `surname-${Math.random()}`
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
-            id=`id-${Math.random()}`
 
-            return new User({ id, name, surname, username, password }).save()
+            const user = new User({ name, surname, username, password })
+
+            id = user.id
+
+            return users.insertOne(user)
         })
 
-        it('should succeed on correct id', () => {
-            
+        it('should succeed on correct id', () =>
             User.findById(id)
-                .then(_user => {
-                    expect(_user).to.exist
+                .then(user => {
+                    expect(user).to.exist
+                    expect(user).to.be.instanceOf(User)
 
-                    expect(_user.id).to.equal(id)
-                    expect(_user.name).to.equal(name)
-                    expect(_user.surname).to.equal(surname)
-                    expect(_user.username).to.equal(username)
-                    expect(_user.password).to.equal(password)
+                    expect(user.id).to.equal(id)
+                    expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
                 })
-
-        })
+        )
     })
+
+    after(() => client.close())
 })
