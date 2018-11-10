@@ -2,17 +2,17 @@ const ValidationException = use('App/Exceptions/ValidationException')
 
 'use strict'
 
-class CreateUser {
+class UpdateUser {
   
   get rules () {
-    
+    const userId = this.ctx.params.id
     return {
+
       name:'required',
       surname:'required',
-      email:`required|unique:users,email`,
+      email:`required|unique:users,email,id,${userId}`,
       phone:'required',
-      username:`required|unique:users,username`,
-      password:'required|min:4',
+      username:`required|unique:users,username,id,${userId}`   
 
     }
   }
@@ -25,9 +25,7 @@ class CreateUser {
       'email.unique':'Email address in use',
       'phone.required':'The phone field is required',
       'username.required':'The username field is required',
-      'username.unique':'Exists an user with the same username',
-      'password.required':'The password field is required',
-      'password.min': 'The password field has to have four characters of minimun length'      
+      'username.unique':'Exists an user with the same username'     
     }
   }
 
@@ -57,4 +55,4 @@ class CreateUser {
 
 }
 
-module.exports = CreateUser
+module.exports = UpdateUser

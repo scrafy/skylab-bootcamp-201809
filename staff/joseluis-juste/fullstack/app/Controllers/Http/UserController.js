@@ -1,8 +1,11 @@
 'use strict'
 
 const BaseController = use('App/Controllers/Http/BaseController')
+const ResourceNotFoundException = use('App/Exceptions/ResourceNotFoundException')
 const User = use('App/Models/User')
-const ResourceNotFoundException = use('App/Exceptions/ValidationException')
+const md5 = require('js-md5')
+const Env = use('Env')
+
 
 class UserController extends BaseController {
 
@@ -12,8 +15,8 @@ class UserController extends BaseController {
 
     async index({request, response}){
 
-        const users = await User.query().setHidden(['password','created_at','updated_at']).fetch()
-        this.sendResponse(response, users)
+        const users = await User.query().fetch()
+        this.sendResponse(response, null, users)
     }
 
     async create({request, response}){
@@ -21,7 +24,7 @@ class UserController extends BaseController {
         const data = JSON.parse(request.raw())
        
             User.create(data)
-            this.sendResponse(response)
+            this.sendResponse(response, null, 201)
     }
 
     async delete({request, response}){
@@ -35,27 +38,44 @@ class UserController extends BaseController {
         this.sendResponse(response)
     }
 
-   /* update({request, response}){
+    async update({request, response}){
 
-        response.send(JSON.stringify(request))
+        const {id} = request.params
+        const user = await User.find(id)
+        if (!user)
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)            
+        
+        let data = JSON.parse(request.raw())
+        user.merge(data)
+        await user.save()
+        this.sendResponse(response, null)
     }
 
-    find({request, response}){
+    async find({request, response}){
 
-        response.send(request.params)
-    }*/
-
-    login({request, response}){
-
-        const {username, password} = request.body
-        const user = User.query().where('username', username).fetch()
-
-        response.send(user)
+        const {id} = request.params
+        const user = await User.find(id)
+        if (!user){
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)            
+        }
+        this.sendResponse(response, user)
     }
 
-    logout({request, response}){
+    async login({request, response}){
 
-        response.send(request.params)
+        let {username, password} = JSON.parse(request.raw())
+        password = md5(password + Env.get('APP_SECRET'))
+        let user = await User.query().where('password',password).andWhere('username', username).fetch()
+        user = user.first()
+        if (!user)
+            throw new ResourceNotFoundException(`Not exists any user with the credentials provided`, 404)
+        else{
+            //const auth = use('auth')
+            //await auth.generate(user, true)
+            this.sendResponse(response, user)
+        }       
+        //generar token
+            
     }
 }
 

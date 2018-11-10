@@ -1,6 +1,6 @@
 'use strict'
 
-const Hash = use('Hash')
+const md5 = require('js-md5')
 const Model = use('Model')
 
 class User extends Model {
@@ -11,9 +11,19 @@ class User extends Model {
    
     this.addHook('beforeSave', async (userInstance) => {
       if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password)
+        const Env = use('Env')
+        userInstance.password = md5(userInstance.password + Env.get('APP_SECRET'))
       }
     })
+    
+  }
+
+  static get hidden () {
+    return ['password', 'created_at', 'updated_at']
+  }
+
+  tokens () {
+    return this.hasMany('App/Models/Token')
   }
 
 }
