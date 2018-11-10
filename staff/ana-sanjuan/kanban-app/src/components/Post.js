@@ -25,14 +25,14 @@ class Post extends Component {
     render() {
         return <article className="post">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
-            <select onChange={this.handleStatusChange} defaultValue = {this.state.status}>
+            <select className="post__dropdown" onChange={this.handleStatusChange} defaultValue = {this.state.status}>
                 <option value="TODO">To Do</option>
                 <option value="DOING">Doing</option>
                 <option value="REVIEW">Review</option>
                 <option value="DONE">Done</option>
             </select>
 
-            <button onClick={()=> this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
+            <button className="post__trash" onClick={()=> this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
         </article>
     }
 }
