@@ -250,5 +250,56 @@ describe('logic', () => {
                 })
             })
         })
+
+        describe('modify status', ()=> {
+            describe('with existing user', () => {
+                let username, password, text, postitId
+
+                beforeEach(() => {
+                    const name = 'John', surname = 'Doe'
+
+                    username = `jd-${Math.random()}`
+                    password = `123-${Math.random()}`
+
+                    text = `hello ${Math.random()}`
+
+                    return logic.registerUser(name, surname, username, password)
+                        .then(() => logic.login(username, password))
+                })
+
+                describe('with existing postit', () => {
+                    let status
+
+                    beforeEach(() => {
+                        status = `hello ${Math.random()}`
+
+                        status = "DOING"
+
+                        return logic.addPostit(text, "TODO")
+                            .then(() => logic.listPostits())
+                            .then(([postit]) => postitId = postit.id)
+                    })
+
+                    it('should succeed', () =>
+                        logic.modifyPostitStatus(postitId, status)
+                            .then(() => {
+                                expect(true).to.be.true
+
+                                return logic.listPostits()
+                            })
+                            .then(postits => {
+                                expect(postits).not.to.be.undefined
+                                expect(postits.length).to.equal(1)
+
+                                const [postit] = postits
+
+                                expect(postit.id).to.equal(postitId)
+                                expect(postit.status).to.equal(status)
+                            })
+                    )
+                })
+             
+            })
+        })
     })
 })

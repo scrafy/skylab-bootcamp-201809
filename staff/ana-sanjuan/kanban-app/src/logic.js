@@ -144,15 +144,17 @@ const logic = {
     },
     
     modifyPostitStatus(id, status) {
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}/status/${status}`, {
+        return fetch(`${this.url}/users/${this._userId}/postits/${id}/status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
+            body: JSON.stringify({ status })
         })
             .then(res => res.json())
             .then(res => {
+                debugger
                 if (res.error) throw Error(res.error)
             })
     }

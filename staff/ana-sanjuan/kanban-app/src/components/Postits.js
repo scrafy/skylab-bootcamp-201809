@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
+import Error from './Error'
 
 class Postits extends Component {
-    state = { postits: [], toDoPostits: [], doingPostits: [], reviewPostits: [], donePostits: [] }
+    state = { postits: [], toDoPostits: [], doingPostits: [], reviewPostits: [], donePostits: [] , error: null}
 
     componentDidMount() {
         logic.listPostits()
@@ -31,11 +32,9 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+            this.setState({error: message}) 
         }
     }
-
-    // TODO error handling!
 
     handleRemovePostit = id => {
         try {
@@ -50,15 +49,13 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG! 
+            this.setState({error: message})  
         }
     }
-    // TODO error handling!
-
 
     handleModifyPostit = (id, text) => {
         try {
-            return logic.modifyPostit(id, text)
+            logic.modifyPostit(id, text)
                 .then(() => logic.listPostits())
                 .then(postits => {
                     const toDoPostits = postits.filter(post => post.status === "TODO")
@@ -69,17 +66,13 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG! 
+            this.setState({error: message}) 
         }
-
     }
-
-
-    // TODO error handling!
 
     handleChangeStatus = (id, status) => {
         try {
-            return logic.modifyPostitStatus(id, status)
+            logic.modifyPostitStatus(id, status)
                 .then(() => logic.listPostits())
                 .then(postits => {
                     const toDoPostits = postits.filter(post => post.status === "TODO")
@@ -90,10 +83,10 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG! 
+            this.setState({error: message}) 
         }
-
     }
+
     render() {
         return <div>
             <h1 className="title">Kanban App </h1>
@@ -101,6 +94,7 @@ class Postits extends Component {
                 <section className="column1">
                     <h2>To do</h2>
                     <InputForm onSubmit={this.handleSubmit} status={"TODO"} />
+                    {this.state.error && <Error message={this.state.error} />}
                     <section >
                         {this.state.toDoPostits.map(postit => <Post status={"TODO"} key={postit.id} onChangeStatus={this.handleChangeStatus} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                     </section>

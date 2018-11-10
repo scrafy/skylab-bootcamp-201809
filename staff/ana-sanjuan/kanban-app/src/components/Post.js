@@ -19,6 +19,8 @@ class Post extends Component {
 
         const status = event.target.value
 
+        this.setState({ status })
+
         this.props.onChangeStatus(this.props.id, status)
     }
 

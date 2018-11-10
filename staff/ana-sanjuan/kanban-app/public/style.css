@@ -23,6 +23,7 @@ body {
 
 .error {
     color: red;
+    margin-left: 8px;
 }
 
 .kanbanContainer {

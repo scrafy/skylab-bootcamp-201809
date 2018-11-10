@@ -383,6 +383,40 @@ describe('logic', () => {
                     })
             )
         })
+
+
+        describe('modify', () => {
+            let user, postit, status
+
+            beforeEach(() => {
+                postit = new Postit({ text: 'hello text', status: "REVIEW" })
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
+
+                status = "TODO"
+
+                return users.insertOne(user)
+            })
+
+            it('should succeed on correct data', () =>
+                logic.modifyPostitStatus(user.id, postit.id, status)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
+                        expect(_users.length).to.equal(1)
+
+                        const [_user] = _users
+
+                        expect(_user.id).to.equal(user.id)
+
+                        const { postits } = _user
+
+                        expect(postits.length).to.equal(1)
+
+                        const [postit] = postits
+
+                        expect(postit.status).to.equal(status)
+                    })
+            )
+        })
     })
 
     after(() => client.close())

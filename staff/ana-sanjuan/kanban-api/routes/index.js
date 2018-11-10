@@ -115,9 +115,9 @@ router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, json
     }, res)
 })
 
-router.put('/users/:id/postits/:postitId/status/:status', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.put('/users/:id/postits/:postitId/status', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id, postitId, status } } = req
+        const { sub, params: { id, postitId}, body: { status } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
