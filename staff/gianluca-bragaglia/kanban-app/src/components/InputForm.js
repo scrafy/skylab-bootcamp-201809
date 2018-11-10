@@ -31,8 +31,8 @@ class InputForm extends Component {
        }
 
     render() {
-        return <form onSubmit={this.handleSubmit}>
-            <input value={this.state.text} placeholder='Write text here...' onChange={this.handleInput} />
+        return <form className='form-postits' onSubmit={this.handleSubmit}>
+            <input className='input-postits' value={this.state.text} placeholder='Write text here...' onChange={this.handleInput} />
             <select className='dropdown' onChange={this.dropDownHandle}>
 
 
@@ -45,7 +45,7 @@ class InputForm extends Component {
                 <option value='DONE'>DONE</option>
                     
             </select>
-            <button type="submit"><i className="fas fa-plus"></i></button>
+            <button className='btn-plus' type="submit"><i className="fas fa-plus"></i></button>
         </form>
     }
 }

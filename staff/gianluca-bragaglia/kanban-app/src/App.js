@@ -66,7 +66,7 @@ class App extends Component {
 
             <Route path="/postits" render={() => logic.loggedIn ? 
                 <div>
-                    <section><button onClick={this.handleLogoutClick}>Logout</button></section>
+                    <section><button className='btn-logout' onClick={this.handleLogoutClick}>Logout</button></section>
                     <Postits />
                 </div> : <Redirect to="/" />} />
 

@@ -42,6 +42,10 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+.back{
+    color: #071e3d;
+}
+
 .btn-login {
     background-color: #071e3d;
     color: white;
@@ -50,8 +54,66 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
     border-radius: 5px;
     margin-left: 15px;
     font-family: 'Roboto Condensed', sans-serif;
+    margin-top: 20px;
 }
 
+.btn-login2 {
+    background-color: #071e3d;
+    color: white;
+    border: 0px;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-family: 'Roboto Condensed', sans-serif;
+    margin-top: 20px;
+}
+
+.input{
+    margin-bottom: 20px;
+    border-radius: 3px;
+    border: none;
+    padding-left: 5px;
+}
+
+.form {
+    text-align: center;
+    margin-top: 150px;
+}
+
+.form-register {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.input-postits{
+    margin-bottom: 20px;
+    border-radius: 3px;
+    border: none;
+    padding-left: 5px;
+    font-size: 18px;
+}
+
+.btn-plus {
+    background-color: #2B3E50;
+    color: white;
+    border: 0px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.form-postits {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.dropdown{
+    background-color: #2B3E50;
+    color: white;
+    padding: 5px 0;
+    border-radius: 5px;
+    border-color: #2B3E50;
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 .postits-container {
     margin: 50px;
@@ -96,10 +158,39 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
     color: red;
 }
 
+.dropdownPost{
+    position: relative;
+    margin-bottom: 20px;
+    background-color: #2B3E50;
+    color: white;
+    padding: 5px 0;
+    border-radius: 5px;
+    border-color: #2B3E50;
+    margin-right: 10px;
+}
+
 .btn-trash {
     background-color: #2B3E50;
     color: white;
     border: 0px;
-    padding: 5px 10px;
+    padding: 6px 10px;
     border-radius: 5px;
+}
+
+.buttons-post{
+    position: absolute;
+    margin-top: -50px;
+}
+
+.btn-logout {
+    background-color: #2B3E50;
+    color: white;
+    border: 0px;
+    padding: 3px 15px;
+    border-radius: 5px;
+    font-family: 'Roboto Condensed', sans-serif;
+    text-align: right;
+    margin-left: 1130px;
+    margin-top: 5px;
+
 }

@@ -30,21 +30,23 @@ class Post extends Component {
         return <article className="post">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
 
-            <select className='dropdown' onChange={this.dropDownHandlePost}>
+            <div className='buttons-post'>
+                <select className='dropdownPost' onChange={this.dropDownHandlePost}>
 
-                <option >Select</option>
+                    <option >Move to</option>
 
-                <option  value='TODO'>TODO</option>
+                    <option  value='TODO'>TODO</option>
 
-                <option  value='DOING'>DOING</option>
+                    <option  value='DOING'>DOING</option>
 
-                <option value='REVIEW'>REVIEW</option>
+                    <option value='REVIEW'>REVIEW</option>
 
-                <option value='DONE'>DONE</option>
+                    <option value='DONE'>DONE</option>
                     
-            </select>
+                </select>
 
-            <a className='btn-trash' onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></a>
+                <a className='btn-trash' onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></a>
+            </div>
         </article>
     }
 }
