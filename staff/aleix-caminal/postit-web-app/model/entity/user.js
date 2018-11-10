@@ -1,5 +1,5 @@
 const { sha256 } = require('js-sha256')
-const Entity = require('../entity')
+const { Entity } = require('lilli')
 
 class User extends Entity {
     constructor(query) {

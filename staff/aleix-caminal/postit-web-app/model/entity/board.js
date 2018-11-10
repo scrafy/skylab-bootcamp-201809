@@ -1,4 +1,4 @@
-const Entity = require('../entity')
+const { Entity } = require('lilli')
 
 class Board extends Entity {
     constructor(query) {
