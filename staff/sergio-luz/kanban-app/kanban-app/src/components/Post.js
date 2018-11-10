@@ -29,7 +29,7 @@ class Post extends Component {
 
             <button onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
 
-            <Selector id={this.props.id} text={this.state.text} getStatusFromSelector={this.getStatusFromSelector} />
+            <Selector status={this.props.status} id={this.props.id} text={this.state.text} getStatusFromSelector={this.getStatusFromSelector} />
         </article>
     }
 }
