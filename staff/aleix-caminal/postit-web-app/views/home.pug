@@ -1,14 +1,14 @@
 extends layout
 
 mixin post(post)
-    article(class='post')
+    article(id='post'+post.id, class='post', draggable='true', ondragstart='drag('+post.id+', event)')
         form(action='/post', method='post')
             input(type='hidden', name='id', value=post.id)
             button(class='post__button', name='action', value='delete') X
         h3(class='post__title') #{post.title}
 
 mixin board(board)
-    section(class='board')
+    section(id='board'+board.id, class='board' ondrop='drop('+board.id+', event)' ondragover='prepareToDrop(event)')
         form(action='/board', method='post')
             input(type='hidden', name='id', value=board.id)
             button(class='board__button', name='action', value='delete') X

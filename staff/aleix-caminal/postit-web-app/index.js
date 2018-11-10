@@ -53,11 +53,9 @@ app.get('/logout', (req, res) => {
 app.get('/home', (req, res) => {
     if (req.session.auth && Object.keys(req.session.auth).length > 0) {
         const boardsTable = new BoardsTable()
-        var boards = boardsTable.contains([
-            'posts'
-        ]).where({
-            userId: req.session.auth.id
-        }).all()
+        var boards = boardsTable.contains(['posts'])
+            .where({ userId: req.session.auth.id })
+            .all()
 
         res.render('home', { auth: req.session.auth, boards })
     } else {
@@ -136,6 +134,14 @@ app.post('/post', (req, res) => {
     }
 
     res.redirect('/home')
+})
+
+app.patch('/post', bodyParser.json(), (req, res) => {
+    const postsTable = new PostsTable()
+    var post = postsTable.get(req.body.id)
+    post.boardId = req.body.board_id
+    post = postsTable.save(post)
+    return res.send({ post })
 })
 
 app.listen(port, () => console.log(`Server up and running on port ${port}`))
