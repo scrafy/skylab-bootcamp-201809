@@ -12,7 +12,7 @@ class Post extends Component {
     }
 
     handleBlur = () => {
-        this.props.onUpdatePost(this.props.id, this.state.text, this.state.status)
+        this.props.onUpdatePost(this.props.id, this.state.text, this.props.status)
     }
 
   
@@ -22,7 +22,7 @@ class Post extends Component {
 
         const statusDrop = event.target.value       
         this.setState({ status: statusDrop })    
-        this.props.onUpdatePost(this.props.id, this.state.text,statusDrop)
+        this.props.onUpdatePost(this.props.id, this.state.text, statusDrop)
  
        } 
 
