@@ -78,14 +78,14 @@ class Postits extends Component {
             <Error message={this.state.error}></Error>
 
             <section className='board__postits'>
-                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'TODO')} className='board__column'>
+                <section className='drop board__column' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'TODO')} >
                     <h3>TODO</h3>
                     {this.state.postits.map(postit => {
                         if (postit.status === 'TODO')
                             return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
-                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'DOING')} className='board__column'>
+                <section className='drop board__column' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'DOING')} >
                     <h3>DOING</h3>
 
                     {this.state.postits.map(postit => {
@@ -93,7 +93,7 @@ class Postits extends Component {
                             return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
-                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'REVIEW')} className='board__column'>
+                <section className='drop board__column' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'REVIEW')} >
                     <h3>REVIEW</h3>
 
                     {this.state.postits.map(postit => {
@@ -101,7 +101,7 @@ class Postits extends Component {
                             return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
-                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'DONE')} className='board__column'>
+                <section className='drop board__column' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'DONE')} >
                     <h3>DONE</h3>
 
                     {this.state.postits.map(postit => {
