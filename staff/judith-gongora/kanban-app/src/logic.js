@@ -46,8 +46,6 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                debugger
-
                 const { id, token } = res.data
 
                 this._userId = id
