@@ -24,7 +24,7 @@ class Post extends Component {
     }
 
     render() {
-        return <article className="post">
+        return <article className="post" draggable='true' onDragStart={this.props.onDragStart}>
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
 
             <button onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>

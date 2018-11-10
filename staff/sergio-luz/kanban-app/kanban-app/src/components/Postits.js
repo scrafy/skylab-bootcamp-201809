@@ -47,6 +47,28 @@ class Postits extends Component {
 
     // TODO error handling!
 
+    onDragOver = ev => {
+        ev.preventDefault();
+    }
+
+    onDragStart = (ev, id, text) => {
+        
+        ev.dataTransfer.setData('text', text)
+        ev.dataTransfer.setData('id', id)
+
+    }
+
+    onDrop = (ev, status) => {
+        const text = ev.dataTransfer.getData('text')
+        const postitId = ev.dataTransfer.getData('id')
+
+
+        if (ev.target.classList.contains('drop')) {
+            this.handleModifyPostit(postitId, text, status)
+        }
+
+    }
+
 
     render() {
         return <div className='home__body'>
@@ -56,35 +78,35 @@ class Postits extends Component {
             <Error message={this.state.error}></Error>
 
             <section className='board__postits'>
-                <section>
+                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'TODO')} className='board__column'>
                     <h3>TODO</h3>
                     {this.state.postits.map(postit => {
                         if (postit.status === 'TODO')
-                            return <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
+                            return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
-                <section>
+                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'DOING')} className='board__column'>
                     <h3>DOING</h3>
 
                     {this.state.postits.map(postit => {
                         if (postit.status === 'DOING')
-                            return <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
+                            return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
-                <section>
+                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'REVIEW')} className='board__column'>
                     <h3>REVIEW</h3>
 
                     {this.state.postits.map(postit => {
                         if (postit.status === 'REVIEW')
-                            return <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
+                            return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
-                <section>
+                <section className='drop' onDragOver={this.onDragOver} onDrop={event => this.onDrop(event, 'DONE')} className='board__column'>
                     <h3>DONE</h3>
 
                     {this.state.postits.map(postit => {
                         if (postit.status === 'DONE')
-                            return <Post key={postit.id} text={postit.text} id={postit.id} status={postit.status} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
+                            return <Post draggable='true' onDragStart={event => this.onDragStart(event, postit.id, postit.text)} key={postit.id} text={postit.text} id={postit.id} status={postit.status} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand />
                     })}
                 </section>
             </section>

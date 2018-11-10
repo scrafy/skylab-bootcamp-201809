@@ -83,9 +83,11 @@ body{
 
 .board__postits{
     display: flex;
+    width: 100vw;
+    min-height: 70vh;
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: baseline;
+    justify-content: space-around;
 }
 
 .profile__body{
@@ -100,4 +102,9 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.board__column{
+    /* width: 15vw; */
+    height: 40vh;
 }
