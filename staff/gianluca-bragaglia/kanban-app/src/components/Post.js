@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import logic from '../logic'
 
 class Post extends Component {
     state = { text: this.props.text, status:'' }
@@ -11,27 +12,25 @@ class Post extends Component {
     }
 
     handleBlur = () => {
-        this.props.onUpdatePost(this.props.id, this.state.text)
+        this.props.onUpdatePost(this.props.id, this.state.text, this.state.status)
     }
 
-    dropDownHandle = event => {
-
-        const statusDrop = event.target.value
-        
-
-       this.setState({ status: statusDrop })
-
-       console.log(statusDrop);
-       
-
   
-       }
+
+
+    dropDownHandlePost = event => {
+
+        const statusDrop = event.target.value       
+        this.setState({ status: statusDrop })    
+        this.props.onUpdatePost(this.props.id, this.state.text,statusDrop)
+ 
+       } 
 
     render() {
         return <article className="post">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
 
-            <select className='dropdown' onChange={this.dropDownHandle}>
+            <select className='dropdown' onChange={this.dropDownHandlePost}>
 
                 <option >Select</option>
 

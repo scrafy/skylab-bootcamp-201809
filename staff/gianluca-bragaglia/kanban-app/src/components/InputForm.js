@@ -16,7 +16,7 @@ class InputForm extends Component {
       
         this.props.onSubmit(this.state.text, this.state.status)
 
-        //this.setState({ text: '', status: this.state.status })
+        this.setState({ text: '', status: this.state.status })
         
     }
 
