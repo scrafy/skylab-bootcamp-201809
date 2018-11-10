@@ -1,0 +1,105 @@
+* {
+  font-family: "Amatic SC", cursive;
+}
+
+.home {
+  background-image: url("https://images.designtrends.com/wp-content/uploads/2017/02/Black-Background-Designs.jpg");
+}
+
+.home h1, .fa-sticky-note {
+  color: gold;
+  font-size: 2em;
+}
+
+.error {
+  color: red;
+}
+
+.postIt {
+  background-color: gold;
+  width: 130px;
+  height: 130px;
+  border: 1px solid skyblue;
+  margin: 1em;
+  border-radius: 10%;
+  padding: 2%;
+  position: relative;
+}
+
+.postIt textarea {
+  background: transparent;
+  border: none;
+  width: 130px;
+  height: 100px;
+  resize: none;
+  position: absolute;
+  top: 33px;
+  font-family: "Caveat", cursive;
+  font-size: 0.8em;
+}
+
+.postIt__button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  right: 5px;
+}
+
+.postit-board {
+  display: grid;
+  grid-template-columns: 1% 1fr 1fr 1fr 1fr 1%;
+  font-size: 1.7em;
+}
+
+.postit-col {
+  justify-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ccc2c2;
+  border-radius: 10px;
+  padding: 1rem;
+  width: 200px;
+}
+
+.postit-col--todo {
+  grid-column: 2/span 1;
+}
+
+.postit-col--doing {
+  grid-column: 3/span 1;
+}
+
+.postit-col--review {
+  grid-column: 4/span 1;
+}
+
+.postit-col--done {
+  grid-column: 5/span 1;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 3%;
+  height: 30px;
+}
+
+.form input {
+  border-radius: 15px;
+  padding-left: 1em;
+  font-size: 1.5em;
+}
+
+.form button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+/*# sourceMappingURL=style.css.map */
