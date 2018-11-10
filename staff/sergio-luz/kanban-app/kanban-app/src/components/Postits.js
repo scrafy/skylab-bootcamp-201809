@@ -20,7 +20,7 @@ class Postits extends Component {
                 .catch(err => { console.log(err.message) })
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
-                .then(()=> this.setState({error:''}))
+                .then(() => this.setState({ error: '' }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -37,8 +37,8 @@ class Postits extends Component {
     // TODO error handling!
 
 
-    handleModifyPostit = (id, text) =>
-        logic.modifyPostit(id, text)
+    handleModifyPostit = (id, text, status) =>
+        logic.modifyPostit(id, text, status)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
@@ -52,9 +52,9 @@ class Postits extends Component {
             <InputForm onSubmit={this.handleSubmit} />
             <Error message={this.state.error}></Error>
 
-                <section className='board__postits'>
-                    {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
-                </section>
+            <section className='board__postits'>
+                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} hand/>)}
+            </section>
 
         </div>
     }

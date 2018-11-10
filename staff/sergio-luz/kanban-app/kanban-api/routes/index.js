@@ -104,11 +104,11 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
 
 router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id, postitId }, body: { text } } = req
+        const { sub, params: { id, postitId }, body: { text, status } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.modifyPostit(id, postitId, text)
+        return logic.modifyPostit(id, postitId, text, status)
             .then(() => res.json({
                 message: 'postit modified'
             }))

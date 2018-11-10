@@ -2,7 +2,10 @@ import React, { Component } from 'react'
 import Selector from './Selector';
 
 class Post extends Component {
-    state = { text: this.props.text }
+    state = { 
+        text: this.props.text,
+        status:'TODO'
+     }
 
 
     handleChange = event => {
@@ -11,8 +14,13 @@ class Post extends Component {
         this.setState({ text })
     }
 
+    getStatusFromSelector=(status)=>{
+        this.setState({status})
+        this.props.onUpdatePost(this.props.id, this.state.text, status)
+    }
+
     handleBlur = () => {
-        this.props.onUpdatePost(this.props.id, this.state.text)
+        this.props.onUpdatePost(this.props.id, this.state.text, this.state.status)
     }
 
     render() {
@@ -21,7 +29,7 @@ class Post extends Component {
 
             <button onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
 
-            <Selector/>
+            <Selector id={this.props.id} text={this.state.text} getStatusFromSelector={this.getStatusFromSelector} />
         </article>
     }
 }

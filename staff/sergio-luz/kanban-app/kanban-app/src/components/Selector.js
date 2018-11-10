@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import logic from '../logic'
+
 
 class Selector extends Component {
 
@@ -9,9 +11,14 @@ class Selector extends Component {
     handleSelectionChange= event =>{
         event.preventDefault()
 
-        this.setState({ status:event.target.value })
+        // this.setState({ status:event.target.value })
+        this.props.getStatusFromSelector(event.target.value)
     }
     
+    
+
+
+
     render() {
         console.log(this.state.status)
         return <select onChange={this.handleSelectionChange}>

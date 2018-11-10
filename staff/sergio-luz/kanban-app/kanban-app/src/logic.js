@@ -120,7 +120,7 @@ const logic = {
             })
     },
 
-    modifyPostit(id, text) {
+    modifyPostit(id, text, status) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw Error('id is empty or blank')
@@ -135,7 +135,7 @@ const logic = {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ text, status })
         })
             .then(res => res.json())
             .then(res => {
