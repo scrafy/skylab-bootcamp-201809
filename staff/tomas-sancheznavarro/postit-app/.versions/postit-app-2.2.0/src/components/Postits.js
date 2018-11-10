@@ -13,28 +13,23 @@ class Postits extends Component {
         // TODO error handling!
     }
 
-    handleSubmit = text => {
-        try {
-            logic.addPostit(text)
-                .then(() => logic.listPostits())
-                .then(postits => this.setState({ postits }))
-        } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
-        }
-    }
+    handleSubmit = text =>
+        logic.createPostit(text)
+            .then(() => logic.listPostits())
+            .then(postits => this.setState({ postits }))
 
     // TODO error handling!
 
-    handleRemovePostit = id =>
-        logic.removePostit(id)
+    handleDeletePost = id =>
+        logic.deletePostit(id)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
     // TODO error handling!
 
 
-    handleModifyPostit = (id, text) =>
-        logic.modifyPostit(id, text)
+    handleUpdatePost = (id, text) =>
+        logic.updatePostit(id, text)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
@@ -48,7 +43,7 @@ class Postits extends Component {
             <InputForm onSubmit={this.handleSubmit} />
 
             <section>
-                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleDeletePost} onUpdatePost={this.handleUpdatePost} />)}
             </section>
         </div>
     }

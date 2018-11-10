@@ -6,9 +6,6 @@ global.sessionStorage = require('sessionstorage')
 
 const logic = require('./logic')
 
-logic.url = 'http://localhost:5000/api'
-// logic.url = 'http://192.168.0.82:5000' // DEV server!
-
 const { expect } = require('chai')
 
 // running test from CLI
@@ -17,7 +14,7 @@ const { expect } = require('chai')
 
 describe('logic', () => {
     describe('users', () => {
-        describe('register', () => {
+        false && describe('register', () => {
             it('should succeed on correct data', () =>
                 logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
                     .then(() => expect(true).to.be.true)
@@ -30,7 +27,7 @@ describe('logic', () => {
                     .then(() => logic.registerUser('John', 'Doe', username, '123'))
                     .catch(err => {
                         expect(err).not.to.be.undefined
-                        expect(err.message).to.equal(`username ${username} already registered`)
+                        expect(err.message).to.equal(`user with username "${username}" already exists`)
                     })
             })
 
@@ -43,7 +40,7 @@ describe('logic', () => {
             // TODO other cases
         })
 
-        describe('login', () => {
+        false && describe('login', () => {
             describe('with existing user', () => {
                 let username, password
 
@@ -67,7 +64,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal(`invalid username or password`)
+                            expect(err.message).to.equal(`user with username "${username}" does not exist`)
                         })
                 })
 
@@ -77,7 +74,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal('invalid username or password')
+                            expect(err.message).to.equal('username and/or password wrong')
                         })
                 })
             })
@@ -111,7 +108,7 @@ describe('logic', () => {
     })
 
     describe('postits', () => {
-        describe('add', () => {
+        false && describe('create', () => {
             describe('with existing user', () => {
                 let username, password, text
 
@@ -128,14 +125,14 @@ describe('logic', () => {
                 })
 
                 it('should succeed on correct data', () =>
-                    logic.addPostit(text)
+                    logic.createPostit(text)
                         .then(() => expect(true).to.be.true)
                 )
             })
         })
 
         describe('list', () => {
-            describe('with existing user', () => {
+            false && describe('with existing user', () => {
                 let username, password, text
 
                 beforeEach(() => {
@@ -151,7 +148,7 @@ describe('logic', () => {
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() => logic.addPostit(text))
+                    beforeEach(() => logic.createPostit(text))
 
                     it('should return postits', () =>
                         logic.listPostits()
@@ -172,7 +169,7 @@ describe('logic', () => {
             })
         })
 
-        describe('remove', () => {
+        false && describe('delete', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -189,21 +186,21 @@ describe('logic', () => {
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() =>
-                        logic.addPostit(text)
+                    beforeEach(() => 
+                        logic.createPostit(text)
                             .then(() => logic.listPostits())
                             .then(postits => postitId = postits[0].id)
                     )
 
                     it('should succeed', () =>
-                        logic.removePostit(postitId)
+                        logic.deletePostit(postitId)
                             .then(() => expect(true).to.be.true)
                     )
                 })
             })
         })
 
-        describe('modify', () => {
+        describe('update', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -225,13 +222,13 @@ describe('logic', () => {
                     beforeEach(() => {
                         newText = `hello ${Math.random()}`
 
-                        return logic.addPostit(text)
+                        return logic.createPostit(text)
                             .then(() => logic.listPostits())
                             .then(([postit]) => postitId = postit.id)
                     })
 
                     it('should succeed', () =>
-                        logic.modifyPostit(postitId, newText)
+                        logic.updatePostit(postitId, newText)
                             .then(() => {
                                 expect(true).to.be.true
 

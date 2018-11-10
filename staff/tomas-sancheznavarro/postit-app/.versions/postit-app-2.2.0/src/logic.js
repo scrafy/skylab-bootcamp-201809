@@ -1,8 +1,12 @@
+import data from './data'
+// const data = require('./data')
+
+const { Postit } = data
+
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
-
-    url: 'NO-URL',
+    _postits: [],
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -15,7 +19,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch(`${this.url}/users`, {
+        return fetch('https://skylabcoders.herokuapp.com/api/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -35,7 +39,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch(`${this.url}/auth`, {
+        return fetch('https://skylabcoders.herokuapp.com/api/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -45,8 +49,6 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-
-                debugger
 
                 const { id, token } = res.data
 
@@ -71,18 +73,20 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    addPostit(text) {
+    createPostit(text) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        return fetch(`${this.url}/users/${this._userId}/postits`, {
-            method: 'POST',
+        this._postits.push(new Postit(text))
+
+        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ postits: this._postits })
         })
             .then(res => res.json())
             .then(res => {
@@ -91,7 +95,7 @@ const logic = {
     },
 
     listPostits() {
-        return fetch(`${this.url}/users/${this._userId}/postits`, {
+        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this._token}`
@@ -101,20 +105,22 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                return res.data
+                return this._postits = res.data.postits || []
             })
     },
 
-    removePostit(id) {
-        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
+    deletePostit(id) {
+        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
 
-        if (!id.trim().length) throw Error('id is empty or blank')
+        this._postits = this._postits.filter(postit => postit.id !== id)
 
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
-            method: 'DELETE',
+        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
+            method: 'PUT',
             headers: {
+                'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
-            }
+            },
+            body: JSON.stringify({ postits: this._postits })
         })
             .then(res => res.json())
             .then(res => {
@@ -122,22 +128,24 @@ const logic = {
             })
     },
 
-    modifyPostit(id, text) {
-        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
-
-        if (!id.trim().length) throw Error('id is empty or blank')
+    updatePostit(id, text) {
+        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
+        const postit = this._postits.find(postit => postit.id === id)
+
+        postit.text = text
+
+        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ postits: this._postits })
         })
             .then(res => res.json())
             .then(res => {
@@ -146,5 +154,5 @@ const logic = {
     }
 }
 
-// export default logic
-module.exports = logic
+export default logic
+// module.exports = logic
