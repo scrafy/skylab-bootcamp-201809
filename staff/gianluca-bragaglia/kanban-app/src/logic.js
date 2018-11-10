@@ -46,8 +46,6 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                debugger
-
                 const { id, token } = res.data
 
                 this._userId = id
@@ -72,6 +70,8 @@ const logic = {
     },
 
     addPostit(text, status) {
+        console.log(text,status);
+        
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')

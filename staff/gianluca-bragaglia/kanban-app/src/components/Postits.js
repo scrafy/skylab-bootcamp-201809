@@ -14,10 +14,12 @@ class Postits extends Component {
     }
 
     handleSubmit = (text, status) => {
+
         try {
             logic.addPostit(text, status)
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
+
         } catch ({ message }) {
             alert(message) // HORROR! FORBIDDEN! ACHTUNG!
         }
@@ -48,7 +50,7 @@ class Postits extends Component {
                     <div className='postits-container__item'>
                         <p className='postits-container__item__task'>TODO</p>
                         <div>                                         {/*   postit.status === 'TODO' ? <Post></Post> : null */}
-                            {this.state.postits.map(postit => (postit.status == 'TODO') ? <Post key={postit.id} text={postit.text} id={postit.id} status={postit.status} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} /> : null)}
+                            {this.state.postits.map(postit => (postit.status === 'TODO') ? <Post key={postit.id} text={postit.text} id={postit.id} status={postit.status} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} /> : null)}
                         </div>
                     </div>
                     <div className='postits-container__item'>
