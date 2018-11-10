@@ -172,16 +172,6 @@ const logic = {
 
                 const { postits } = user
 
-                // by filtering
-
-                // const _postits = postits.filter(postit => postit.id !== postitId)
-
-                // if (_postits.length !== postits.length - 1) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
-
-                // user.postits = _postits
-
-                // by finding index
-
                 const index = postits.findIndex(postit => postit.id === postitId)
 
                 if (index < 0) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)

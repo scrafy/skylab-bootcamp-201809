@@ -146,8 +146,8 @@ const logic = {
     modifyProfile( name, surname, username, newPassword, repeatPassword, password) {
         const id=this._userId
 
-        return fetch(`${this.url}/users/${this._userId}/modifyUser`, {
-            method: 'PUT',
+        return fetch(`${this.url}/users/${this._userId}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
