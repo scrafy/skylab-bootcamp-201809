@@ -56,19 +56,19 @@ class Postits extends Component {
                     <div className='postits-container__item'>
                         <p className='postits-container__item__task'>DOING</p>
                         <div>
-                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                            {this.state.postits.map(postit => (postit.status === 'DOING') ? <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} /> : null)}
                         </div>
                     </div>
                     <div className='postits-container__item'>
                         <p className='postits-container__item__task'>REVIEW</p>
                         <div>
-                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                            {this.state.postits.map(postit => (postit.status === 'REVIEW') ? <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} /> : null)}
                         </div>
                     </div>
                     <div className='postits-container__item'>
                         <p className='postits-container__item__task'>DONE</p>
                         <div>
-                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                            {this.state.postits.map(postit => (postit.status === 'DONE') ? <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} /> : null)}
                         </div>
                     </div>
                     
