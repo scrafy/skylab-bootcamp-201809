@@ -5,7 +5,7 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 
 .myNavbar{
     height: 65px;
-    background-color: #071e3d;
+    background-color: #2B3E50;
     text-align: center;
     color: white;
     padding-top: 10px;
@@ -60,18 +60,23 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 }
 
 .postits-container__item {
-    margin: 50px;
-    background-color: #2B3E50;   
+    background-color: #2B3E50; 
+    border-radius: 4px;
+    padding-top: 10px; 
+    width: 270px; 
+    text-align: center;
 }
 
 .postits-container__item__task {
     text-align: center;
 }
 .post {
-    background-color: yellow;
-    width: 200px;
-    height: 200px;
-    margin: 10px;
+    background-color: #b9ceeb;
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 10px;
+    border-radius: 3px;
+    padding: 5px 8px;
 }
 
 .post textarea {

@@ -13,9 +13,9 @@ class Postits extends Component {
         // TODO error handling!
     }
 
-    handleSubmit = text => {
+    handleSubmit = (text, status) => {
         try {
-            logic.addPostit(text)
+            logic.addPostit(text, status)
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
         } catch ({ message }) {
@@ -47,25 +47,29 @@ class Postits extends Component {
                 <div className='postits-container'>
                     <div className='postits-container__item'>
                         <p className='postits-container__item__task'>TODO</p>
+                        <div>                                         {/*   postit.status === 'TODO' ? <Post></Post> : null */}
+                            {this.state.postits.map(postit => (postit.status == 'TODO') ? <Post key={postit.id} text={postit.text} id={postit.id} status={postit.status} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} /> : null)}
+                        </div>
+                    </div>
+                    <div className='postits-container__item'>
+                        <p className='postits-container__item__task'>DOING</p>
                         <div>
                             {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                         </div>
                     </div>
                     <div className='postits-container__item'>
+                        <p className='postits-container__item__task'>REVIEW</p>
                         <div>
                             {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                         </div>
                     </div>
                     <div className='postits-container__item'>
+                        <p className='postits-container__item__task'>DONE</p>
                         <div>
                             {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                         </div>
                     </div>
-                    <div className='postits-container__item'>
-                        <div>
-                            {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
     }
