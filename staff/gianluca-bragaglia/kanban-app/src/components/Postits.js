@@ -35,8 +35,8 @@ class Postits extends Component {
     // TODO error handling!
 
 
-    handleModifyPostit = (id, text) =>
-        logic.modifyPostit(id, text)
+    handleModifyPostit = (id, text, status) =>
+        logic.modifyPostit(id, text, status)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 

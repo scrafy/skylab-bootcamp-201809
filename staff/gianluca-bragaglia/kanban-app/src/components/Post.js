@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 class Post extends Component {
-    state = { text: this.props.text, status:this.props.status }
+    state = { text: this.props.text, status:'' }
 
 
     handleChange = event => {
@@ -14,9 +14,36 @@ class Post extends Component {
         this.props.onUpdatePost(this.props.id, this.state.text)
     }
 
+    dropDownHandle = event => {
+
+        const statusDrop = event.target.value
+        
+
+       this.setState({ status: statusDrop })
+
+       console.log(statusDrop);
+       
+
+  
+       }
+
     render() {
         return <article className="post">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
+
+            <select className='dropdown' onChange={this.dropDownHandle}>
+
+                <option >Select</option>
+
+                <option  value='TODO'>TODO</option>
+
+                <option  value='DOING'>DOING</option>
+
+                <option value='REVIEW'>REVIEW</option>
+
+                <option value='DONE'>DONE</option>
+                    
+            </select>
 
             <a className='btn-trash' onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></a>
         </article>
