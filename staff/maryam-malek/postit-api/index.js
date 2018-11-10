@@ -5,6 +5,7 @@ const express = require('express')
 const package = require('./package.json')
 const router = require('./routes')
 const cors = require('./utils/cors')
+const User = require('./data/user')
 
 const { env: { PORT, MONGO_URL } } = process
 
@@ -15,6 +16,12 @@ client.connect()
         console.log(`db server running at ${MONGO_URL}`)
         
         const { argv: [, , port = PORT || 8080] } = process
+
+        const db = client.db('postit')
+
+        users = db.collection('users')
+
+        User._collection = users
 
         const app = express()
 

@@ -14,7 +14,7 @@ const { expect } = require('chai')
 // debug -> $ mocha debug src/logic.spec.js --timeout 10000
 
 describe('logic', () => {
-    let users, client 
+    let users, client
 
     before(() => {
         client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
@@ -29,8 +29,10 @@ describe('logic', () => {
             })
     })
 
+    beforeEach(() => users.deleteMany())
+
     describe('user', () => {
-        !describe('register', () => {
+        describe('register', () => {
             let name, surname, username, password
 
             beforeEach(() => {
@@ -38,8 +40,6 @@ describe('logic', () => {
                 surname = `surname-${Math.random()}`
                 username = `username-${Math.random()}`
                 password = `password-${Math.random()}`
-
-                return users.deleteMany()
 
             })
 
@@ -69,24 +69,22 @@ describe('logic', () => {
 
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
-
-                return users.deleteMany()
+                return users.insertOne(user)
             })
 
             it('should authenticate on correct credentials', () => {
                 const { username, password } = user
-
                 return logic.authenticateUser(username, password)
                     .then(id => {
                         expect(id).to.exist
                         expect(id).to.be.a('string')
                         return users.find().toArray()
-                        .then(_users => {
-                            const [_user] = _users
-                            expect(_user.id).to.equal(id)
-                        })
+                            .then(_users => {
+                                const [_user] = _users
+                                expect(_user.id).to.equal(id)
+                            })
                     })
-                    
+
             })
 
             it('should fail on undefined username', () => {
@@ -103,7 +101,7 @@ describe('logic', () => {
                 postit = new Postit('hello text')
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
+                return users.insertOne(user)
             })
 
             it('should succeed on valid id', () =>
@@ -130,7 +128,7 @@ describe('logic', () => {
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
+                return users.insertOne(user)
             })
 
             it('should update on correct data and password', () => {
@@ -142,12 +140,10 @@ describe('logic', () => {
                 const newPassword = `${password}-${Math.random()}`
 
                 return logic.updateUser(id, newName, newSurname, newUsername, newPassword, password)
-                    .then(() => {
-                        const json = fs.readFileSync(User._file)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
 
-                        const users = JSON.parse(json)
-
-                        const [_user] = users
+                        [_user] = _users
 
                         expect(_user.id).to.equal(id)
 
@@ -166,12 +162,10 @@ describe('logic', () => {
                 const newName = `${name}-${Math.random()}`
 
                 return logic.updateUser(id, newName, null, null, null, password)
-                    .then(() => {
-                        const json = fs.readFileSync(User._file)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
 
-                        const users = JSON.parse(json)
-
-                        const [_user] = users
+                        [_user] = _users
 
                         expect(_user.id).to.equal(id)
 
@@ -188,12 +182,10 @@ describe('logic', () => {
                 const newSurname = `${surname}-${Math.random()}`
 
                 return logic.updateUser(id, null, newSurname, null, null, password)
-                    .then(() => {
-                        const json = fs.readFileSync(User._file)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
 
-                        const users = JSON.parse(json)
-
-                        const [_user] = users
+                        [_user] = _users
 
                         expect(_user.id).to.equal(id)
 
@@ -221,7 +213,7 @@ describe('logic', () => {
                     user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
                     user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
 
-                    fs.writeFileSync(User._file, JSON.stringify([user, user2]))
+                    return users.insertMany([user, user2])
                 })
 
                 it('should update on correct data and password', () => {
@@ -234,18 +226,17 @@ describe('logic', () => {
                         .catch(err => {
                             expect(err).to.be.instanceof(AlreadyExistsError)
 
-                            const json = fs.readFileSync(User._file)
+                            return users.findOne({ id })
+                                .then(_user => {
 
-                            const users = JSON.parse(json)
+                                    expect(_user.id).to.equal(id)
 
-                            const [, _user] = users
+                                    expect(_user.name).to.equal(name)
+                                    expect(_user.surname).to.equal(surname)
+                                    expect(_user.username).to.equal(username)
+                                    expect(_user.password).to.equal(password)
 
-                            expect(_user.id).to.equal(id)
-
-                            expect(_user.name).to.equal(name)
-                            expect(_user.surname).to.equal(surname)
-                            expect(_user.username).to.equal(username)
-                            expect(_user.password).to.equal(password)
+                                })
                         })
                 })
             })
@@ -259,21 +250,19 @@ describe('logic', () => {
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
-
                 text = `text-${Math.random()}`
+
+                return users.insertOne(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.addPostit(user.id, text)
-                    .then(() => {
-                        const json = fs.readFileSync(User._file)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
 
-                        const users = JSON.parse(json)
+                        expect(_users.length).to.equal(1)
 
-                        expect(users.length).to.equal(1)
-
-                        const [_user] = users
+                        const [_user] = _users
 
                         expect(_user.id).to.equal(user.id)
 
@@ -298,43 +287,43 @@ describe('logic', () => {
                 postit2 = new Postit({ text: 'hello text 2' })
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit, postit2] })
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
+                return users.insertOne(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.listPostits(user.id)
                     .then(postits => {
-                        const json = fs.readFileSync(User._file)
+                        return users.find().toArray()
+                            .then(_users => {
 
-                        const users = JSON.parse(json)
+                                expect(_users.length).to.equal(1)
 
-                        expect(users.length).to.equal(1)
+                                const [_user] = _users
 
-                        const [_user] = users
+                                expect(_user.id).to.equal(user.id)
 
-                        expect(_user.id).to.equal(user.id)
+                                const { postits: _postits } = _user
 
-                        const { postits: _postits } = _user
+                                expect(_postits.length).to.equal(2)
 
-                        expect(_postits.length).to.equal(2)
+                                expect(postits.length).to.equal(_postits.length)
 
-                        expect(postits.length).to.equal(_postits.length)
+                                const [_postit, _postit2] = _postits
 
-                        const [_postit, _postit2] = _postits
+                                expect(_postit.id).to.equal(postit.id)
+                                expect(_postit.text).to.equal(postit.text)
 
-                        expect(_postit.id).to.equal(postit.id)
-                        expect(_postit.text).to.equal(postit.text)
+                                expect(_postit2.id).to.equal(postit2.id)
+                                expect(_postit2.text).to.equal(postit2.text)
 
-                        expect(_postit2.id).to.equal(postit2.id)
-                        expect(_postit2.text).to.equal(postit2.text)
+                                const [__postit, __postit2] = postits
 
-                        const [__postit, __postit2] = postits
+                                expect(_postit.id).to.equal(__postit.id)
+                                expect(_postit.text).to.equal(__postit.text)
 
-                        expect(_postit.id).to.equal(__postit.id)
-                        expect(_postit.text).to.equal(__postit.text)
-
-                        expect(_postit2.id).to.equal(__postit2.id)
-                        expect(_postit2.text).to.equal(__postit2.text)
+                                expect(_postit2.id).to.equal(__postit2.id)
+                                expect(_postit2.text).to.equal(__postit2.text)
+                            })
                     })
             )
         })
@@ -346,19 +335,17 @@ describe('logic', () => {
                 postit = new Postit({ text: 'hello text' })
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
+                return users.insertOne(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.removePostit(user.id, postit.id)
-                    .then(() => {
-                        const json = fs.readFileSync(User._file)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
 
-                        const users = JSON.parse(json)
+                        expect(_users.length).to.equal(1)
 
-                        expect(users.length).to.equal(1)
-
-                        const [_user] = users
+                        const [_user] = _users
 
                         expect(_user.id).to.equal(user.id)
 
@@ -378,19 +365,17 @@ describe('logic', () => {
 
                 newText = `new-text-${Math.random()}`
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
+                return users.insertOne(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.modifyPostit(user.id, postit.id, newText)
-                    .then(() => {
-                        const json = fs.readFileSync(User._file)
+                    .then(() => users.find().toArray())
+                    .then(_users => {
 
-                        const users = JSON.parse(json)
+                        expect(_users.length).to.equal(1)
 
-                        expect(users.length).to.equal(1)
-
-                        const [_user] = users
+                        const [_user] = _users
 
                         expect(_user.id).to.equal(user.id)
 
