@@ -69,7 +69,7 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    addPostit(text) {
+    addPostit(text, status) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
@@ -80,7 +80,7 @@ const logic = {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ text, status })
         })
             .then(res => res.json())
             .then(res => {
