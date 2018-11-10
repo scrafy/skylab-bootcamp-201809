@@ -6,10 +6,9 @@ global.sessionStorage = require('sessionstorage')
 
 const logic = require('./logic')
 
-logic.url = 'http://localhost:5000/api'
-// logic.url = 'http://192.168.0.82:5000' // DEV server!
-
 const { expect } = require('chai')
+
+let flag = true
 
 // running test from CLI
 // normal -> $ mocha src/logic.spec.js --timeout 10000
@@ -17,7 +16,7 @@ const { expect } = require('chai')
 
 describe('logic', () => {
     describe('users', () => {
-        describe('register', () => {
+        flag && describe('register', () => {
             it('should succeed on correct data', () =>
                 logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
                     .then(() => expect(true).to.be.true)
@@ -43,7 +42,7 @@ describe('logic', () => {
             // TODO other cases
         })
 
-        describe('login', () => {
+        flag && describe('login', () => {
             describe('with existing user', () => {
                 let username, password
 
@@ -111,7 +110,7 @@ describe('logic', () => {
     })
 
     describe('postits', () => {
-        describe('add', () => {
+        flag && describe('create', () => {
             describe('with existing user', () => {
                 let username, password, text
 
@@ -128,14 +127,14 @@ describe('logic', () => {
                 })
 
                 it('should succeed on correct data', () =>
-                    logic.addPostit(text)
+                    logic.createPostit(text)
                         .then(() => expect(true).to.be.true)
                 )
             })
         })
 
         describe('list', () => {
-            describe('with existing user', () => {
+            flag && describe('with existing user', () => {
                 let username, password, text
 
                 beforeEach(() => {
@@ -151,7 +150,7 @@ describe('logic', () => {
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() => logic.addPostit(text))
+                    beforeEach(() => logic.createPostit(text))
 
                     it('should return postits', () =>
                         logic.listPostits()
@@ -172,7 +171,7 @@ describe('logic', () => {
             })
         })
 
-        describe('remove', () => {
+        flag && describe('delete', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -189,21 +188,21 @@ describe('logic', () => {
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() =>
-                        logic.addPostit(text)
+                    beforeEach(() => 
+                        logic.createPostit(text)
                             .then(() => logic.listPostits())
                             .then(postits => postitId = postits[0].id)
                     )
 
                     it('should succeed', () =>
-                        logic.removePostit(postitId)
+                        logic.deletePostit(postitId)
                             .then(() => expect(true).to.be.true)
                     )
                 })
             })
         })
 
-        describe('modify', () => {
+        flag && describe('update', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -225,13 +224,13 @@ describe('logic', () => {
                     beforeEach(() => {
                         newText = `hello ${Math.random()}`
 
-                        return logic.addPostit(text)
+                        return logic.createPostit(text)
                             .then(() => logic.listPostits())
                             .then(([postit]) => postitId = postit.id)
                     })
 
                     it('should succeed', () =>
-                        logic.modifyPostit(postitId, newText)
+                        logic.updatePostit(postitId, newText)
                             .then(() => {
                                 expect(true).to.be.true
 

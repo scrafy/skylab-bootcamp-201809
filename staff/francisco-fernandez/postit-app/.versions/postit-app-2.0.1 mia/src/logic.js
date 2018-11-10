@@ -1,8 +1,12 @@
+import data from './data'
+// const data = require('./data')
+
+const { Postit } = data
+
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
-
-    url: 'NO-URL',
+    _postits: [],
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -15,7 +19,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch(`${this.url}/users`, {
+        return fetch('http://localhost:5000/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -35,7 +39,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch(`${this.url}/auth`, {
+        return fetch('http://localhost:5000/api/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -45,8 +49,6 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-
-                debugger
 
                 const { id, token } = res.data
 
@@ -71,12 +73,14 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    addPostit(text) {
+    createPostit(text) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        return fetch(`${this.url}/users/${this._userId}/postits`, {
+        // this._postits.push(new Postit(text))
+       
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
@@ -91,7 +95,7 @@ const logic = {
     },
 
     listPostits() {
-        return fetch(`${this.url}/users/${this._userId}/postits`, {
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this._token}`
@@ -105,16 +109,18 @@ const logic = {
             })
     },
 
-    removePostit(id) {
+    deletePostit(id) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw Error('id is empty or blank')
 
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits/${id}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
-            }
+            },
+            body: JSON.stringify({ postits: this._postits })
         })
             .then(res => res.json())
             .then(res => {
@@ -122,7 +128,7 @@ const logic = {
             })
     },
 
-    modifyPostit(id, text) {
+    updatePostit(id, text) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw Error('id is empty or blank')
@@ -131,7 +137,7 @@ const logic = {
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
@@ -143,8 +149,50 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
+    },
+
+    listProfile() {
+        return fetch(`http://localhost:5000/api/users/${this._userId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+
+                return res.data
+            })
+    },
+
+    modifyProfile(name, surname, newPassword, password){
+            debugger
+            if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+            if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+            if (typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
+            if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
+    
+            if (!name.trim()) throw Error('name is empty or blank')
+            if (!surname.trim()) throw Error('surname is empty or blank')
+            if (!newPassword.trim()) throw Error('newPassword is empty or blank')
+            if (!password.trim()) throw Error('password is empty or blank')
+    
+            return fetch(`http://localhost:5000/api/users/${this._userId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Authorization': `Bearer ${this._token}`
+                },
+                body: JSON.stringify({ name, surname, newPassword, password })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.error) throw Error(res.error)
+                })
+
     }
 }
 
-// export default logic
-module.exports = logic
+export default logic
+// module.exports = logic
