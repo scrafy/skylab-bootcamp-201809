@@ -49,7 +49,7 @@ class UpdateUser {
   async fails (errorMessages) {
     
      
-     throw new ValidationException("Exists validation errors", 422,errorMessages)
+     throw new ValidationException("Exists validation errors", 422, errorMessages)
      
   }
 

@@ -48,11 +48,8 @@ class CreateUser {
     }
   }*/
 
-  async fails (errorMessages) {
-    
-     
-     throw new ValidationException("Exists validation errors", 422,errorMessages)
-     
+  async fails (errorMessages) {     
+     throw new ValidationException("Exists validation errors", 422, errorMessages)     
   }
 
 }

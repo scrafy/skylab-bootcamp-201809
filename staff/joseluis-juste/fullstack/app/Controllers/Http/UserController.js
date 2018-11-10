@@ -15,8 +15,8 @@ class UserController extends BaseController {
 
     async index({request, response}){
 
-        const users = await User.query().fetch()
-        this.sendResponse(response, null, users)
+        const users = await User.all()
+        this.sendResponse(response, users )
     }
 
     async create({request, response}){
@@ -46,6 +46,7 @@ class UserController extends BaseController {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)            
         
         let data = JSON.parse(request.raw())
+        if (data.password) delete data.password
         user.merge(data)
         await user.save()
         this.sendResponse(response, null)
@@ -74,7 +75,11 @@ class UserController extends BaseController {
             //await auth.generate(user, true)
             this.sendResponse(response, user)
         }       
-        //generar token
+    }
+
+    async logout({request, response}){
+
+        this.sendResponse(response, null, 204)
             
     }
 }

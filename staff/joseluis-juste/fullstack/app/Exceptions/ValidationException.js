@@ -1,5 +1,5 @@
 const BaseException = require("./BaseException")
-
+const ExceptionHandler = require("./Handler")
 'use strict'
 
 class ValidationException extends BaseException {

@@ -9,6 +9,12 @@ const BaseExceptionHandler = use('BaseExceptionHandler')
  * @class ExceptionHandler
  */
 class ExceptionHandler extends BaseExceptionHandler {
+
+    /*constructor(message, status){
+
+        super(message, status)
+        this.genericresponse = use("GenericResponse")
+    }*/
   /**
    * Handle exception thrown during the HTTP lifecycle
    *
@@ -21,10 +27,19 @@ class ExceptionHandler extends BaseExceptionHandler {
    * @return {void}
    */
   async handle (error, { request, response }) {
-    let genericresponse = use("GenericResponse")
-    genericresponse.status = "error"
-    genericresponse.Error = error
-    response.status(error.status).send(genericresponse)
+    
+    if (!error.genericresponse){
+      let genericresponse = use("GenericResponse")
+      genericresponse.status = error.status
+      genericresponse.error = error.message
+      response.status(error.status).send(genericresponse)     
+    }else{
+      error.genericresponse.status = error.status
+      error.genericresponse.error = error.message
+      response.status(error.status).send(error.genericresponse)
+    }
+    
+     
   }
 
   /**

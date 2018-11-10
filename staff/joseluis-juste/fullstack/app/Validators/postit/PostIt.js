@@ -2,20 +2,20 @@ const ValidationException = use('App/Exceptions/ValidationException')
 
 'use strict'
 
-class AuthUser {
+class PostIt {
   
   get rules () {
     return {
-      username:'required',
-      password:'required'
+      content:'required',
+      userid:'required'      
     }
   }
 
   get messages () {
     return {
        
-      'username.required':'The username field is required',
-      'password.required':'The password field is required'
+      'content.required':'The content field is required',
+      'userid.required':'The userid field is required'      
      
     }
   }
@@ -46,4 +46,4 @@ class AuthUser {
 
 }
 
-module.exports = AuthUser
+module.exports = PostIt
