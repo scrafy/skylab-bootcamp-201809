@@ -15,7 +15,7 @@ client.connect()
     .then(() => {
         console.log(`db server running at ${MONGO_URL}`)
 
-        const db = client.db('postit')
+        const db = client.db('kanban')
 
         users = db.collection('users')
 

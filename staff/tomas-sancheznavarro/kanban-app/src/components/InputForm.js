@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 
 class InputForm extends Component {
-    state = { text: '' }
+    state = {
+        text: '',
+        status: this.props.status
+    }
 
     handleInput = event => {
         const text = event.target.value
@@ -12,7 +15,7 @@ class InputForm extends Component {
     handleSubmit = event => {
         event.preventDefault()
 
-        this.props.onSubmit(this.state.text)
+        this.props.onSubmit(this.state.text, this.state.status)
 
         this.setState({ text: '' })
     }

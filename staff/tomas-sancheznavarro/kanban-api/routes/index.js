@@ -77,11 +77,11 @@ router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (re
 
 router.post('/users/:id/postits', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id }, body: { text } } = req
+        const { sub, params: { id }, body: { text, status } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.addPostit(id, text)
+        return logic.addPostit(id, text, status)
             .then(() => res.json({
                 message: 'postit added'
             }))
@@ -104,16 +104,29 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
 
 router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id, postitId }, body: { text } } = req
+        const { sub, params: { id, postitId }, body: { text, status } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.modifyPostit(id, postitId, text)
+        return logic.modifyPostit(id, postitId, text, status)
             .then(() => res.json({
                 message: 'postit modified'
             }))
     }, res)
 })
+
+/*router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id, postitId }, body: { status } } = req
+        console.log
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.modifyStatus(id, postitId, status)
+            .then(() => res.json({
+                message: 'status modified'
+            }))
+    }, res)
+})*/
 
 router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {

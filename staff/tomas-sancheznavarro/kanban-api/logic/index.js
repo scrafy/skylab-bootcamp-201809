@@ -95,7 +95,7 @@ const logic = {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
-    
+
                     return user.save()
                 }
             })
@@ -112,7 +112,7 @@ const logic = {
      * 
      * @returns {Promise} Resolves on correct data, rejects on wrong user id
      */
-    addPostit(id, text) {
+    addPostit(id, text, status) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
@@ -125,7 +125,7 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                const postit = new Postit({ text })
+                const postit = new Postit({ text, status })
 
                 user.postits.push(postit)
 
@@ -192,7 +192,7 @@ const logic = {
             })
     },
 
-    modifyPostit(id, postitId, text) {
+    modifyPostit(id, postitId, text, status) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
@@ -216,10 +216,40 @@ const logic = {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
                 postit.text = text
+                status && (postit.status = status)
 
                 return user.save()
             })
-    }
+    },
+
+    /*modifyStatus(id, postitId, status) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
+
+        if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
+
+        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+
+        if (!status.trim().length) throw new ValueError('status is empty or blank')
+    
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                const { postits } = user
+
+                const postit = postits.find(postit => postit.id === postitId)
+
+                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
+
+                postit.status = status
+
+                return user.save()
+            })
+        }*/
 }
 
 module.exports = logic
