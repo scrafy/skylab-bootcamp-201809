@@ -1,0 +1,16 @@
+.card{
+    background-color: white;
+    border-radius: 5px;
+    padding: 0.5em 0.5em;
+    margin-top: 1.5em;
+    font-size: 0.8em;
+    height: 50px;
+    overflow-y: auto;
+    & p{
+        margin:0;
+    }
+    &:hover{
+        background-color: rgba(0,0,0,0.1);
+        cursor:pointer;
+    }
+}
