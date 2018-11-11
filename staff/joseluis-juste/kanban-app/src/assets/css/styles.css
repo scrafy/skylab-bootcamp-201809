@@ -25,9 +25,6 @@ img {
 * {
   box-sizing: border-box; }
 
-.height-auto {
-  height: 102px !important; }
-
 .login-form {
   margin: 0 auto;
   width: 40%; }
@@ -53,7 +50,9 @@ img {
   background-color: #dfe3e6;
   border-radius: 5px;
   overflow-y: auto;
-  padding: 1em 1em; }
+  padding: 1em 1em;
+  z-index: 100;
+  position: relative; }
   .list .form-addcard {
     height: 0;
     overflow: hidden;
@@ -65,20 +64,30 @@ img {
   .list .add-card {
     margin-top: 1em;
     display: inline-block;
-    font-weight: 500; }
+    font-weight: 500;
+    position: absolute;
+    z-index: 500;
+    bottom: 0;
+    left: 10px; }
     .list .add-card:hover {
       cursor: pointer; }
 
-.card {
+.height-form-card {
+  height: 152px !important; }
+
+.postit {
   background-color: white;
   border-radius: 5px;
-  padding: 0.5em 0.5em;
+  padding: 1.5em 1em;
   margin-top: 1.5em;
   font-size: 0.8em;
-  height: 50px;
-  overflow-y: auto; }
-  .card p {
+  position: relative; }
+  .postit a {
+    position: absolute;
+    top: 4px;
+    right: 6px; }
+  .postit p {
     margin: 0; }
-  .card:hover {
+  .postit:hover {
     background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer; }

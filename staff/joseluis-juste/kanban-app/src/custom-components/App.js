@@ -4,31 +4,27 @@ import Home from './home/home'
 import Landing from './landing/landing'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 import Register from '../custom-components/register/register'
+import ServiceBackEnd from '../logic/Service'
 
 
 class App extends Component {
 
   state = {hideRegisterLink:false}
 
-  handleRegisterLinkClick = () =>{
+  constructor(props) {
+    super(props)
+    this.serviceBackend = new ServiceBackEnd()
 
-     this.setState({hideRegisterLink:true}, () =>{
-       this.props.history.push('/register')
-     })
-     
+    if (this.serviceBackend.isLogged())
+    {
+        this.props.history.push("/landing")
+    }
   }
-
-  handleHomeLinkClick = () =>{
-     
-    this.setState({hideRegisterLink:false}, () =>{
-      this.props.history.push('/')
-    })
-  }
-
+  
   render() {
     return (
         <section className="main-app">
-             <Header hideRegisterLink = {this.state.hideRegisterLink} onHomeLinkClick={this.handleHomeLinkClick} onRegisterLinkClick = {this.handleRegisterLinkClick}></Header>
+             <Header></Header>
              <Route exact path="/" render={() => <Home></Home>} />
              <Route path="/landing" render={() => <Landing></Landing>} />
              <Route exact path="/register" render={() => <Register></Register>} />

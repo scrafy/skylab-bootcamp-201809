@@ -7,7 +7,8 @@ class PostIt {
   get rules () {
     return {
       content:'required',
-      userid:'required'      
+      userid:'required',
+      state:'required'      
     }
   }
 
@@ -15,7 +16,8 @@ class PostIt {
     return {
        
       'content.required':'The content field is required',
-      'userid.required':'The userid field is required'      
+      'userid.required':'The userid field is required',
+      'state.required':'The state field is required'      
      
     }
   }

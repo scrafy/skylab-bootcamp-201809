@@ -1,15 +1,34 @@
 import React, { Component } from 'react';
 import { Route, withRouter, Redirect } from 'react-router-dom'
-
+import ServiceBackEnd from '../../logic/Service'
 
 class Header extends Component {
 
-    state = {hideRegisterLink:this.props.hideRegisterLink}
+    state = {hideRegisterLink:false}
 
-    componentWillReceiveProps(props){
+    
+    constructor(props) {
+        super(props)
+        this.serviceBackend = new ServiceBackEnd()
+    }
 
-        this.setState({hideRegisterLink:props.hideRegisterLink})
-    } 
+     handleRegisterLinkClick = () =>{
+
+        this.props.history.push('/register')
+        this.setState({hideRegisterLink:true})
+    }
+
+    handleHomeLinkClick = () =>{
+
+        this.props.history.push('/')
+        this.setState({hideRegisterLink:false})
+    }
+
+    handleLogoutLinkClick = () =>{
+        
+        this.serviceBackend.logoutUser()
+        this.props.history.push('/')
+    }
 
     render() {
         return (
@@ -17,8 +36,9 @@ class Header extends Component {
                 <nav className="main-nav">
                     <ul className="nav">
                         <li className="nav-item">
-                            {!this.state.hideRegisterLink && <a onClick={this.props.onRegisterLinkClick} className="nav-link active">Register</a>}
-                            {this.state.hideRegisterLink && <a onClick={this.props.onHomeLinkClick} className="nav-link active">Home</a>}
+                            {this.props.location.pathname === "/" && <a onClick={this.handleRegisterLinkClick} className="nav-link active">Register</a>}
+                            {this.props.location.pathname === "/register" && <a onClick={this.handleHomeLinkClick} className="nav-link active">Home</a>}
+                            {this.props.location.pathname === "/landing" && <a onClick={this.handleLogoutLinkClick} className="nav-link active">Logout</a>}
                         </li>
                     </ul>
                 </nav>
@@ -27,4 +47,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header)

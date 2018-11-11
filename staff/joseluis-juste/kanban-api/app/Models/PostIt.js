@@ -9,7 +9,7 @@ class PostIt extends Model {
     }
 
     static get visible () {
-        return ['id', 'content']
+        return ['id', 'content', 'state']
       }
 
     user(){

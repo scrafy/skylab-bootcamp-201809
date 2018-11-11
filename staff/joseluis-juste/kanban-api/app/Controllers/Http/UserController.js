@@ -62,6 +62,17 @@ class UserController extends BaseController {
         this.sendResponse(response, user)
     }
 
+    async getPostits({request, response}){
+
+        const {userId} = request.params
+        const user = await User.find(userId)
+        if (!user){
+            throw new ResourceNotFoundException(`The user with the id ${userId} not exists`, 404)            
+        }
+        this.sendResponse(response, await user.postits().fetch())
+
+    }
+
     async login({request, response}){
 
         let {username, password} = JSON.parse(request.raw())
