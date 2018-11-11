@@ -15,14 +15,9 @@ class Selector extends Component {
         this.props.getStatusFromSelector(event.target.value)
     }
 
-
-
-
-
     render() {
-        console.log(this.state.status)
-        return <select onChange={this.handleSelectionChange}>
-            <option >Move to</option>
+        return <select  className='selector' onChange={this.handleSelectionChange}>
+            {(!this.props.noMove) && <option >Move to</option>}
             <option value="TODO">TODO</option>
             <option value="DOING">DOING</option>
             <option value="REVIEW">REVIEW</option>

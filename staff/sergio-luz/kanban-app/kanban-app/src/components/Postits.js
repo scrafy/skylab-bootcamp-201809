@@ -17,9 +17,9 @@ class Postits extends Component {
         // TODO error handling!
     }
 
-    handleSubmit = text => {
+    handleSubmit = (text, status) => {
         try {
-            logic.addPostit(text, 'TODO')
+            logic.addPostit(text, status)
                 .catch(err => { console.log(err.message) })
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
