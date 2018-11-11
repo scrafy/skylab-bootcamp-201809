@@ -4,7 +4,7 @@ function Landing(props) {
     return <section className='landing'>
         <div className='landing__options'>
             <div className='options__container'>
-                <button onClick={props.onRegisterClick}>Register</button> or <button onClick={props.onLoginClick}>Login</button>
+                <button className='button button--white' onClick={props.onRegisterClick}>Register</button> or <button className='button button--white' onClick={props.onLoginClick}>Login</button>
             </div>
         </div>
     </section>

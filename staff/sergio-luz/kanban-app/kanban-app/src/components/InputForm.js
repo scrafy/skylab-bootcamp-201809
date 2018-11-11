@@ -28,10 +28,10 @@ class InputForm extends Component {
 
     render() {
         return <form onSubmit={this.handleSubmit}>
-            <input value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
+            <input className='input--white' value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
 
-            <Selector noMove={true} getStatusFromSelector={this.getStatusFromSelector} />
-            <button type="submit"><i className="fas fa-plus"></i></button>
+            <div  className='input--white'><Selector  className='input--white' noMove={true} getStatusFromSelector={this.getStatusFromSelector} /></div>
+            <button  className='input--white' type="submit"><i className="fas fa-plus"></i></button>
         </form>
     }
 }

@@ -28,7 +28,7 @@ class Post extends Component {
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
 
             <div>
-                <button onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
+                <button className='button--postit' onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button>
 
                 <Selector status={this.props.status} id={this.props.id} text={this.state.text} getStatusFromSelector={this.getStatusFromSelector} />
             </div>

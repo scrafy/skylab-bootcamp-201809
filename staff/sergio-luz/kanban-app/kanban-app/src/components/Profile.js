@@ -71,14 +71,25 @@ class Profile extends Component {
         return <div className='profile__body'>
             <h1>Profile <i className="fas fa-sticky-note"></i></h1>
             <form onSubmit={this.handleSubmit} className='profile__options'>
-                <input type="text" name="name" placeholder="name" onChange={this.handleNameChange}></input>
-                <input type="text" name="surname" placeholder="surname" onChange={this.handleSurnmeChange}></input>
-                <input type="text" name="username" placeholder="username" onChange={this.handleUsernameChange}></input>
-                <input type="password" name="newPassword" placeholder="new password" onChange={this.handleNewPasswordChange}></input>
-                <input type="password" name="repeatPassword" placeholder="repeat new password" onChange={this.handleRepeatPassword}></input>
-                <input type="password" name="password" placeholder="password" onChange={this.handlePassword}></input>
+                <label className='input--white' >Name:</label>
+                <input className='input--white'  type="text" name="name" placeholder="name" onChange={this.handleNameChange}></input>
 
-                <button type="submit">Save changes</button>
+                <label className='input--white' >Surname:</label>
+                <input className='input--white'  type="text" name="surname" placeholder="surname" onChange={this.handleSurnmeChange}></input>
+
+                <label className='input--white' >Username:</label>
+                <input className='input--white'  type="text" name="username" placeholder="username" onChange={this.handleUsernameChange}></input>
+
+                <label className='input--white' >New Password:</label>
+                <input className='input--white'  type="password" name="newPassword" placeholder="new password" onChange={this.handleNewPasswordChange}></input>
+
+                <label className='input--white' >Repeat new Password:</label>
+                <input className='input--white'  type="password" name="repeatPassword" placeholder="repeat new password" onChange={this.handleRepeatPassword}></input>
+
+                <label className='input--white' >Password (required to save changes):</label>
+                <input className='input--white'  type="password" name="password" placeholder="password" onChange={this.handlePassword}></input>
+
+                <button className='button button--green' type="submit">Save changes</button>
             </form>
 
             <a href="#" onClick={this.props.onGoBack}>back</a>
