@@ -33,7 +33,7 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 } */
 
 .btn-register {
-    background-color: #071e3d;
+    background-color: #2B3E50;
     color: white;
     border: 0px;
     padding: 8px 15px;
@@ -43,11 +43,11 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 }
 
 .back{
-    color: #071e3d;
+    color: #2B3E50;
 }
 
 .btn-login {
-    background-color: #071e3d;
+    background-color: #2B3E50;
     color: white;
     border: 0px;
     padding: 8px 15px;
@@ -58,7 +58,7 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 }
 
 .btn-login2 {
-    background-color: #071e3d;
+    background-color: #2B3E50;
     color: white;
     border: 0px;
     padding: 8px 15px;
@@ -155,7 +155,10 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 }
 
 .error {
-    color: red;
+    margin: 20px auto;
+    text-align: center;
+    width: 30%;
+    color: #880e4f;
 }
 
 .dropdownPost{

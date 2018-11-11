@@ -2,15 +2,19 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
+import Error from './Error'
 
 class Postits extends Component {
-    state = { postits: [] }
+    state = { postits: [], error: null }
 
     componentDidMount() {
-        logic.listPostits()
+        try {
+            logic.listPostits()
             .then(postits => { this.setState({ postits }) })
-
-        // TODO error handling!
+            .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
   
 
@@ -19,35 +23,45 @@ class Postits extends Component {
         try {
             logic.addPostit(text, status)
                 .then(() => logic.listPostits())
-                .then(postits => this.setState({ postits }))
+                .then(postits => this.setState({ postits, error: null }))
+                .catch(err => this.setState({ error: err.message }))
 
-        } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+        } catch (err) {
+            this.setState({ error: err.message })
         }
     }
 
-    // TODO error handling!
 
-    handleRemovePostit = id =>
-        logic.removePostit(id)
+
+    handleRemovePostit = id => {
+        try {
+            logic.removePostit(id)
             .then(() => logic.listPostits())
-            .then(postits => this.setState({ postits }))
-            
+            .then(postits => this.setState({ postits, error: null  }))
+            .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
+    }
+                   
 
-    // TODO error handling!
-
-
-    handleModifyPostit = (id, text, status) =>     
-        logic.modifyPostit(id, text, status)
+    handleModifyPostit = (id, text, status) => {
+        try {
+            logic.modifyPostit(id, text, status)
             .then(() => logic.listPostits())
-            .then(postits => this.setState({ postits }))
-
-    // TODO error handling!
+            .then(postits => this.setState({ postits, error: null  }))
+            .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
+    } 
 
 
     render() {
+        const { error } = this.state
         return <div>
                 <InputForm onSubmit={this.handleSubmit} />
+                {error && <Error message={error} />}
                 <div className='postits-container'>
                     <div className='postits-container__item'>
                         <p className='postits-container__item__task'>TODO</p>

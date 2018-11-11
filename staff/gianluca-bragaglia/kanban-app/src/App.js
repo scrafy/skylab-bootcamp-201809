@@ -33,7 +33,9 @@ class App extends Component {
     handleLogin = (username, password) => {
         try {
             logic.login(username, password)
-                .then(() =>  this.props.history.push('/postits'))
+                .then(() => {
+                    this.setState({ error: null }, () => this.props.history.push('/postits'))
+                })
                 .catch(err => this.setState({ error: err.message }))
         } catch (err) {
             this.setState({ error: err.message })
