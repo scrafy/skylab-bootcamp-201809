@@ -34,6 +34,11 @@ img {
 
 .header .main-nav .nav {
   justify-content: flex-end; }
+  .header .main-nav .nav .nav-item a {
+    text-decoration: none;
+    color: blue; }
+    .header .main-nav .nav .nav-item a:hover {
+      cursor: pointer; }
 
 .board {
   padding: 2em 2em;
