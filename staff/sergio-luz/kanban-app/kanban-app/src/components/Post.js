@@ -20,7 +20,7 @@ class Post extends Component {
     }
 
     handleBlur = () => {
-        this.props.onUpdatePost(this.props.id, this.state.text, this.state.status)
+        this.props.onUpdatePost(this.props.id, this.state.text, this.props.status)
     }
 
     render() {

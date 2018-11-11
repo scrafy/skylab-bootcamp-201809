@@ -16,7 +16,7 @@ class Selector extends Component {
     }
 
     render() {
-        return <select  className='selector' onChange={this.handleSelectionChange}>
+        return <select className='selector' onChange={this.handleSelectionChange}>
             {(!this.props.noMove) && <option >Move to</option>}
             <option value="TODO">TODO</option>
             <option value="DOING">DOING</option>
