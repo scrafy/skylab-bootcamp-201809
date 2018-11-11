@@ -233,7 +233,7 @@ const logic = {
         if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
 
         if (!status.trim().length) throw new ValueError('status is empty or blank')
-
+        debugger
         return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)

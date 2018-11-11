@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Error(props) {
-    return <p className="error">{props.message}</p>
+    return <center><p className="error">{props.message}</p></center>
 }
 
 export default Error

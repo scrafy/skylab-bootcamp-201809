@@ -31,7 +31,7 @@ class App extends Component {
     handleLogin = (username, password) => {
         try {
             logic.login(username, password)
-                .then(() =>  this.props.history.push('/postits'))
+                .then(() => this.props.history.push('/postits'))
                 .catch(err => this.setState({ error: err.message }))
         } catch (err) {
             this.setState({ error: err.message })
@@ -44,7 +44,10 @@ class App extends Component {
         this.props.history.push('/')
     }
 
-    handleGoBack = () => this.props.history.push('/')
+    handleGoBack = () => {
+        this.setState({ error: null })
+        this.props.history.push('/')
+    }
 
     render() {
         const { error } = this.state
@@ -56,7 +59,7 @@ class App extends Component {
             {error && <Error message={error} />}
 
             <Route path="/postits" render={() => logic.loggedIn ? <div>
-                <section><button onClick={this.handleLogoutClick}>Logout</button></section>
+                <section><button className='logout__button' onClick={this.handleLogoutClick}>Logout</button></section>
                 <Postits />
             </div> : <Redirect to="/" />} />
 

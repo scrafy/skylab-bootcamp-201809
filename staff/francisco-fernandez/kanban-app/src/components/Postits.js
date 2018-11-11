@@ -2,15 +2,20 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
+import Error from './Error'
 
 class Postits extends Component {
-    state = { postits: [] }
+    state = { postits: [], error: null }
 
     componentDidMount() {
-        logic.listPostits()
-            .then(postits => { this.setState({ postits }) })
+        try {
+            logic.listPostits()
+                .then(postits => { this.setState({ postits }) })
+        } catch ({ message }) {
+            this.setState({ error: message })
+        }
 
-        // TODO error handling!
+
     }
 
     handleSubmit = text => {
@@ -19,56 +24,74 @@ class Postits extends Component {
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
         } catch ({ message }) {
-            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+
+            this.setState({ error: message })
         }
     }
 
-    // TODO error handling!
 
-    handleRemovePostit = id =>
-        logic.removePostit(id)
-            .then(() => logic.listPostits())
-            .then(postits => this.setState({ postits }))
+    handleRemovePostit = id => {
+        try {
+            logic.removePostit(id)
+                .then(() => logic.listPostits())
+                .then(postits => this.setState({ postits }))
 
-    // TODO error handling!
+        } catch ({ message }) {
+            this.setState({ error: message })
+        }
+    }
 
 
-    handleModifyPostit = (id, text) =>
-        logic.modifyPostit(id, text)
-            .then(() => logic.listPostits())
-            .then(postits => this.setState({ postits }))
+    handleModifyPostit = (id, text) => {
+        try {
+            logic.modifyPostit(id, text)
+                .then(() => logic.listPostits())
+                .then(postits => this.setState({ postits }))
+        } catch ({ message }) {
+            this.setState({ error: message })
+        }
+    }
 
-    // TODO error handling!
 
-    handleChangeStatus = (id, status) => 
-        logic.modifyStatus(id,status)
-            .then(()=> logic.listPostits())
-            .then(postits => this.setState({ postits }))
+    handleChangeStatus = (id, status) => {
+        try {
+            logic.modifyStatus(id, status)
+                .then(() => logic.listPostits())
+                .then(postits => this.setState({ postits }))
+
+        } catch ({ message }) {
+            this.setState({ error: message })
+        }
+    }
 
 
     render() {
-        return <div>
-            <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
+        const { error } = this.state
+        return <div className='postits'>
 
-            <InputForm onSubmit={this.handleSubmit} />
-            
-            <div className='container'>
-            <section>
-                <h1>To Do</h1> <InputForm status='TODO' onSubmit={this.handleSubmit} />
-                {this.state.postits.filter(postit => postit.status === 'TODO').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus= {this.handleChangeStatus} />)}
-            </section>
-            <section>
-                <h1>Doing</h1> <InputForm status='DOING' onSubmit={this.handleSubmit} />
-                {this.state.postits.filter(postit => postit.status === 'DOING').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus= {this.handleChangeStatus} />)}
-            </section>
-            <section>
-                <h1>Review</h1> <InputForm status='REVIEW' onSubmit={this.handleSubmit} />
-                {this.state.postits.filter(postit => postit.status === 'REVIEW').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus= {this.handleChangeStatus} />)}
-            </section>
-            <section>
-                <h1>Done</h1> <InputForm status='DONE' onSubmit={this.handleSubmit} />
-                {this.state.postits.filter(postit => postit.status === 'DONE').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus= {this.handleChangeStatus} />)}
-            </section>
+            <div className='postits__head'>
+                <h1 className='postits__title'>Post-It App <i className="fas fa-sticky-note"></i></h1>
+                <InputForm onSubmit={this.handleSubmit} />
+                {error && <Error message={error} />}
+            </div>
+
+            <div className='postits__container'>
+                <section className='postits__column'>
+                    <h1 className= 'postits__state'>To Do</h1>
+                    {this.state.postits.filter(postit => postit.status === 'TODO').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus={this.handleChangeStatus} />)}
+                </section>
+                <section className='postits__column'>
+                    <h1 className= 'postits__state'>Doing</h1>
+                    {this.state.postits.filter(postit => postit.status === 'DOING').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus={this.handleChangeStatus} />)}
+                </section>
+                <section className='postits__column'>
+                    <h1 className= 'postits__state'>Review</h1>
+                    {this.state.postits.filter(postit => postit.status === 'REVIEW').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus={this.handleChangeStatus} />)}
+                </section>
+                <section className='postits__column'>
+                    <h1 className= 'postits__state'>Done</h1>
+                    {this.state.postits.filter(postit => postit.status === 'DONE').map(postit => <Post key={postit.id} text={postit.text} status={postit.status} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeStatus={this.handleChangeStatus} />)}
+                </section>
             </div>
         </div>
     }
