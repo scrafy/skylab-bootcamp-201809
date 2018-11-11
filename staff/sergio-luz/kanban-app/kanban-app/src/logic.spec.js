@@ -240,13 +240,14 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status = `DONE`
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() => logic.addPostit(text))
+                    beforeEach(() => logic.addPostit(text, status))
 
                     it('should return postits', () =>
                         logic.listPostits()
@@ -278,6 +279,7 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status= 'DONE'
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
@@ -285,7 +287,7 @@ describe('logic', () => {
 
                 describe('with existing postit', () => {
                     beforeEach(() =>
-                        logic.addPostit(text)
+                        logic.addPostit(text, status)
                             .then(() => logic.listPostits())
                             .then(postits => postitId = postits[0].id)
                     )
@@ -309,6 +311,7 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status='DONE'
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
@@ -320,13 +323,13 @@ describe('logic', () => {
                     beforeEach(() => {
                         newText = `hello ${Math.random()}`
 
-                        return logic.addPostit(text)
+                        return logic.addPostit(text, status)
                             .then(() => logic.listPostits())
                             .then(([postit]) => postitId = postit.id)
                     })
 
                     it('should succeed', () =>
-                        logic.modifyPostit(postitId, newText)
+                        logic.modifyPostit(postitId, newText, status)
                             .then(() => {
                                 expect(true).to.be.true
 
