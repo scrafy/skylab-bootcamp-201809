@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { MongoClient } = require('mongodb')
+const mongoose = require('mongoose')
 const { User, Postit } = require('../data')
 const logic = require('.')
 const { AlreadyExistsError } = require('../errors')
@@ -14,22 +14,9 @@ const { env: { MONGO_URL } } = process
 // debug -> $ mocha debug src/logic.spec.js --timeout 10000
 
 describe('logic', () => {
-    let client, users
+    before(() => mongoose.connect(MONGO_URL, { useNewUrlParser: true }))
 
-    before(() => {
-        client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
-
-        return client.connect()
-            .then(() => {
-                const db = client.db('postit-test')
-
-                users = db.collection('users')
-
-                User._collection = users
-            })
-    })
-
-    beforeEach(() => users.deleteMany())
+ beforeEach(() => User.deleteMany())
 
     describe('user', () => {
         describe('register', () => {
@@ -44,18 +31,18 @@ describe('logic', () => {
 
             it('should succeed on correct data', () =>
                 logic.registerUser(name, surname, username, password)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        expect(_users.length).to.equal(1)
+                .then(() => User.find())
+                .then(_User => {
+                    expect(_User.length).to.equal(1)
 
-                        const [user] = _users
+                    const [user] = _User
 
-                        expect(user.id).to.be.a('string')
-                        expect(user.name).to.equal(name)
-                        expect(user.surname).to.equal(surname)
-                        expect(user.username).to.equal(username)
-                        expect(user.password).to.equal(password)
-                    })
+                    expect(user.id).to.be.a('string')
+                    expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
+                })
             )
 
             it('should fail on undefined name', () => {
@@ -71,7 +58,7 @@ describe('logic', () => {
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
-                return users.insertOne(user)
+                return User.create(user)
             })
 
             it('should authenticate on correct credentials', () => {
@@ -82,9 +69,9 @@ describe('logic', () => {
                         expect(id).to.exist
                         expect(id).to.be.a('string')
 
-                        return users.find().toArray()
-                            .then(_users => {
-                                const [_user] = _users
+                        return User.find()
+                            .then(_User => {
+                                const [_user] = _User
 
                                 expect(_user.id).to.equal(id)
                             })
@@ -102,10 +89,9 @@ describe('logic', () => {
             let user, postit
 
             beforeEach(() => {
-                postit = new Postit('hello text')
+                postit = new Postit({ text: 'hello text' })
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
-
-                return users.insertOne(user)
+                return user.save()
             })
 
             it('should succeed on valid id', () =>
@@ -132,7 +118,7 @@ describe('logic', () => {
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
-                users.insertOne(user)
+                return User.create(user)
             })
 
             it('should update on correct data and password', () => {
@@ -144,9 +130,9 @@ describe('logic', () => {
                 const newPassword = `${password}-${Math.random()}`
 
                 return logic.updateUser(id, newName, newSurname, newUsername, newPassword, password)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        const [_user] = _users
+                    .then(() => User.find())
+                    .then(_User => {
+                        const [_user] = _User
 
                         expect(_user.id).to.equal(id)
 
@@ -165,9 +151,9 @@ describe('logic', () => {
                 const newName = `${name}-${Math.random()}`
 
                 return logic.updateUser(id, newName, null, null, null, password)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        const [_user] = _users
+                    .then(() => User.find())
+                    .then(_User => {
+                        const [_user] = _User
 
                         expect(_user.id).to.equal(id)
 
@@ -184,9 +170,9 @@ describe('logic', () => {
                 const newSurname = `${surname}-${Math.random()}`
 
                 return logic.updateUser(id, null, newSurname, null, null, password)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        const [_user] = _users
+                    .then(() => User.find())
+                    .then(_User => {
+                        const [_user] = _User
 
                         expect(_user.id).to.equal(id)
 
@@ -211,10 +197,9 @@ describe('logic', () => {
                 let user2
 
                 beforeEach(() => {
-                    user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
                     user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
 
-                    return users.insertMany([user, user2])
+                    return User.create(user2)
                 })
 
                 it('should update on correct data and password', () => {
@@ -227,7 +212,7 @@ describe('logic', () => {
                         .catch(err => {
                             expect(err).to.be.instanceof(AlreadyExistsError)
 
-                            return users.findOne({ id })
+                            return User.findById(id)
                         })
                         .then(_user => {
                             expect(_user.id).to.equal(id)
@@ -244,21 +229,23 @@ describe('logic', () => {
 
     describe('postits', () => {
         describe('add', () => {
-            let user, text
+            let user, text, status
 
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
                 text = `text-${Math.random()}`
 
-                return users.insertOne(user)
+                status = `status-${Math.random()}`
+
+                return User.create(user)
             })
 
             it('should succeed on correct data', () =>
-                logic.addPostit(user.id, text)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        const [_user] = _users
+                logic.addPostit(user.id, text, status)
+                    .then(() => User.find())
+                    .then(_User => {
+                        const [_user] = _User
 
                         expect(_user.id).to.equal(user.id)
 
@@ -269,6 +256,7 @@ describe('logic', () => {
                         const [postit] = postits
 
                         expect(postit.text).to.equal(text)
+                        expext(postit.status).to.equal(status)
                     })
             )
 
@@ -284,17 +272,17 @@ describe('logic', () => {
 
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit, postit2] })
 
-                return users.insertOne(user)
+                return User.create(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.listPostits(user.id)
                     .then(postits => {
-                        return users.find().toArray()
-                            .then(_users => {
-                                expect(_users.length).to.equal(1)
+                        return User.find()
+                            .then(_User => {
+                                expect(_User.length).to.equal(1)
 
-                                const [_user] = _users
+                                const [_user] = _User
 
                                 expect(_user.id).to.equal(user.id)
 
@@ -331,16 +319,16 @@ describe('logic', () => {
                 postit = new Postit({ text: 'hello text' })
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
 
-                return users.insertOne(user)
+                return User.create(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.removePostit(user.id, postit.id)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        expect(_users.length).to.equal(1)
+                    .then(() => User.find())
+                    .then(_User => {
+                        expect(_User.length).to.equal(1)
 
-                        const [_user] = _users
+                        const [_user] = _User
 
                         expect(_user.id).to.equal(user.id)
 
@@ -352,24 +340,24 @@ describe('logic', () => {
         })
 
         describe('modify', () => {
-            let user, postit, newText
+            let user, postit, newText, status
 
             beforeEach(() => {
-                postit = new Postit({ text: 'hello text' })
+                postit = new Postit({ text: 'hello text', status:"DONE" })
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
 
                 newText = `new-text-${Math.random()}`
 
-                return users.insertOne(user)
+                return User.create(user)
             })
 
             it('should succeed on correct data', () =>
                 logic.modifyPostit(user.id, postit.id, newText)
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        expect(_users.length).to.equal(1)
+                    .then(() => User.find())
+                    .then(_User => {
+                        expect(_User.length).to.equal(1)
 
-                        const [_user] = _users
+                        const [_user] = _User
 
                         expect(_user.id).to.equal(user.id)
 
@@ -385,5 +373,5 @@ describe('logic', () => {
         })
     })
 
-    after(() => client.close())
+    after(() => mongoose.disconnect())
 })
