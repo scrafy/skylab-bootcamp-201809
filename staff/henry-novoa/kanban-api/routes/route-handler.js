@@ -1,4 +1,4 @@
-const { AlreadyExistsError, AuthError, NotFoundError, ValueError } = require('../errors')
+const { AlreadyExistsError, AuthError, NotFoundError, ValueError, StatusError } = require('../errors')
 
 function routeHandler(callback, res) {
     try {
@@ -6,12 +6,14 @@ function routeHandler(callback, res) {
             .catch(err => {
                 const { message } = err
 
-                debugger
+            
 
                 if (err instanceof AuthError) {
                     res.status(401)
                 } else if (err instanceof AlreadyExistsError) {
                     res.status(409)
+                 } else if (err instanceof StatusError) {
+                        res.status(409)
                 } else if (err instanceof NotFoundError) {
                     res.status(404)
                 } else {
@@ -24,8 +26,6 @@ function routeHandler(callback, res) {
             })
     } catch (err) {
         const { error: message } = err
-
-        debugger
 
         if (err instanceof TypeError || err instanceof ValueError) {
             res.status(400)

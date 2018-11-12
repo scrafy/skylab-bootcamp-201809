@@ -38,6 +38,10 @@ class Postits extends Component {
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
+    handleUpdateStatus = (id, status) =>
+        logic.updatePostitStatus(id, status)
+            .then(() => logic.listPostits ())
+            .then(postits => this.setState({ postits }))
     // TODO error handling!
 
 
@@ -47,8 +51,23 @@ class Postits extends Component {
 
             <InputForm onSubmit={this.handleSubmit} />
 
-            <section>
-                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+            <section className="postits">
+                <div className="postits__category postits__TODO">
+                <h2>TODO</h2>
+                {this.state.postits.map(postit => { if (postit.status === 'TODO') return <Post key={postit.id} status={postit.status} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onStatusUpdate={this.handleUpdateStatus} onUpdatePost={this.handleModifyPostit} /> })}
+                </div>
+                <div className="postits__category postits__DOING">
+                <h2>DOING</h2>
+                {this.state.postits.map(postit => { if (postit.status === 'DOING') return <Post key={postit.id} status={postit.status} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onStatusUpdate={this.handleUpdateStatus} onUpdatePost={this.handleModifyPostit} /> })}
+                </div>
+                <div className="postits__category postits__REVIEW">
+                <h2>REVIEW</h2>
+                {this.state.postits.map(postit => { if (postit.status === 'REVIEW') return <Post key={postit.id} status={postit.status} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onStatusUpdate={this.handleUpdateStatus} onUpdatePost={this.handleModifyPostit} /> })}
+                </div>
+                <div className="postits__category postits__DONE">
+                <h2>DONE</h2>
+                {this.state.postits.map(postit => { if (postit.status === 'DONE') return <Post key={postit.id} status={postit.status} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onStatusUpdate={this.handleUpdateStatus} onUpdatePost={this.handleModifyPostit} /> })}
+                </div>
             </section>
         </div>
     }

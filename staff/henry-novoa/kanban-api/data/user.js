@@ -12,7 +12,7 @@ class User {
 
         this.postits = postits || []
     }
-
+    
     save() {
         return User._collection.findOne({ id: this.id })
             .then(user => {

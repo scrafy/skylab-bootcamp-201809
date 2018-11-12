@@ -1,5 +1,5 @@
 const { User, Postit } = require('../data')
-const { AlreadyExistsError, AuthError, NotFoundError, ValueError } = require('../errors')
+const { AlreadyExistsError, AuthError, NotFoundError, ValueError, StatusError } = require('../errors')
 
 const logic = {
     registerUser(name, surname, username, password) {
@@ -216,6 +216,33 @@ const logic = {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
                 postit.text = text
+
+                return user.save()
+            })
+    },
+    updateStatus(id, postitId, status) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
+
+        if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
+
+        //Validate the 4 different states
+        if (status !== 'TODO' && status !== 'DOING' && status !== 'REVIEW' && status !== 'DONE' ) throw new StatusError(`${status} is not valid`)
+
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                const { postits } = user
+
+                const postit = postits.find(postit => postit.id === postitId)
+
+                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
+
+                postit.status = status
 
                 return user.save()
             })
