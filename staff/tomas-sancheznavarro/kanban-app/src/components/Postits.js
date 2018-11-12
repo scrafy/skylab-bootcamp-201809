@@ -49,7 +49,7 @@ class Postits extends Component {
         return <div>
             <h1>Kanban App <i className="fas fa-sticky-note"></i></h1>
 
-            {/* <InputForm onSubmit={this.handleSubmit} /> */}
+            <InputForm onSubmit={this.handleSubmit} />
 
             <div className='container'>
                 <section className='postit-col'>

@@ -1,6 +1,11 @@
+* {
+font-family: 'Open Sans', sans-serif;
+
+}
+
 .post {
     background-color: yellow;
-    width: 100px;
+    width: 150px;
     height: 100px;
     margin: 10px;
     margin-bottom: 50px;
@@ -31,6 +36,6 @@
 
 .postit-col {
     width: 200px;
-    background: gray;
+    background: whitesmoke;
     margin-right: 10px
 }
