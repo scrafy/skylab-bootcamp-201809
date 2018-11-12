@@ -13,8 +13,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-
-        return User.findOne({ username })
+        return User.findByUsername(username)
             .then(user => {
                 if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
@@ -31,7 +30,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findOne({username})
+        return User.findByUsername(username)
             .then(user => {
                 if (!user || user.password !== password) throw new AuthError('invalid username or password')
 
@@ -44,17 +43,16 @@ const logic = {
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        return User.findById(id).lean()
+        return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
-               // console.log(user)
-                const _user = user
-                debugger
-                console.log(_user)
-                user.id = id
 
-                delete user.password
-                delete user.postits
+                const _user = user.toObject()
+
+                _user.id = id
+
+                delete _user.password
+                delete _user.postits
 
                 return _user
             })
@@ -74,17 +72,15 @@ const logic = {
         if (username != null && !username.trim().length) throw new ValueError('username is empty or blank')
         if (newPassword != null && !newPassword.trim().length) throw new ValueError('newPassword is empty or blank')
         if (!password.trim().length) throw new ValueError('password is empty or blank')
-         
-        
-          return User.findById(id)
+
+        return User.findById(id)
             .then(user => {
-              
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 if (user.password !== password) throw new AuthError('invalid password')
 
                 if (username) {
-                    return User.findOne({username})
+                    return User.findByUsername(username)
                         .then(_user => {
                             if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
 
@@ -99,7 +95,7 @@ const logic = {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
-
+    
                     return user.save()
                 }
             })
@@ -234,7 +230,7 @@ const logic = {
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
         //Validate the 4 different states
-        if (status !== 'TODO' && status !== 'DOING' && status !== 'REVIEW' && status !== 'DONE') throw new StatusError(`${status} is not valid`)
+        if (status !== 'TODO' && status !== 'DOING' && status !== 'REVIEW' && status !== 'DONE' ) throw new StatusError(`${status} is not valid`)
 
         return User.findById(id)
             .then(user => {

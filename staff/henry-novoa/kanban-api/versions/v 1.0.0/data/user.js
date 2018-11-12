@@ -43,4 +43,4 @@ class User {
 
 User._collection = 'NO-COLLECTION'
 
-// module.exports = User
+module.exports = User
