@@ -190,6 +190,7 @@ const logic = {
 
                 return user.save()
             })
+
     },
 
     modifyPostit(id, postitId, text) {
@@ -246,7 +247,7 @@ const logic = {
 
                 postit.status = status
 
-                return user.save()
+                return user.save()       
             })
     }
 }

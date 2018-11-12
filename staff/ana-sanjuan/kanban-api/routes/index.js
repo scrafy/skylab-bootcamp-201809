@@ -122,9 +122,16 @@ router.put('/users/:id/postits/:postitId/status', [bearerTokenParser, jwtVerifie
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.modifyPostitStatus(id, postitId, status)
-            .then(() => res.json({
+            .then(test => {
+                debugger
+                res.json({
                 message: 'status modified'
-            }))
+            })})
+            .then(() => {
+                debugger
+                console.log('hola')
+            })
+            
     }, res)
 })
 
