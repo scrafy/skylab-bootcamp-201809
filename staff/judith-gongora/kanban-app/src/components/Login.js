@@ -24,12 +24,15 @@ class Login extends Component {
     }
 
     render() {
-        return <form onSubmit={this.handleSubmit}>
+        return <div className="form__container">
+            <form onSubmit={this.handleSubmit}>
+            <img src="https://res.cloudinary.com/skylabcoders/image/upload/v1541952996/pintegram/images.png"></img>
+                <p>Kanban App</p>
             <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
             <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
-            {/* <button type="submit">Login</button> <a href="/#/">back</a> */}
             <button type="submit">Login</button> <a href="#" onClick={this.props.onGoBack}>back</a>
         </form>
+        </div>
     }
 }
 

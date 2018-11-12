@@ -143,16 +143,24 @@ class Postits extends Component {
         const text = ev.dataTransfer.getData('text')
         
         if (ev.target.classList.contains('dropzone')) {
-            console.log(idPostit,text,status)
             this.handleModifyPostit (idPostit, text, status)
+        }
+        if (ev.target.classList.contains('dropzone-remove')) {
+            this.handleRemovePostit (idPostit)
         }
        
     }
 
 
     render() {
-        return <div>
-                <h1>Kanban App <i className="fas fa-sticky-note"></i></h1>
+        return <div className="home__container"> 
+                <header>
+                    <section>
+                        <img src="https://res.cloudinary.com/skylabcoders/image/upload/v1541952996/pintegram/images.png"></img>
+                        <h1>Kanban App</h1>
+                    </section>    
+                    <div><button onClick={this.props.onLogout}>Logout</button></div>
+                </header>
 
                 <div className="grid__postits">
                 
@@ -161,30 +169,36 @@ class Postits extends Component {
                         To Do
                     </header>
                     <InputForm onSubmit={this.handleSubmit}  status = 'todo' />
-                        {this.state.todo.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} status = 'todo' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
+                        {this.state.todo.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'todo' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'doing')}>
                     <header>
                         Doing
                     </header>
                     <InputForm onSubmit={this.handleSubmit} status= 'doing'/>
-                        {this.state.doing.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} status = 'doing' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
+                        {this.state.doing.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'doing' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'review')}>
                         <header>
                             Review
                         </header>
                         <InputForm onSubmit={this.handleSubmit} status='review'/>
-                        {this.state.review.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} status = 'review' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id,postit.text) }/>)}
+                        {this.state.review.map(postit => <Post key={postit.id} text={postit.text} id={postit.id}  onUpdatePost={this.handleModifyPostit} status = 'review' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id,postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'done')}>
                     <header>
                         Done
                     </header>
                     <InputForm onSubmit={this.handleSubmit} status='done'/>
-                        {this.state.done.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} status = 'done' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
-                    </section>
+                        {this.state.done.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'done' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
+                    </section>           
+                     
             </div>
+            <div className="remove">
+                <p className="remove__text">Drop here to remove</p>
+                <section className="dropzone-remove" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'remove')} >    
+                </section> 
+            </div>     
         </div>
     }
 }
