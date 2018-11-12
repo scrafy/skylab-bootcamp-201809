@@ -34,7 +34,6 @@ class Postits extends Component {
 
 
     handleModifyPostit = (id, text, status) => {
-        debugger
         logic.modifyPostit(id, text, status)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
@@ -47,12 +46,10 @@ class Postits extends Component {
     drop = (ev, status) => {
         ev.preventDefault()
 
-        if (ev.target.classList.contains('drop')) {
-            const id = ev.dataTransfer.getData("id")
-            const text = ev.dataTransfer.getData("text")
+        const id = ev.dataTransfer.getData("id")
+        const text = ev.dataTransfer.getData("text")
 
-            this.handleModifyPostit(id, text, status)
-        }
+        this.handleModifyPostit(id, text, status)
     }
 
     drag = (ev, id, text, status) => {
@@ -68,7 +65,7 @@ class Postits extends Component {
         return <div>
             <div className="container">
             <div className="row justify-content-center">
-            <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
+            <h1>Kanban App <i className="fas fa-sticky-note"></i></h1>
             </div>
             <div className="row justify-content-center">
             <InputForm onSubmit={this.handleSubmit} />
