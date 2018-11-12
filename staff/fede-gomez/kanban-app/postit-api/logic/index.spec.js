@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 const mongoose = require('mongoose')
-const { MongoClient } = require('mongodb')
 const { User, Postit } = require('../data')
 const logic = require('.')
 const { AlreadyExistsError } = require('../errors')
@@ -15,22 +14,11 @@ const { env: { MONGO_URL } } = process
 // debug -> $ mocha debug src/logic.spec.js --timeout 10000
 
 describe('logic', () => {
-    let client, users
+    before(() => mongoose.connect(MONGO_URL, { useNewUrlParser: true }))
 
-    before(() => {
-        client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
-
-        return client.connect()
-            .then(() => {
-                const db = client.db('postit-test')
-
-                users = db.collection('users')
-
-                User._collection = users
-            })
-    })
-
-    beforeEach(() => users.deleteMany())
+    // Cuando tengas Postit.deleteMany() , usa un PromiseAll en el siguiente beforeEach
+    // beforeEach (() => Promise.All(User.deleteMany(), Postit.deleteMany()))
+    beforeEach(() => User.deleteMany())
 
     describe('user', () => {
         describe('register', () => {
@@ -45,7 +33,7 @@ describe('logic', () => {
 
             it('should succeed on correct data', () =>
                 logic.registerUser(name, surname, username, password)
-                    .then(() => users.find().toArray())
+                    .then(() => User.find())
                     .then(_users => {
                         expect(_users.length).to.equal(1)
 
@@ -70,9 +58,9 @@ describe('logic', () => {
             let user
 
             beforeEach(() => {
-                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [] })
 
-                return users.insertOne(user)
+                return User.create(user)
             })
 
             it('should authenticate on correct credentials', () => {
@@ -83,14 +71,17 @@ describe('logic', () => {
                         expect(id).to.exist
                         expect(id).to.be.a('string')
 
-                        return users.find().toArray()
+                        return User.find()
                             .then(_users => {
+
                                 const [_user] = _users
 
                                 expect(_user.id).to.equal(id)
                             })
                     })
+
             })
+
 
             it('should fail on undefined username', () => {
                 expect(() => logic.authenticateUser(undefined, user.password)).to.throw(TypeError, 'undefined is not a string')
@@ -103,13 +94,15 @@ describe('logic', () => {
             let user, postit
 
             beforeEach(() => {
-                postit = new Postit('hello text')
+                postit = new Postit({ text: 'hello text' })
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', postits: [postit] })
 
-                return users.insertOne(user)
+                return user.save()
             })
 
-            it('should succeed on valid id', () =>
+            it('should succeed on valid id', () => {
+                const { username, password } = user
+                debugger
                 logic.retrieveUser(user.id)
                     .then(_user => {
                         expect(_user).not.to.be.instanceof(User)
@@ -124,7 +117,7 @@ describe('logic', () => {
                         expect(password).to.be.undefined
                         expect(postits).not.to.exist
                     })
-            )
+            })
         })
 
         describe('update', () => {
@@ -132,19 +125,19 @@ describe('logic', () => {
 
             beforeEach(() => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                return user.save()
 
-                users.insertOne(user)
             })
 
             it('should update on correct data and password', () => {
-                const { id, name, surname, username, password } = user
-
+                let { id, name, surname, username, password } = user
+                
                 const newName = `${name}-${Math.random()}`
                 const newSurname = `${surname}-${Math.random()}`
                 const newUsername = `${username}-${Math.random()}`
                 const newPassword = `${password}-${Math.random()}`
 
-                return logic.updateUser(id, newName, newSurname, newUsername, newPassword, password)
+                return logic.updateUser({ id, newName, newSurname, newUsername, newPassword, password })
                     .then(() => users.find().toArray())
                     .then(_users => {
                         const [_user] = _users
@@ -212,12 +205,15 @@ describe('logic', () => {
                 let user2
 
                 beforeEach(() => {
-                    user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                    // This is done before...
+                    // user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
                     user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
 
-                    return users.insertMany([user, user2])
+                    // Already changed to work with mongoose
+                    return user2.save()
                 })
 
+                // TODO
                 it('should update on correct data and password', () => {
                     const { id, name, surname, username, password } = user2
 

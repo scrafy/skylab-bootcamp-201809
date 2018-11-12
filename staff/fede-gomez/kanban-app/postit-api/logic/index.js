@@ -13,7 +13,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findByUsername(username)
+        return User.findOne({ username })
             .then(user => {
                 if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
@@ -30,10 +30,9 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findByUsername(username)
+        return User.findOne({ username })
             .then(user => {
                 if (!user || user.password !== password) throw new AuthError('invalid username or password')
-
                 return user.id
             })
     },
@@ -43,22 +42,22 @@ const logic = {
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        return User.findById(id)
+        /*
+            In the following lines we pass an object as second argument to the User.findById function
+            in order to eliminate some properties that we don't want to show
+        */
+        return User.findById(id, { '_id': 0, 'postits': 0, 'password': 0, '__v': 0 })
+            .lean()
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-                const _user = user.toObject()
-
-                _user.id = id
-
-                delete _user.password
-                delete _user.postits
-
-                return _user
+                // We have eliminated _id, therefore we add a new id (the one passed to the retrieveUser function)
+                user.id = id
+                return user
             })
     },
 
-    updateUser(id, name, surname, username, newPassword, password) {
+    updateUser({ id, name, surname, username, newPassword, password }) {
+
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
         if (name != null && typeof name !== 'string') throw TypeError(`${name} is not a string`)
         if (surname != null && typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
@@ -73,14 +72,27 @@ const logic = {
         if (newPassword != null && !newPassword.trim().length) throw new ValueError('newPassword is empty or blank')
         if (!password.trim().length) throw new ValueError('password is empty or blank')
 
-        return User.findById(id)
+
+        // return User.findById(id, {'_id': 0, 'postits': 0, 'password': 0, '__v': 0})
+        //     .lean()
+        //     .then(user => {
+        //         if (!user) throw new NotFoundError(`user with id ${id} not found`)
+        //         // We have eliminated _id, therefore we add a new id (the one passed to the retrieveUser function)
+        //         user.id = id
+        //         return user
+        //     })
+
+        return User.findById(id, { '_id': 0, '__v': 0, 'postits': 0 })
+            .lean()
             .then(user => {
+                debugger
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 if (user.password !== password) throw new AuthError('invalid password')
 
                 if (username) {
-                    return User.findByUsername(username)
+                    return User.find({ username })
+                        .lean()
                         .then(_user => {
                             if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
 
@@ -91,14 +103,16 @@ const logic = {
 
                             return user.save()
                         })
+                        .then(() => undefined)
                 } else {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
-    
+
                     return user.save()
                 }
             })
+            .then(() => undefined)
     },
 
     /**
