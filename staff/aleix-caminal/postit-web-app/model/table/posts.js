@@ -3,7 +3,9 @@ const { Table } = require('lilli')
 class PostsTable extends Table {
     constructor() {
         super('posts')
-        this.belongsTo({ boards: 'boardId' })
+        this.belongsTo('boards', {
+            foreignKey: 'boardId'
+        })
     }
 }
 
