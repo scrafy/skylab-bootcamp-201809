@@ -154,7 +154,6 @@ const logic = {
         })
             .then(res => res.json())
             .then(res => {
-                debugger
                 if (res.error) throw Error(res.error)
             })
     }
