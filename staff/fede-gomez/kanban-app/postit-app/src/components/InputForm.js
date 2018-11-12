@@ -18,8 +18,8 @@ class InputForm extends Component {
     }
 
     render() {
-        return <form onSubmit={this.handleSubmit}>
-            <input value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
+        return <form className='main__form' onSubmit={this.handleSubmit}>
+            <input className='main__input' value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
 
             <button type="submit"><i className="fas fa-plus"></i></button>
         </form>
