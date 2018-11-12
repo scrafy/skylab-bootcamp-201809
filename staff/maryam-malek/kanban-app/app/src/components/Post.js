@@ -24,7 +24,7 @@ class Post extends Component {
     }
 
     render() {
-        return <article className="postIt">
+        return <article className="postIt" draggable="true" onDragStart={() => this.props.drag()}>
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
             <select value={this.state.status} onChange={this.handleSelectChange}>
                 <option value="TODO">TO DO</option>
