@@ -141,12 +141,10 @@ class Postits extends Component {
     onDrop = (ev, status) => {
         const idPostit = ev.dataTransfer.getData('id')
         const text = ev.dataTransfer.getData('text')
-        
-        if (ev.target.classList.contains('dropzone')) {
-            this.handleModifyPostit (idPostit, text, status)
-        }
         if (ev.target.classList.contains('dropzone-remove')) {
             this.handleRemovePostit (idPostit)
+        } else{
+            this.handleModifyPostit (idPostit, text, status)
         }
        
     }
