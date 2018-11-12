@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const mongoose = require('mongoose')
 const { MongoClient } = require('mongodb')
 const { User, Postit } = require('../data')
 const logic = require('.')
