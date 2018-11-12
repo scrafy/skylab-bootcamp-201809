@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Input } from "mdbreact"
 
 class InputForm extends Component {
     state = { text: '' }
@@ -19,9 +20,9 @@ class InputForm extends Component {
 
     render() {
         return <form onSubmit={this.handleSubmit}>
-            <input value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
-
-            <button type="submit"><i className="fas fa-plus"></i></button>
+            <div className="input-bar"><Input value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
+            <button id="button-add" type="submit"><i className="fas fa-plus"></i></button>
+            </div>
         </form>
     }
 }

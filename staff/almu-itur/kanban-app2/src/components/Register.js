@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button, Input } from "mdbreact"
 
 class Register extends Component {
     state = { name: '', surname: '', username: '', password: '' }
@@ -36,13 +37,15 @@ class Register extends Component {
     }
 
     render() {
-        return <form onSubmit={this.handleSubmit}>
-            <input type="text" placeholder="Name" onChange={this.handleNameChange} />
-            <input type="text" placeholder="Surname" onChange={this.handleSurnameChange} />
-            <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
-            <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
-            <button type="submit">Register</button> <a href="#" onClick={this.props.onGoBack}>back</a>
+        return <div className="register-container">
+        <form onSubmit={this.handleSubmit}>
+            <Input type="text" label="Name" onChange={this.handleNameChange} />
+            <Input type="text" label="Surname" onChange={this.handleSurnameChange} />
+            <Input type="text" label="Username" onChange={this.handleUsernameChange} />
+            <Input type="password" label="Password" onChange={this.handlePasswordChange} />
+            <Button type="submit">Register</Button> <a href="#" onClick={this.props.onGoBack}>back</a>
         </form>
+        </div>
     }
 }
 

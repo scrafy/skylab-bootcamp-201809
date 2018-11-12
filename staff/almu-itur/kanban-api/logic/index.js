@@ -114,10 +114,10 @@ const logic = {
      */
     addPostit(id, text) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+        // if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
-        if (!status.trim().length) throw new ValueError('status is empty or blank')
+        // if (!status.trim().length) throw new ValueError('status is empty or blank')
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
@@ -194,7 +194,7 @@ const logic = {
             })
     },
 
-    modifyPostit(id, postitId, text) {
+    modifyPostit(id, postitId, text, status) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
@@ -207,6 +207,10 @@ const logic = {
 
         if (!text.trim().length) throw new ValueError('text is empty or blank')
 
+        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+
+        if (!status.trim().length) throw new ValueError('status is empty or blank')
+
         return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
@@ -218,6 +222,7 @@ const logic = {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
                 postit.text = text
+                postit.status = status
 
                 return user.save()
             })

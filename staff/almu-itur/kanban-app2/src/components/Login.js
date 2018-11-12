@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Button, Input } from "mdbreact"
 
 class Login extends Component {
     state = { username: '', password: '' }
@@ -24,12 +25,14 @@ class Login extends Component {
     }
 
     render() {
-        return <form onSubmit={this.handleSubmit}>
-            <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
-            <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
+        return <div className="login-container"> 
+            <form onSubmit={this.handleSubmit}>
+            <Input type="text" label="Username" onChange={this.handleUsernameChange} />
+            <Input type="password" label="Password" onChange={this.handlePasswordChange} />
             {/* <button type="submit">Login</button> <a href="/#/">back</a> */}
-            <button type="submit">Login</button> <a href="#" onClick={this.props.onGoBack}>back</a>
+            <Button type="submit">Login</Button> <a href="#" onClick={this.props.onGoBack}>back</a>
         </form>
+        </div>
     }
 }
 
