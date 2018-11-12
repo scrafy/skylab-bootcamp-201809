@@ -56,19 +56,21 @@ const logic = {
             })
     },
 
-    updateUser({ id, name, surname, username, newPassword, password }) {
+    updateUser( id, newName, newSurname, newUsername, newPassword, password ) {
+
+        
 
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-        if (name != null && typeof name !== 'string') throw TypeError(`${name} is not a string`)
-        if (surname != null && typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
-        if (username != null && typeof username !== 'string') throw TypeError(`${username} is not a string`)
+        if (newName != null && typeof newName !== 'string') throw TypeError(`${newName} is not a string`)
+        if (newSurname != null && typeof newSurname !== 'string') throw TypeError(`${newSurname} is not a string`)
+        if (newUsername != null && typeof newUsername !== 'string') throw TypeError(`${newUsername} is not a string`)
         if (newPassword != null && typeof newPassword !== 'string') throw TypeError(`${newPassword} is not a string`)
         if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
-        if (name != null && !name.trim().length) throw new ValueError('name is empty or blank')
-        if (surname != null && !surname.trim().length) throw new ValueError('surname is empty or blank')
-        if (username != null && !username.trim().length) throw new ValueError('username is empty or blank')
+        if (newName != null && !newName.trim().length) throw new ValueError('newName is empty or blank')
+        if (newSurname != null && !newSurname.trim().length) throw new ValueError('newSurname is empty or blank')
+        if (newUsername != null && !newUsername.trim().length) throw new ValueError('newUsername is empty or blank')
         if (newPassword != null && !newPassword.trim().length) throw new ValueError('newPassword is empty or blank')
         if (!password.trim().length) throw new ValueError('password is empty or blank')
 
@@ -82,31 +84,31 @@ const logic = {
         //         return user
         //     })
 
-        return User.findById(id, { '_id': 0, '__v': 0, 'postits': 0 })
-            .lean()
+        return User.findById(id)
             .then(user => {
-                debugger
+                
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 if (user.password !== password) throw new AuthError('invalid password')
-
-                if (username) {
-                    return User.find({ username })
-                        .lean()
+                
+                if (newUsername) {
+                    
+                    return User.find({ 'username': newUsername })
                         .then(_user => {
-                            if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
+                            
+                            if (_user.length) throw new AlreadyExistsError(`username ${newUsername} already exists`)
 
-                            name != null && (user.name = name)
-                            surname != null && (user.surname = surname)
-                            user.username = username
+                            newName != null && (user.name = newName)
+                            newSurname != null && (user.surname = newSurname)
+                            user.username = newUsername
                             newPassword != null && (user.password = newPassword)
 
                             return user.save()
                         })
                         .then(() => undefined)
                 } else {
-                    name != null && (user.name = name)
-                    surname != null && (user.surname = surname)
+                    newName != null && (user.name = newName)
+                    newSurname != null && (user.surname = newSurname)
                     newPassword != null && (user.password = newPassword)
 
                     return user.save()

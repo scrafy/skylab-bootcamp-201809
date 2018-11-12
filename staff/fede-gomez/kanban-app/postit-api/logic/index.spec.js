@@ -102,7 +102,7 @@ describe('logic', () => {
 
             it('should succeed on valid id', () => {
                 const { username, password } = user
-                debugger
+                
                 logic.retrieveUser(user.id)
                     .then(_user => {
                         expect(_user).not.to.be.instanceof(User)
@@ -137,8 +137,8 @@ describe('logic', () => {
                 const newUsername = `${username}-${Math.random()}`
                 const newPassword = `${password}-${Math.random()}`
 
-                return logic.updateUser({ id, newName, newSurname, newUsername, newPassword, password })
-                    .then(() => users.find().toArray())
+                return logic.updateUser(id, newName, newSurname, newUsername, newPassword, password )
+                    .then(() => User.find())
                     .then(_users => {
                         const [_user] = _users
 
@@ -155,11 +155,11 @@ describe('logic', () => {
 
             it('should update on correct id, name and password (other fields null)', () => {
                 const { id, name, surname, username, password } = user
-
+                
                 const newName = `${name}-${Math.random()}`
 
                 return logic.updateUser(id, newName, null, null, null, password)
-                    .then(() => users.find().toArray())
+                    .then(() => User.find())
                     .then(_users => {
                         const [_user] = _users
 
@@ -178,7 +178,7 @@ describe('logic', () => {
                 const newSurname = `${surname}-${Math.random()}`
 
                 return logic.updateUser(id, null, newSurname, null, null, password)
-                    .then(() => users.find().toArray())
+                    .then(() => User.find())
                     .then(_users => {
                         const [_user] = _users
 
@@ -222,11 +222,13 @@ describe('logic', () => {
                     return logic.updateUser(id, null, null, newUsername, null, password)
                         .then(() => expect(true).to.be.false)
                         .catch(err => {
+                            
                             expect(err).to.be.instanceof(AlreadyExistsError)
-
-                            return users.findOne({ id })
+                            
+                            return User.findById(id)
                         })
                         .then(_user => {
+                            
                             expect(_user.id).to.equal(id)
 
                             expect(_user.name).to.equal(name)
@@ -239,7 +241,7 @@ describe('logic', () => {
         })
     })
 
-    describe('postits', () => {
+    false && describe('postits', () => {
         describe('add', () => {
             let user, text
 
@@ -382,5 +384,5 @@ describe('logic', () => {
         })
     })
 
-    after(() => client.close())
+    after(() => mongoose.disconnect())
 })
