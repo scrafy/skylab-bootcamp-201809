@@ -1,4 +1,6 @@
-import React, {Component} from 'react'
+
+import React, { Component } from 'react'
+
 
 class Login extends Component {
     state = { username: '', password: '' }
@@ -24,6 +26,7 @@ class Login extends Component {
     }
 
     render() {
+
         return <form onSubmit={this.handleSubmit}>
             <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
             <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
@@ -32,6 +35,7 @@ class Login extends Component {
         </form>
     }
 }
+
 
 
 export default Login
