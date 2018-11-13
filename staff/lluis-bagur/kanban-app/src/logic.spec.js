@@ -113,7 +113,7 @@ describe('logic', () => {
     describe('postits', () => {
         describe('add', () => {
             describe('with existing user', () => {
-                let username, password, text
+                let username, password, text, status
 
                 beforeEach(() => {
                     const name = 'John', surname = 'Doe'
@@ -122,13 +122,14 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status = 'todo'
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
                 })
 
                 it('should succeed on correct data', () =>
-                    logic.addPostit(text)
+                    logic.addPostit(text, status)
                         .then(() => expect(true).to.be.true)
                 )
             })
@@ -136,7 +137,7 @@ describe('logic', () => {
 
         describe('list', () => {
             describe('with existing user', () => {
-                let username, password, text
+                let username, password, text, status
 
                 beforeEach(() => {
                     const name = 'John', surname = 'Doe'
@@ -145,13 +146,14 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status = 'todo'
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
                 })
 
                 describe('with existing postit', () => {
-                    beforeEach(() => logic.addPostit(text))
+                    beforeEach(() => logic.addPostit(text, status))
 
                     it('should return postits', () =>
                         logic.listPostits()
@@ -174,7 +176,7 @@ describe('logic', () => {
 
         describe('remove', () => {
             describe('with existing user', () => {
-                let username, password, text, postitId
+                let username, password, text, status, postitId
 
                 beforeEach(() => {
                     const name = 'John', surname = 'Doe'
@@ -183,6 +185,7 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status = 'todo'
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
@@ -190,7 +193,7 @@ describe('logic', () => {
 
                 describe('with existing postit', () => {
                     beforeEach(() =>
-                        logic.addPostit(text)
+                        logic.addPostit(text, status)
                             .then(() => logic.listPostits())
                             .then(postits => postitId = postits[0].id)
                     )
@@ -205,7 +208,7 @@ describe('logic', () => {
 
         describe('modify', () => {
             describe('with existing user', () => {
-                let username, password, text, postitId
+                let username, password, text, status, postitId
 
                 beforeEach(() => {
                     const name = 'John', surname = 'Doe'
@@ -214,6 +217,7 @@ describe('logic', () => {
                     password = `123-${Math.random()}`
 
                     text = `hello ${Math.random()}`
+                    status = 'todo'
 
                     return logic.registerUser(name, surname, username, password)
                         .then(() => logic.login(username, password))
@@ -225,13 +229,13 @@ describe('logic', () => {
                     beforeEach(() => {
                         newText = `hello ${Math.random()}`
 
-                        return logic.addPostit(text)
+                        return logic.addPostit(text, status)
                             .then(() => logic.listPostits())
                             .then(([postit]) => postitId = postit.id)
                     })
 
                     it('should succeed', () =>
-                        logic.modifyPostit(postitId, newText)
+                        logic.modifyPostit(postitId, newText, status)
                             .then(() => {
                                 expect(true).to.be.true
 

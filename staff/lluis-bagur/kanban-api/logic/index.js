@@ -108,7 +108,7 @@ const logic = {
      * 
      * @returns {Promise} Resolves on correct data, rejects on wrong user id
      */
-    addPostit(text, status, id) {
+    addPostit(id, text, status) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
@@ -142,7 +142,7 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                return Postit.find({ user: user._id })
+                return Postit.find({ user: id })
                     .lean()
                     .then(postits => postits.map(postit => {
                         postit.id = postit._id.toString()
@@ -176,21 +176,11 @@ const logic = {
 
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        return User.findById(id)
-            .then(user => {
-                if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-                const { postits } = user
-
-                const index = postits.findIndex(postit => postit.id === postitId)
-
-                if (index < 0) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
-
-                postits.splice(index, 1)
-
-                return user.save()
+        return Postit.findById( postitId )
+            .then(postit => {
+                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
+                return postit.remove()
             })
-            .then(() => undefined)
     },
 
     modifyPostit(id, postitId, text, status) {
@@ -209,20 +199,15 @@ const logic = {
         if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
 
         if (!status.trim().length) throw new ValueError('status is empty or blank')
-        return User.findById(id)
-            .then(user => {
-                if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-                const { postits } = user
-
-                const postit = postits.find(postit => postit.id === postitId)
-
-                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
-
+        return Postit.findById( postitId )
+            .then(postit => {
+                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
+                
                 postit.text = text
                 postit.status = status
 
-                return user.save()
+                return postit.save()
+
             })
             
     }

@@ -30,6 +30,7 @@ router.post('/users', jsonBodyParser, (req, res) => {
 router.post('/auth', jsonBodyParser, (req, res) => {
     routeHandler(() => {
         const { username, password } = req.body
+        
 
         return logic.authenticateUser(username, password)
             .then(id => {

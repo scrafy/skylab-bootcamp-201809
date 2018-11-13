@@ -78,6 +78,8 @@ const logic = {
 
         if (!status.trim()) throw Error('status is empty or blank')
 
+        debugger
+
         return fetch(`${this.url}/users/${this._userId}/postits`, {
             method: 'POST',
             headers: {
@@ -91,6 +93,8 @@ const logic = {
                 if (res.error) throw Error(res.error)
             })
     },
+
+    
 
     listPostits() {
         return fetch(`${this.url}/users/${this._userId}/postits`, {
@@ -125,7 +129,6 @@ const logic = {
     },
 
     modifyPostit(id, text, status) {
-
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
 
         if (!id.trim().length) throw Error('id is empty or blank')
@@ -134,7 +137,7 @@ const logic = {
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+        if (typeof status !== 'string') throw TypeError(`${status}  status is not a string`)
 
         if (!status.trim()) throw Error('status is empty or blank')
 
