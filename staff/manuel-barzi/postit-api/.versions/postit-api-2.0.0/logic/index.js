@@ -13,7 +13,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findOne({ username })
+        return User.findByUsername(username)
             .then(user => {
                 if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
@@ -30,7 +30,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findOne({ username })
+        return User.findByUsername(username)
             .then(user => {
                 if (!user || user.password !== password) throw new AuthError('invalid username or password')
 
@@ -43,26 +43,18 @@ const logic = {
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        return User.findById(id, { '_id': 0, password: 0, postits: 0, __v: 0 })
-            // .then(user => {
-            //     if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-            //     const _user = user.toObject()
-
-            //     _user.id = id
-
-            //     delete _user.password
-            //     delete _user.postits
-
-            //     return _user
-            // })
-            .lean()
-            .then(user => { // ALT
+        return User.findById(id)
+            .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                user.id = id
+                const _user = user.toObject()
 
-                return user
+                _user.id = id
+
+                delete _user.password
+                delete _user.postits
+
+                return _user
             })
     },
 
@@ -88,7 +80,7 @@ const logic = {
                 if (user.password !== password) throw new AuthError('invalid password')
 
                 if (username) {
-                    return User.findOne({ username })
+                    return User.findByUsername(username)
                         .then(_user => {
                             if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
 
@@ -103,7 +95,7 @@ const logic = {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
-
+    
                     return user.save()
                 }
             })
@@ -133,11 +125,12 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                const postit = new Postit({ text, user: user.id })
+                const postit = new Postit({ text })
 
-                return postit.save()
+                user.postits.push(postit)
+
+                return user.save()
             })
-            .then(() => undefined)
     },
 
     listPostits(id) {
@@ -146,23 +139,10 @@ const logic = {
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
         return User.findById(id)
-            .lean()
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                debugger
-
-                return Postit.find({ user: user._id })
-                    .lean()
-                    .then(postits => postits.map(postit => {
-                        postit.id = postit._id.toString()
-                        
-                        delete postit._id
-
-                        postit.user = postit.user.toString()
-
-                        return postit
-                    }))
+                return user.postits
             })
     },
 
@@ -191,6 +171,16 @@ const logic = {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 const { postits } = user
+
+                // by filtering
+
+                // const _postits = postits.filter(postit => postit.id !== postitId)
+
+                // if (_postits.length !== postits.length - 1) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
+
+                // user.postits = _postits
+
+                // by finding index
 
                 const index = postits.findIndex(postit => postit.id === postitId)
 
