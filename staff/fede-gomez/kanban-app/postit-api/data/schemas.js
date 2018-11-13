@@ -6,15 +6,15 @@ const { Schema } = require('mongoose')
  */
 
 const Postit = new Schema({
-    test: String
+    text: String,
+    userId: String
 })
 
 const User = new Schema({
     name: String,
     surname: String,
     username: String,
-    password: String,
-    postits: [Postit]
+    password: String
 })
 
 module.exports = {
