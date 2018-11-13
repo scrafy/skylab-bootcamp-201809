@@ -194,22 +194,22 @@ const logic = {
             })
     },
 
-    modifyPostit(id, postitId, text, status) {
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+    modifyPostit(id, postitId, text) {
+        if (typeof id !== 'string') throw TypeError(`${id} - id is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} - postitId is not a string`)
 
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+        if (typeof text !== 'string') throw TypeError(`${text} - text is not a string`)
 
         if (!text.trim().length) throw new ValueError('text is empty or blank')
 
-        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+        // if (typeof status !== 'string') throw TypeError(`${status} - status is not a string`)
 
-        if (!status.trim().length) throw new ValueError('status is empty or blank')
+        // if (!status.trim().length) throw new ValueError('status is empty or blank')
 
         return User.findById(id)
             .then(user => {
@@ -222,7 +222,7 @@ const logic = {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
                 postit.text = text
-                postit.status = status
+                // postit.status = status
 
                 return user.save()
             })
