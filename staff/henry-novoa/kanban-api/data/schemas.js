@@ -14,6 +14,14 @@ const Postit = new Schema({
         type: String,
         required: true,
         default: 'TODO'
+    },
+    assignedTo:{
+        type: ObjectId,
+        ref: 'User'
+    },
+    date:{
+        type: Number,
+        default: Date.now()
     }
 })
 
@@ -34,7 +42,13 @@ const User = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    buddies:[{
+        type: ObjectId,
+        ref: 'User'
+    }]
+
+    
 })
 
 module.exports = {
