@@ -78,7 +78,7 @@ router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (re
 router.post('/users/:id/postits', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id }, body: { text } } = req
-        debugger
+        
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.addPostit(id, text)
@@ -107,7 +107,7 @@ router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, json
         const { sub, params: { id, postitId }, body: { text, status } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
-        debugger
+        
         return logic.modifyPostit(id, postitId, text, status)
             .then(() => res.json({
                 message: 'postit modified'

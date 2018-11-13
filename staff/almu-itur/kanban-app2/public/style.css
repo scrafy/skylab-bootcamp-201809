@@ -30,6 +30,7 @@ body {
     display: flex;
     width: 90%;
     justify-content: center;
+    margin: 0 auto;
 }
 
 #button-add {
@@ -67,7 +68,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 90%;
-  
+    margin: 0 auto;
 }
 
 .columns-container{
@@ -124,6 +125,7 @@ body {
 .post textarea {
     background: transparent;
     border: none;
+    outline: none;
     /* width: 100px; */
     height: 80px;
     font-family: "Roboto", sans-serif;

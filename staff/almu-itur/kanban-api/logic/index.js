@@ -13,7 +13,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findByUsername(username)
+        return User.findOne({ username })
             .then(user => {
                 if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
@@ -30,7 +30,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findByUsername(username)
+        return User.findOne({ username }) //find one devuelve array, findOne devuelve un objeto
             .then(user => {
                 if (!user || user.password !== password) throw new AuthError('invalid username or password')
 
@@ -43,18 +43,26 @@ const logic = {
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        return User.findById(id)
-            .then(user => {
+        return User.findById(id, { '_id': 0, password: 0, postits: 0, __v: 0 })
+            // .then(user => {
+            //     if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+            //     const _user = user.toObject()
+
+            //     _user.id = id
+
+            //     delete _user.password
+            //     delete _user.postits
+
+            //     return _user
+            // })
+            .lean()
+            .then(user => { // ALT
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                const _user = user.toObject()
+                user.id = id
 
-                _user.id = id
-
-                delete _user.password
-                delete _user.postits
-
-                return _user
+                return user
             })
     },
 
@@ -80,7 +88,7 @@ const logic = {
                 if (user.password !== password) throw new AuthError('invalid password')
 
                 if (username) {
-                    return User.findByUsername(username)
+                    return User.findOne({ username })
                         .then(_user => {
                             if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
 
@@ -95,7 +103,7 @@ const logic = {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
-    
+
                     return user.save()
                 }
             })
@@ -114,21 +122,19 @@ const logic = {
      */
     addPostit(id, text) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-        // if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
-        // if (!status.trim().length) throw new ValueError('status is empty or blank')
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim().length) throw new ValueError('text is empty or blank')
-        
+
         return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 const postit = new Postit({ text })
-
+                postit.status = 'todo'
                 user.postits.push(postit)
 
                 return user.save()
@@ -141,10 +147,18 @@ const logic = {
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
         return User.findById(id)
+            .lean()
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
+                
+                // return user.postits.map(({ _id, text }) => { id: _id.toString(), text })
+                return user.postits.map(postit => {
+                    postit.id = postit._id.toString()
 
-                return user.postits
+                    delete postit._id
+
+                    return postit
+                })
             })
     },
 
@@ -195,21 +209,21 @@ const logic = {
     },
 
     modifyPostit(id, postitId, text, status) {
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (typeof id !== 'string') throw TypeError(`${id} - id is not a string`)
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} - postitId is not a string`)
 
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+        if (typeof text !== 'string') throw TypeError(`${text} - text is not a string`)
 
         if (!text.trim().length) throw new ValueError('text is empty or blank')
 
-        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+        // if (typeof status !== 'string') throw TypeError(`${status} -status is not a string`)
 
-        if (!status.trim().length) throw new ValueError('status is empty or blank')
+        // if (!status.trim().length) throw new ValueError('status is empty or blank')
 
         return User.findById(id)
             .then(user => {

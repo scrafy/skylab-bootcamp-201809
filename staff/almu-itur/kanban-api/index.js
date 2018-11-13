@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { MongoClient } = require('mongodb')
+const mongoose = require('mongoose')
 const express = require('express')
 const package = require('./package.json')
 const router = require('./routes')
@@ -9,26 +9,43 @@ const { User } = require('./data')
 
 const { env: { PORT, MONGO_URL } } = process
 
-const client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
+mongoose.connect(MONGO_URL, { useNewUrlParser: true })
 
-client.connect()
-    .then(() => {
-        console.log(`db server running at ${MONGO_URL}`)
+.then(() => {
+    console.log(`db server running at ${MONGO_URL}`)
 
-        const db = client.db('kanban')
+    const { argv: [, , port = PORT || 8080] } = process
 
-        users = db.collection('users')
+    const app = express()
 
-        User._collection = users
+    app.use(cors)
 
-        const { argv: [, , port = PORT || 8080] } = process
+    app.use('/api', router)
 
-        const app = express()
+    app.listen(port, () => console.log(`${package.name} ${package.version} up and running on port ${port}`))
+})
+.catch(console.error)
 
-        app.use(cors)
+// const client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
 
-        app.use('/api', router)
+// client.connect()
+//     .then(() => {
+//         console.log(`db server running at ${MONGO_URL}`)
 
-        app.listen(port, () => console.log(`${package.name} ${package.version} up and running on port ${port}`))
-    })
-    .catch(console.error)
+//         const db = client.db('kanban')
+
+//         users = db.collection('users')
+
+//         User._collection = users
+
+//         const { argv: [, , port = PORT || 8080] } = process
+
+//         const app = express()
+
+//         app.use(cors)
+
+//         app.use('/api', router)
+
+//         app.listen(port, () => console.log(`${package.name} ${package.version} up and running on port ${port}`))
+//     })
+//     .catch(console.error)
