@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
+import Column from './Column'
 
 //TODO:     Crear array default en la base de datos
 //          Obtener array del back
@@ -9,68 +10,33 @@ import Post from './Post'
 class Postits extends Component {
     state = {
         postits: [],
-        board: {
-            todo: [],
-            doing: [],
-            review: [],
-            done: []
-        }
+        text: '',
+        id: '',
     }
 
-    componentDidMount() {
+    handleChangeTextArea = event => {
+        const text = event.target.value
+        this.setState({ text })
+    }
+
+    componentWillMount() {
         // logic.listPostits()
         //     .then(postits => { this.setState({ postits }) })
-
 
         try {
             logic.listPostits()
                 .then(_postits => {
                     this.setState({ postits: [..._postits] })
-                    for (let postit of this.state.postits) {
-                        board[postit.column].push(postit)
-                    }
-                    this.setState({ board: { ...board } })
+                    // for (let postit of this.state.postits) {
+                    //     board[postit.column].push(postit)
+                    // }
+                    // this.setState({ board: { ...board } })
 
                 })
         } catch ({ message }) {
             alert(message) // HORROR! FORBIDDEN! ACHTUNG!
         }
-
-        // .then(postits => console.log(postits))
-        // .catch(err => console.log(err))
-        const board = {
-            todo: [],
-            doing: [],
-            review: [],
-            done: []
-        }
-        //this.setState({ postits: [...postits] })
-
-
-        // TODO error handling!
     }
-
-    // componentDidUpdate() {
-    //     try {
-    //         logic.listPostits()
-    //             .then(_postits => {
-    //                 this.setState({ postits: [..._postits] })
-    //                 for (let postit of this.state.postits) {
-    //                     board[postit.column].push(postit)
-    //                 }
-    //                 this.setState({ board: { ...board } })
-
-    //             })
-    //     } catch ({ message }) {
-    //         alert(message) // HORROR! FORBIDDEN! ACHTUNG!
-    //     }
-    //     const board = {
-    //         todo: [],
-    //         doing: [],
-    //         review: [],
-    //         done: []
-    //     }
-    // }
 
     handleSubmit = text => {
         try {
@@ -84,31 +50,16 @@ class Postits extends Component {
 
     handleChangeColumn = (id, column) => {
         logic.changeColumn(id, column)
-
-        let index = 0;
-        const selectedPostit = this.state.postits.find((postit, i) => {
-            if (postit.id === id) {
-                index = i
-                return postit.id === id
-            } else { return false }
-        })
-        selectedPostit.column = column;
-
-        const board = {
-            todo: [],
-            doing: [],
-            review: [],
-            done: []
-        }
-        for (let postit of this.state.postits) {
-            board[postit.column].push(postit)
-        }
-
-        this.setState({
-            postits: [...this.state.postits],
-            board: { ...board }
-        })
-
+            .then(() => {
+                try {
+                    logic.listPostits()
+                        .then(_postits => {
+                            this.setState({ postits: [..._postits] })
+                        })
+                } catch ({ message }) {
+                    alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+                }
+            })
     }
 
     // TODO error handling!
@@ -120,13 +71,18 @@ class Postits extends Component {
 
     // TODO error handling!
 
-
-    handleUpdatePostit = (postitId, newText) => {
-        debugger
+    handleChangeText = (postitId, newText) => {
         logic.updatePostit(postitId, newText)
-            .then(() => logic.listPostits())
-            .then(postits => console.log(postits))
-        // .then(postits => this.setState({ postits }))
+            .then(() => {
+                try {
+                    logic.listPostits()
+                        .then(_postits => {
+                            this.setState({ postits: [..._postits] })
+                        })
+                } catch ({ message }) {
+                    alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+                }
+            })
     }
 
 
@@ -134,28 +90,30 @@ class Postits extends Component {
 
 
     render() {
+
         return (
 
             <div className='main'>
                 <h1 className='main__title'>Kanban-App <i className="fas fa-sticky-note"></i></h1>
 
                 <InputForm onSubmit={this.handleSubmit} />
+            
                 <div className='kanban-columns'>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>To do</h2>
-                        {this.state.board.todo.map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'todo').map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onChangeTextArea={this.handleChangeTextArea} onDeletePost={this.handleRemovePostit} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Doing</h2>
-                        {this.state.board.doing.map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'doing').map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleChangeTextArea} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Review</h2>
-                        {this.state.board.review.map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'review').map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleChangeTextArea} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Done</h2>
-                        {this.state.board.done.map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'done').map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleChangeTextArea} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                 </div>
             </div>

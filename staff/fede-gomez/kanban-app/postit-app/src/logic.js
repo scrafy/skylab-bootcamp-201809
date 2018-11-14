@@ -130,7 +130,7 @@ const logic = {
         if (!newText.trim()) throw Error('newText is empty or blank')
 
         return fetch(`${this.url}/users/${this._userId}/postits/${postitId}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
