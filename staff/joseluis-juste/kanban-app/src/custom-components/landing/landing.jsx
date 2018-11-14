@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import List  from '../list/list'
+import List from '../list/list'
 
 class Landing extends Component {
 
@@ -16,4 +16,4 @@ class Landing extends Component {
   }
 }
 
-export default Landing;
+export default Landing

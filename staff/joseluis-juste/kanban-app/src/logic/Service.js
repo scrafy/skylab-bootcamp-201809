@@ -36,6 +36,72 @@ class ServiceBackEnd {
             })
     }
 
+    updateUser(user) {
+
+        return new Promise((resolve, reject) => {
+            const _user = this.getUserFromSession()
+            return fetch(`${this.endpoint}/user/${_user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept": "application/json"
+                    //'Authorization': 'Bearer ' + this.token
+                },
+                body: JSON.stringify(user)
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+
+    }
+
+    uploadImageProfile(file) {
+
+        return new Promise((resolve, reject) => {
+            const _user = this.getUserFromSession()
+            const formData = new FormData();
+            formData.append('profileimg', file);
+            formData.append('userId', _user.id);
+            return fetch(`${this.endpoint}/user/uploadimg`, {
+                method: 'POST',
+                headers: {
+                   
+                    "Accept": "application/json"
+                   // 'Content-Type': 'multipart/form-data'
+                    //'Authorization': 'Bearer ' + this.token
+                },
+                body: formData
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+
+    }
+
     getUserPostits() {
 
         return new Promise((resolve, reject) => {

@@ -20,7 +20,7 @@ body {
 
 img {
   width: 100%;
-  height: auto; }
+  height: 100%; }
 
 * {
   box-sizing: border-box; }
@@ -91,3 +91,15 @@ img {
   .postit:hover {
     background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer; }
+
+.login-form--update {
+  height: 500px;
+  overflow-y: scroll;
+  margin-top: 5em;
+  padding: 1em; }
+
+.profile-img {
+  width: 107px;
+  height: 124px;
+  border: 1px solid black;
+  margin-bottom: 1em; }

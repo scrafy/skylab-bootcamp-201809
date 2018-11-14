@@ -5,6 +5,7 @@ import Landing from './landing/landing'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 import Register from '../custom-components/register/register'
 import ServiceBackEnd from '../logic/Service'
+import Update from '../custom-components/update/update'
 
 
 class App extends Component {
@@ -28,6 +29,7 @@ class App extends Component {
              <Route exact path="/" render={() => <Home></Home>} />
              <Route path="/landing" render={() => <Landing></Landing>} />
              <Route exact path="/register" render={() => <Register></Register>} />
+             <Route exact path="/update" render={() => <Update></Update>} />
         </section>       
     );
   }
