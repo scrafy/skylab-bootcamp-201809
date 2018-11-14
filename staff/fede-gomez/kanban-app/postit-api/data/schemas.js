@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose')
+const { Schema, SchemaTypes: { ObjectId } } = require('mongoose')
 
 
 /**
@@ -6,15 +6,35 @@ const { Schema } = require('mongoose')
  */
 
 const Postit = new Schema({
-    text: String,
-    userId: String
+    text: {
+        type: String,
+        required: true
+    },
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
+    }
 })
 
 const User = new Schema({
-    name: String,
-    surname: String,
-    username: String,
-    password: String
+    name: {
+        type: String,
+        required: true
+    },
+    surname: {
+        type: String,
+        required: true
+    },
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
 })
 
 module.exports = {

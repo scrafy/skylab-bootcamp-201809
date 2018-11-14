@@ -266,8 +266,7 @@ describe('logic', () => {
                         return postit
                     })
                     .then(postit => {
-
-                        expect(postit.userId).to.equal(user.id)
+                        expect(postit.userId.toString()).to.equal(user.id)
                     })
             )
 
@@ -362,8 +361,9 @@ describe('logic', () => {
             let user, postit, newText
 
             beforeEach(() => {
-                postit = new Postit({ text: 'hello text' })
+
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                postit = new Postit({ text: 'hello text', userId: user.id })
 
                 newText = `new-text-${Math.random()}`
 
@@ -372,23 +372,13 @@ describe('logic', () => {
 
             it('should succeed on correct data', () =>
                 logic.modifyPostit(postit.id, newText)
-                    // .then(() => users.find().toArray())
-                    .then((postit) => console.log(postit))
-                // .then(_users => {
-                //     expect(_users.length).to.equal(1)
-
-                //     const [_user] = _users
-
-                //     expect(_user.id).to.equal(user.id)
-
-                //     const { postits } = _user
-
-                //     expect(postits.length).to.equal(1)
-
-                //     const [postit] = postits
-
-                //     expect(postit.text).to.equal(newText)
-                // })
+                    .then(() => {
+                        return Postit.findById(postit.id)
+                            .then(postit => {
+                                postit.should.be.an('object')
+                                postit.text.should.equal(newText)
+                            })
+                    })
             )
         })
     })
