@@ -119,22 +119,23 @@ const logic = {
             })
     },
 
-    modifyPostit(id, text) {
-        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
+    updatePostit(postitId, newText) {
 
-        if (!id.trim().length) throw Error('id is empty or blank')
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
 
-        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+        if (!postitId.trim()) throw Error('postitId is empty or blank')
 
-        if (!text.trim()) throw Error('text is empty or blank')
+        if (typeof newText !== 'string') throw TypeError(`${newText} is not a string`)
 
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
+        if (!newText.trim()) throw Error('newText is empty or blank')
+
+        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ newText })
         })
             .then(res => res.json())
             .then(res => {

@@ -30,7 +30,7 @@ class Postits extends Component {
                         board[postit.column].push(postit)
                     }
                     this.setState({ board: { ...board } })
-            
+
                 })
         } catch ({ message }) {
             alert(message) // HORROR! FORBIDDEN! ACHTUNG!
@@ -46,7 +46,7 @@ class Postits extends Component {
         }
         //this.setState({ postits: [...postits] })
 
-        
+
         // TODO error handling!
     }
 
@@ -59,7 +59,7 @@ class Postits extends Component {
     //                     board[postit.column].push(postit)
     //                 }
     //                 this.setState({ board: { ...board } })
-            
+
     //             })
     //     } catch ({ message }) {
     //         alert(message) // HORROR! FORBIDDEN! ACHTUNG!
@@ -82,7 +82,9 @@ class Postits extends Component {
         }
     }
 
-    handleChangeColumn = (id, status) => {
+    handleChangeColumn = (id, column) => {
+        logic.changeColumn(id, column)
+
         let index = 0;
         const selectedPostit = this.state.postits.find((postit, i) => {
             if (postit.id === id) {
@@ -90,7 +92,7 @@ class Postits extends Component {
                 return postit.id === id
             } else { return false }
         })
-        selectedPostit.column = status;
+        selectedPostit.column = column;
 
         const board = {
             todo: [],
@@ -119,10 +121,14 @@ class Postits extends Component {
     // TODO error handling!
 
 
-    handleModifyPostit = (userId, postitId, newText) =>
-        logic.modifyPostit(userId, postitId, newText)
+    handleUpdatePostit = (postitId, newText) => {
+        debugger
+        logic.updatePostit(postitId, newText)
             .then(() => logic.listPostits())
-            .then(postits => this.setState({ postits }))
+            .then(postits => console.log(postits))
+        // .then(postits => this.setState({ postits }))
+    }
+
 
     // TODO error handling!
 
@@ -137,19 +143,19 @@ class Postits extends Component {
                 <div className='kanban-columns'>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>To do</h2>
-                        {this.state.board.todo.map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.todo.map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Doing</h2>
-                        {this.state.board.doing.map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.doing.map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Review</h2>
-                        {this.state.board.review.map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.review.map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Done</h2>
-                        {this.state.board.done.map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.done.map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePostit={this.handleUpdatePostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                 </div>
             </div>
