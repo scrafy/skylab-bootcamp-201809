@@ -14,6 +14,10 @@ const Postit = new Schema({
         type: ObjectId,
         ref: 'User',
         required: true
+    },
+    column: {
+        type: String,
+        default: 'todo'
     }
 })
 

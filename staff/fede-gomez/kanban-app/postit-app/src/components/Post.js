@@ -4,7 +4,7 @@ class Post extends Component {
     state = {
         id: this.props.id,
         text: this.props.text,
-        status: this.props.status
+        column: this.props.column
     }
 
     handleSelectChange = (event) => {
@@ -18,14 +18,14 @@ class Post extends Component {
     }
 
     handleBlur = () => {
-        this.props.onUpdatePost(this.props.id, this.state.text)
+        this.props.onUpdatePost(this.props.id, this.state.id, this.state.text)
     }
 
     render() {
         return <article className='kanban-item'>
             {/* <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} /> */}
             <textarea defaultValue={this.state.text} onChange={this.handleChange} />
-            <select defaultValue={this.state.status} onChange={this.handleSelectChange}>
+            <select defaultValue={this.state.column} onChange={this.handleSelectChange}>
                 {
                     ['todo', 'doing', 'review', 'done'].map(item => <option value={item}>{item}</option>)
                 }

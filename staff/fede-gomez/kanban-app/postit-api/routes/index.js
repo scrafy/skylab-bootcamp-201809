@@ -101,15 +101,28 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
     }, res)
 })
 
-router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.patch('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id, postitId }, body: { text } } = req
-
+    
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.modifyPostit(id, postitId, text)
             .then(() => res.json({
                 message: 'postit modified'
+            }))
+    }, res)
+})
+
+router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id, postitId }, body: { column } } = req
+    
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.changeColumn(id, postitId, column)
+            .then(() => res.json({
+                message: 'column modified'
             }))
     }, res)
 })

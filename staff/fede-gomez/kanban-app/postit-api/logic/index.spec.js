@@ -316,44 +316,6 @@ describe('logic', () => {
             )
         })
 
-        describe('remove', () => {
-            let user, postit, postit2
-
-            beforeEach(() => Postit.deleteMany())
-
-            beforeEach(() => {
-                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
-                postit = new Postit({ text: 'hello text', userId: user.id })
-                postit2 = new Postit({ text: 'hello text 2', userId: user.id })
-
-                return Promise.all([user.save(), postit.save(), postit2.save()])
-            })
-
-            it('should succeed on correct data', () =>
-                logic.removePostit(postit.id)
-                    .then(removedPostit => {
-                        expect(removedPostit.id).to.equal(postit.id)
-                        expect(removedPostit.text).to.equal('hello text')
-                        expect(removedPostit.userId).to.equal(user.id)
-                    })
-                    .then(() => {
-                        Postit.findById(postit.id, function (err, postit) {
-                            should.not.exist(err)
-                            should.not.exist(postit)
-                        })
-                        // expect(_users.length).to.equal(1)
-
-                        // const [_user] = _users
-
-                        // expect(_user.id).to.equal(user.id)
-
-                        // const { postits } = _user
-
-                        // expect(postits.length).to.equal(0)
-                    })
-            )
-        })
-
         describe('modify', () => {
 
             beforeEach(() => Postit.deleteMany())
@@ -371,16 +333,57 @@ describe('logic', () => {
             })
 
             it('should succeed on correct data', () =>
-                logic.modifyPostit(postit.id, newText)
+                logic.modifyPostit(user.id, postit.id, newText)
                     .then(() => {
                         return Postit.findById(postit.id)
                             .then(postit => {
                                 postit.should.be.an('object')
                                 postit.text.should.equal(newText)
+                                postit.userId.toString().should.equal(user.id)
                             })
                     })
             )
         })
+
+        describe('remove', () => {
+            let user, postit, postit2
+
+            beforeEach(() => Postit.deleteMany())
+
+            beforeEach(() => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                postit = new Postit({ text: 'this postit will not be deleted', userId: user.id })
+                postit2 = new Postit({ text: 'this postit should have been removed', userId: user.id })
+
+                return Promise.all([user.save(), postit.save(), postit2.save()])
+            })
+
+            it('should succeed on correct data', () =>
+                logic.removePostit(user.id, postit2.id)
+                    .then(() => Postit.find())
+                    .then(postits => {
+                        postits.should.be.an('array')
+                        postits.should.be.of.length(1)
+                        const [postit] = postits
+                        postit.text.should.equal('this postit will not be deleted')
+                        // postits.userId.toString().should.equal(user.id)
+                        // expect(removedPostit.id).to.equal(postit2.id)
+                        // expect(removedPostit.text).to.equal('hello text')
+                        // expect(removedPostit.userId).to.equal(user.id)
+                    })
+
+                // expect(_users.length).to.equal(1)
+
+                // const [_user] = _users
+
+                // expect(_user.id).to.equal(user.id)
+
+                // const { postits } = _user
+
+                // expect(postits.length).to.equal(0)
+            )
+        })
+
     })
 
     after(() => mongoose.disconnect())

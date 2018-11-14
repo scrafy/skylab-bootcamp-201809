@@ -8,28 +8,7 @@ import Post from './Post'
 
 class Postits extends Component {
     state = {
-        postits: [
-            {
-                id: '001',
-                text: 'nota 1',
-                column: 'todo'
-            },
-            {
-                id: '002',
-                text: 'nota 2',
-                column: 'todo'
-            },
-            {
-                id: '003',
-                text: 'nota 3',
-                column: 'doing'
-            },
-            {
-                id: '004',
-                text: 'nota 4',
-                column: 'done'
-            }
-        ],
+        postits: [],
         board: {
             todo: [],
             doing: [],
@@ -42,20 +21,56 @@ class Postits extends Component {
         // logic.listPostits()
         //     .then(postits => { this.setState({ postits }) })
 
+
+        try {
+            logic.listPostits()
+                .then(_postits => {
+                    this.setState({ postits: [..._postits] })
+                    for (let postit of this.state.postits) {
+                        board[postit.column].push(postit)
+                    }
+                    this.setState({ board: { ...board } })
+            
+                })
+        } catch ({ message }) {
+            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+        }
+
+        // .then(postits => console.log(postits))
+        // .catch(err => console.log(err))
         const board = {
             todo: [],
             doing: [],
             review: [],
             done: []
         }
-        for (let postit of this.state.postits) {
-            board[postit.column].push(postit)
-        }
+        //this.setState({ postits: [...postits] })
 
-        this.setState({ board: { ...board } })
-
+        
         // TODO error handling!
     }
+
+    // componentDidUpdate() {
+    //     try {
+    //         logic.listPostits()
+    //             .then(_postits => {
+    //                 this.setState({ postits: [..._postits] })
+    //                 for (let postit of this.state.postits) {
+    //                     board[postit.column].push(postit)
+    //                 }
+    //                 this.setState({ board: { ...board } })
+            
+    //             })
+    //     } catch ({ message }) {
+    //         alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+    //     }
+    //     const board = {
+    //         todo: [],
+    //         doing: [],
+    //         review: [],
+    //         done: []
+    //     }
+    // }
 
     handleSubmit = text => {
         try {
@@ -104,8 +119,8 @@ class Postits extends Component {
     // TODO error handling!
 
 
-    handleModifyPostit = (id, text) =>
-        logic.modifyPostit(id, text)
+    handleModifyPostit = (userId, postitId, newText) =>
+        logic.modifyPostit(userId, postitId, newText)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
@@ -122,19 +137,19 @@ class Postits extends Component {
                 <div className='kanban-columns'>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>To do</h2>
-                        {this.state.board.todo.map(postit => <Post key={postit.id} status={'todo'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.todo.map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Doing</h2>
-                        {this.state.board.doing.map(postit => <Post key={postit.id} status={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.doing.map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Review</h2>
-                        {this.state.board.review.map(postit => <Post key={postit.id} status={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.review.map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Done</h2>
-                        {this.state.board.done.map(postit => <Post key={postit.id} status={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.board.done.map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                 </div>
             </div>

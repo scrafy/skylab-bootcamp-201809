@@ -174,23 +174,37 @@ const logic = {
      */
     removePostit(userId, postitId) {
 
+        if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
+        if (!userId.trim().length) throw new ValueError('userId is empty or blank')
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
-
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        
-        return Postit.findByIdAndRemove(postitId).lean()
-            .then(postit => {
-                postit.id = postit._id.toString()
-                delete postit._id
-                delete postit.__v
-                postit.userId = postit.userId.toString()
-                return postit
+
+        return User.findById(userId)
+            .then(user => {
+                if (!user) throw new NotFoundError(`user with id ${userId} not found`)
+                return Postit.findOne({ _id: postitId, userId: user.id }).lean()
             })
+            .then(postit => {
+                if (!postit) { throw new NotFoundError(`postit with id ${postitId} not found`) }
+                debugger
+                return Postit.deleteOne({ _id: postit._id.toString() })
+            })
+            .then(() => undefined)
+        // return Postit.findByIdAndRemove(postitId).lean()
+        //     .then(postit => {
+        //         postit.id = postit._id.toString()
+        //         delete postit._id
+        //         delete postit.__v
+        //         postit.userId = postit.userId.toString()
+        //         return postit
+        //     })
     },
 
-    modifyPostit(postitId, newText) {
+    modifyPostit(userId, postitId, newText) {
 
+        if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
+        if (!userId.trim().length) throw new ValueError('userId id is empty or blank')
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
@@ -200,12 +214,47 @@ const logic = {
         //A.findOneAndUpdate(conditions, update, options, callback)
         //findByIdAndUpdate
         //return Postit.findOne({ _id: postitId })
-        return Postit.findByIdAndUpdate(postitId, { text: newText })
-            .then(postit => {
-                if(!postit) throw new NotFoundError (`postit with id ${postitId} not found`)
-                return undefined
+        return User.findById(userId)
+            .then(user => {
+                if (!user) { throw new NotFoundError(`user with id ${userId} not found`) }
+                return Postit.findOne({ userId: user._id, _id: postitId })
             })
+            .then(postit => {
+                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
+                //return Postit.findOneAndUpdate({ _id: postit.id }, { $set: { text: newText } })
+                postit.text = newText
+                return postit.save()
+            })
+            .then(() => undefined)
+    },
+
+    changeColumn(userId, postitId, newColumn) {
+
+        if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
+        if (!userId.trim().length) throw new ValueError('userId id is empty or blank')
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
+        if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
+
+        if (typeof newColumn !== 'string') throw TypeError(`${newColumn} is not a string`)
+        if (!newColumn.trim().length) throw new ValueError('newColumn is empty or blank')
+
+        //A.findOneAndUpdate(conditions, update, options, callback)
+        //findByIdAndUpdate
+        //return Postit.findOne({ _id: postitId })
+        return User.findById(userId)
+            .then(user => {
+                if (!user) { throw new NotFoundError(`user with id ${userId} not found`) }
+                return Postit.findOne({ userId: user._id, _id: postitId })
+            })
+            .then(postit => {
+                if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
+                //return Postit.findOneAndUpdate({ _id: postit.id }, { $set: { text: newText } })
+                postit.column = newColumn
+                return postit.save()
+            })
+            .then(() => undefined)
     }
 }
+
 
 module.exports = logic
