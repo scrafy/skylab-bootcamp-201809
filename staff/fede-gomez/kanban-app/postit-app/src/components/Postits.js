@@ -64,7 +64,8 @@ class Postits extends Component {
     // TODO error handling!
 
     handleChangeText = (postitId, newText) => {
-        logic.updatePostit(postitId, newText)
+        
+        logic.updatePostit(postitId, newText ? newText : 'No text')
             .then(() => {
                 try {
                     logic.listPostits()
@@ -74,6 +75,9 @@ class Postits extends Component {
                 } catch ({ message }) {
                     alert(message) // HORROR! FORBIDDEN! ACHTUNG!
                 }
+            })
+            .catch(err => {
+                console.log(err.message)
             })
     }
 
@@ -97,15 +101,15 @@ class Postits extends Component {
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Doing</h2>
-                        {this.state.postits.filter(postit => postit.column === 'doing').map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleChangeTextArea} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'doing').map(postit => <Post key={postit.id} column={'doing'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Review</h2>
-                        {this.state.postits.filter(postit => postit.column === 'review').map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleChangeTextArea} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'review').map(postit => <Post key={postit.id} column={'review'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Done</h2>
-                        {this.state.postits.filter(postit => postit.column === 'done').map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleChangeTextArea} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'done').map(postit => <Post key={postit.id} column={'done'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                 </div>
             </div>
