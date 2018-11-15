@@ -17,7 +17,6 @@ class Post extends Component {
         this.setState({text: text})
         this.props.onChangeText(this.state.id, text)
     }
-
     // handleOnBlur = () => {
     //     this.props.onChangeText(this.state.id, this.state.text)
     // }
