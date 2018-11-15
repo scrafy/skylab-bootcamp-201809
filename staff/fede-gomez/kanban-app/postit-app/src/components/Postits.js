@@ -2,21 +2,13 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
-import Column from './Column'
 
 //TODO:     Crear array default en la base de datos
 //          Obtener array del back
 
 class Postits extends Component {
     state = {
-        postits: [],
-        text: '',
-        id: '',
-    }
-
-    handleChangeTextArea = event => {
-        const text = event.target.value
-        this.setState({ text })
+        postits: []
     }
 
     componentWillMount() {
@@ -101,7 +93,7 @@ class Postits extends Component {
                 <div className='kanban-columns'>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>To do</h2>
-                        {this.state.postits.filter(postit => postit.column === 'todo').map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onChangeTextArea={this.handleChangeTextArea} onDeletePost={this.handleRemovePostit} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
+                        {this.state.postits.filter(postit => postit.column === 'todo').map(postit => <Post key={postit.id} column={'todo'} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onChangeText={this.handleChangeText} onChangeColumn={this.handleChangeColumn} />)}
                     </section>
                     <section className='kanban-column'>
                         <h2 className='kanban-column--title'>Doing</h2>
