@@ -120,7 +120,7 @@ const logic = {
     },
 
     updatePostit(postitId, newText) {
-
+        
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
 
         if (!postitId.trim()) throw Error('postitId is empty or blank')
@@ -130,12 +130,12 @@ const logic = {
         if (!newText.trim()) throw Error('newText is empty or blank')
 
         return fetch(`${this.url}/users/${this._userId}/postits/${postitId}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ newText })
+            body: JSON.stringify({ text: newText })
         })
             .then(res => res.json())
             .then(res => {

@@ -17,7 +17,14 @@ const Postit = new Schema({
     },
     column: {
         type: String,
-        default: 'todo'
+        default: 'todo',
+        enum: ['todo', 'doing', 'review', 'done'],
+        required: true
+    },
+    assignedTo: {
+        type: ObjectId,
+        ref: 'User',
+        required: false
     }
 })
 
@@ -38,7 +45,14 @@ const User = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    collaborators: [
+        {
+            type: ObjectId,
+            ref: 'User',
+            required: false
+        }
+    ]
 })
 
 module.exports = {

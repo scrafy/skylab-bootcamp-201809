@@ -241,6 +241,43 @@ describe('logic', () => {
                 })
             })
         })
+
+        describe('addCollaboratorById', () => {
+            let user, postit, postit2
+
+            beforeEach(() => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                user2 = new User({ name: 'John2', surname: 'Doe2', username: 'jd2', password: '123' })
+
+                return Promise.all([user.save(), user2.save()])
+            })
+
+            it('should succeed on correct data', () => 
+                logic.addCollaboratorById(user.id, user2.id)
+                    .then(() => User.findById(user.id))
+                    .then(user => {
+                        debugger
+                        user.collaborators.should.be.an('array')
+                        user.collaborators.should.be.of.length(1)
+                        const [collaborator] = user.collaborators
+                        // collaborator.id.should.equal('this postit will not be deleted')
+                        // postits.userId.toString().should.equal(user.id)
+                        // expect(removedPostit.id).to.equal(postit2.id)
+                        // expect(removedPostit.text).to.equal('hello text')
+                        // expect(removedPostit.userId).to.equal(user.id)
+                    })
+
+                // expect(_users.length).to.equal(1)
+
+                // const [_user] = _users
+
+                // expect(_user.id).to.equal(user.id)
+
+                // const { postits } = _user
+
+                // expect(postits.length).to.equal(0)
+            )
+        })
     })
 
     describe('postits', () => {

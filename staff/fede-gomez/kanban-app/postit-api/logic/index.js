@@ -147,7 +147,7 @@ const logic = {
     },
 
     listPostits(userId) {
-        debugger
+
         if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
 
         if (!userId.trim().length) throw new ValueError('userId is empty or blank')
@@ -187,7 +187,6 @@ const logic = {
             })
             .then(postit => {
                 if (!postit) { throw new NotFoundError(`postit with id ${postitId} not found`) }
-                debugger
                 return Postit.deleteOne({ _id: postit._id.toString() })
             })
             .then(() => undefined)
@@ -201,6 +200,18 @@ const logic = {
         //     })
     },
 
+    /**
+     * it modifies a postit
+     * 
+     * @param {string} userId The user id
+     * @param {string} postitId The postit id
+     * @param {string} newText The new text that will modify the older one
+     * 
+     * @throws {TypeError} On non-string user userId, postitId, or newText
+     * @throws {Error} On empty or blank user userId, postitId or newText
+     * 
+     * @returns {Promise} Resolves on correct data, rejects on wrong user id, or postit id, or text
+     */
     modifyPostit(userId, postitId, newText) {
 
         if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
@@ -254,6 +265,49 @@ const logic = {
             })
             .then(() => undefined)
     }
+
+    /**
+     *  
+     * Logic for Buddies
+     * @param {string} id The user id (the one that performs the search)
+     * @param {string} username The username of the collaborator
+     * 
+     * @throws {TypeError} On non-string user id, and/or username
+     * @throws {Error} On empty or blank user id, and/or username
+     * 
+     * @returns {Promise} Resolves on correct data, rejects on wrong user id, or postit id, or text
+     * 
+     */
+    // getCollaboratorByUsername(id, username) {
+    //     if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+    //     if (!id.trim().length) throw new ValueError('id id is empty or blank')
+
+    //     if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+    //     if (!username.trim().length) throw new ValueError('username id is empty or blank')
+
+    //     return User.find({ username }, { '__v': 0, 'password': 0, 'collaborators': 0 }).lean()
+    //         .then(users => users.map(user => {
+    //             user.id = user._id.toString()
+    //             delete user._id
+    //             return user
+    //         }))
+    // },
+
+    // addCollaboratorById(id, collaboratorId) {
+
+    //     if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+    //     if (!id.trim().length) throw new ValueError('id id is empty or blank')
+
+    //     if (typeof collaboratorId !== 'string') throw TypeError(`${collaboratorId} is not a string`)
+    //     if (!collaboratorId.trim().length) throw new ValueError('collaboratorId id is empty or blank')
+
+    //     return User.find({ _id: id })
+    //         .then(user => {
+    //             debugger
+    //             return User.update({ _id: user.id }, { name: 'James Bond' })
+    //         })
+    // }
+
 }
 
 

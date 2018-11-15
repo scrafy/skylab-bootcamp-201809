@@ -104,7 +104,7 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
 router.patch('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id, postitId }, body: { text } } = req
-    
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.modifyPostit(id, postitId, text)
@@ -117,7 +117,7 @@ router.patch('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, js
 router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id, postitId }, body: { column } } = req
-    
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.changeColumn(id, postitId, column)
@@ -140,5 +140,37 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, j
     }, res)
 
 })
+
+
+/** Gets the list of collaborators for a given user */
+// router.get('/users/:id/collaborators/', [bearerTokenParser, jwtVerifier], (req, res) => {
+//     routeHandler(()=>{
+
+//     }, res)
+// })
+
+/** gets a single collaborator by username*/
+// router.get('/users/:id/collaborators/:username', [bearerTokenParser, jwtVerifier], (req, res) => {
+//     routeHandler(() => {
+//         const { sub, params: { id, username } } = req
+
+//         if (id !== sub) throw Error('token sub does not match user id')
+
+//         return logic.getCollaboratorByUsername(id, username)
+//             .then((collaborator) => res.json({ collaborator }))
+//     }, res)
+// })
+
+/** adds a single collaborator by username*/
+// router.post('/users/:id/collaborators/:collaboratorId', [bearerTokenParser, jwtVerifier], (req, res) => {
+//     routeHandler(() => {
+//         const { sub, params: { id, username } } = req
+
+//         if (id !== sub) throw Error('token sub does not match user id')
+
+//         return logic.addCollaboratorById(id, collaboratorId)
+//             .then((collaborator) => res.json({ collaborator }))
+//     }, res)
+// })
 
 module.exports = router
