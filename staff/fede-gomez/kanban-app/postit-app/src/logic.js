@@ -98,7 +98,6 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-
                 return res.data
             })
     },
@@ -120,22 +119,46 @@ const logic = {
             })
     },
 
-    modifyPostit(id, text) {
-        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
+    updatePostit(postitId, newText) {
+        
+        if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
 
-        if (!id.trim().length) throw Error('id is empty or blank')
+        if (!postitId.trim()) throw Error('postitId is empty or blank')
 
-        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+        if (typeof newText !== 'string') throw TypeError(`${newText} is not a string`)
 
-        if (!text.trim()) throw Error('text is empty or blank')
+        if (!newText.trim()) throw Error('newText is empty or blank')
 
-        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
+        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ text: newText })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    changeColumn(postitId, column){
+        if (typeof postitId !== 'string') throw new TypeError(`${postitId} is not a string`)
+
+        if (!postitId.trim().length) throw Error('postitId is empty or blank')
+
+        if (typeof column !== 'string') throw TypeError(`${column} is not a string`)
+
+        if (!column.trim()) throw Error('column is empty or blank')
+
+        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ column })
         })
             .then(res => res.json())
             .then(res => {

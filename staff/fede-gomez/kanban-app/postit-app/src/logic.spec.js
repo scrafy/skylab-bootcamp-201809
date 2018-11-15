@@ -1,4 +1,4 @@
-//import logic from './logic'
+// import logic from './logic'
 
 require('isomorphic-fetch')
 
