@@ -401,7 +401,7 @@ describe('logic', () => {
                 postits = await logic.listPostits(user.id)
                 _postits = await Postit.find()
                 expect(_postits.length).to.equal(2)
-                
+
                 expect(postits.length).to.equal(_postits.length)
 
                 const [_postit, _postit2] = _postits
@@ -535,7 +535,7 @@ describe('logic', () => {
         })
     })
 
-    describe('status',async () => {
+    describe('status', async () => {
         let user, postit, newStatus
 
         beforeEach(async () => {
@@ -553,19 +553,19 @@ describe('logic', () => {
             //     .then(() => postit.save())
         })
 
-        it('should succeed on correct data',async () =>{
-            
-            await logic.updateStatus(postit.id,newStatus)
+        it('should succeed on correct data', async () => {
+
+            await logic.updateStatus(postit.id, newStatus)
             let postits = await Postit.find()
             expect(postits.length).to.equal(1)
 
-                    const [_postit] = postits
+            const [_postit] = postits
 
-                    expect(_postit.id).to.equal(postit.id)
+            expect(_postit.id).to.equal(postit.id)
 
-                    expect(_postit.status).to.equal(newStatus)
+            expect(_postit.status).to.equal(newStatus)
 
-            
+
 
 
             //promises
@@ -581,15 +581,15 @@ describe('logic', () => {
             //         expect(_postit.status).to.equal(newStatus)
 
             //     })
-             })
+        })
     })
 
-    describe('add buddies',async () => {
+    describe('add buddies', async () => {
         let user, postit, newStatus
 
         beforeEach(async () => {
             user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
-            user2 = new User({name: 'Peter', surname:'Griffin', username:'pg', password: '123' })
+            user2 = new User({ name: 'Peter', surname: 'Griffin', username: 'pg', password: '123' })
             postit = new Postit({ text: 'hello text', status: 'todo', user: user.id })
 
 
@@ -598,30 +598,30 @@ describe('logic', () => {
             await user.save()
             await user2.save()
             await postit.save()
-            
+
             //promises
             // return user.save()
             //     .then(() => postit.save())
         })
 
-        it('should succeed on adding buddy',async () =>{
-            
-            await logic.addBuddy(user.id,user2.id)
+        it('should succeed on adding buddy', async () => {
+
+            await logic.addBuddy(user.id, user2.username)
             let _user = await User.findById(user.id)
-            
+
             expect(_user.buddies).to.exist
             expect(_user.buddies.length).to.equal(1)
 
-            expect(_user.buddies[0]._id.toString()).to.equal(user2.id.toString())
+            expect(_user.buddies[0].toString()).to.equal(user2.id)
         })
     })
 
-    describe('assign to',async () => {
-        let user, postit, newStatus
+    describe('list buddies', async () => {
+        let user, postit
 
         beforeEach(async () => {
             user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
-            user2 = new User({name: 'Peter', surname:'Griffin', username:'pg', password: '123' })
+            user2 = new User({ name: 'Peter', surname: 'Griffin', username: 'pg', password: '123' })
             postit = new Postit({ text: 'hello text', status: 'todo', user: user.id })
 
 
@@ -630,20 +630,64 @@ describe('logic', () => {
             await user.save()
             await user2.save()
             await postit.save()
-            
+
+            //promises
+            // return user.save()
+            //     .then(() => postit.save())
         })
 
-        it('should succeed on assinging postit on created postit',async () =>{
-            
-            await logic.addBuddy(user.id,user2.id)
+        it('should succeed on listing added buddy', async () => {
+
+            await logic.addBuddy(user.id, user2.username)
             let _user = await User.findById(user.id)
-            
+
+            expect(_user.buddies).to.exist
+            expect(_user.buddies.length).to.equal(1)
+
+            expect(_user.buddies[0].toString()).to.equal(user2.id)
+
+
+            let buddies = await logic.listBuddies(user.id)
+
+            expect(buddies).to.exist
+
+            expect(buddies.length).to.equal(1)
+
+            expect(_user.buddies[0].toString()).to.equal(user2.id)
+        })
+    })
+  
+  
+  
+   
+    describe('assign to', async () => {
+        let user, postit
+
+        beforeEach(async () => {
+            user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+            user2 = new User({ name: 'Peter', surname: 'Griffin', username: 'pg', password: '123' })
+            postit = new Postit({ text: 'hello text', status: 'todo', user: user.id })
+
+
+            newStatus = 'DONE'
+            //async-await
+            await user.save()
+            await user2.save()
+            await postit.save()
+
+        })
+
+        it('should succeed on assinging postit on created postit', async () => {
+
+            await logic.addBuddy(user.id, user2.username)
+            let _user = await User.findById(user.id)
+
             expect(_user.buddies).to.exist
             expect(_user.buddies.length).to.equal(1)
 
             expect(_user.buddies[0]._id.toString()).to.equal(user2.id.toString())
 
-      
+
             await logic.assignTo(postit.id, user2.id)
 
             let _postit = await Postit.findById(postit.id)
@@ -653,8 +697,8 @@ describe('logic', () => {
 
 
         })
-    }) 
+    })
 
-    
+
     after(() => mongoose.disconnect())
 })

@@ -143,4 +143,52 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, j
 
 })
 
+//add buddy
+router.post('/users/:id/buddies', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+      
+        const { params: { id }, sub, body: {username} } = req
+
+       if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.addBuddy(id , username)
+            .then(() => res.json({
+                message: 'buddy added'
+            }))
+    }, res)
+
+})
+
+//assign task to buddy
+router.put('/users/:id/postits/:postitId/buddies', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) =>{
+    routeHandler(() => {
+        debugger
+        const { params: { id, postitId }, sub, body: { buddyId } } = req
+
+       if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.assignTo(buddyId,postitId)
+            .then(() => res.json({
+                message: 'postit assigned'
+            }))
+    }, res)
+})
+
+
+//get buddies
+router.get('/users/:id/buddies', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) =>{
+    routeHandler(() => {
+      
+        const { params: { id }, sub} = req
+
+       if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.listBuddies(id)
+            .then((buddies) => res.json({
+                buddies
+            }))
+    }, res)
+})
+
+
 module.exports = router

@@ -150,6 +150,7 @@ const logic = {
         // })
     },
 
+
     /**
      * Adds a postit
      * 
@@ -205,6 +206,8 @@ const logic = {
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
             
             let postits = await Postit.find({ user: user._id }).lean()
+            let postitsAssigned = await Postit.find({assignedTo: id}).lean()
+            debugger
             const _postits = postits.map(postit => {
                 postit.id = postit._id.toString()
 
@@ -215,7 +218,18 @@ const logic = {
                 return postit
 
             })
-            return _postits
+            const _assignedPostits = postitsAssigned.map(postit => {
+                postit.id = postit._id.toString()
+
+                delete postit._id
+
+                postit.user = postit.user.toString()
+
+                return postit
+
+            })
+            
+            return _assignedPostits.concat(_postits)
         })()
         // return User.findById(id)
         //     .lean()
@@ -333,21 +347,21 @@ const logic = {
         //         return postit.save()
         //     })
     },
-    addBuddy(userId,addedId){
+    addBuddy(userId,username){
         if (typeof userId !== 'string') throw TypeError(`${id} is not a string`)
 
         if (!userId.trim().length) throw new ValueError('id is empty or blank')
 
-        if (typeof addedId !== 'string') throw TypeError(`${postitId} is not a string`)
+        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
 
-        if (!addedId.trim().length) throw new ValueError('postit id is empty or blank')
+        if (!username.trim().length) throw new ValueError('username is empty or blank')
 
         return (async ()=>{
 
             let user = await User.findById(userId)
             if (!user) throw new NotFoundError(`user with ${userId} not found`)
-        
-            user.buddies.push(addedId)
+            let user2 = await User.findOne({ username })
+            user.buddies.push(user2.id)
              //const postit = new Postit({ text, user: user.id, status: 'TODO' })
 
             await user.save()
@@ -355,7 +369,26 @@ const logic = {
         })()
         
     },
-    assignTo(postitId,userId){
+
+    listBuddies(userId){
+        if (typeof userId !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!userId.trim().length) throw new ValueError('id is empty or blank')
+
+        
+        return (async ()=>{
+
+            let user = await User.findById(userId)
+            if (!user) throw new NotFoundError(`user with ${userId} not found`)
+        
+            let buddies = user.buddies.map(buddy => buddy)
+             //const postit = new Postit({ text, user: user.id, status: 'TODO' })
+
+           return buddies
+        })()
+        
+    },
+    assignTo(userId,postitId){
         if (typeof userId !== 'string') throw TypeError(`${id} is not a string`)
 
         if (!userId.trim().length) throw new ValueError('id is empty or blank')
@@ -363,24 +396,25 @@ const logic = {
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
 
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
-
+        debugger
+        
+        
         return (async ()=>{
 
-            let postit = await Postit.findById(postitId)
-            if (!user) throw new NotFoundError(`postit with ${postitId} not found`)
-            debugger
+            let postit = await Postit.findById( postitId )
+            if (!postit) throw new NotFoundError(`postit with ${postitId} not found`)
+          
+            
+
             postit.assignedTo = userId 
              //const postit = new Postit({ text, user: user.id, status: 'TODO' })
-            debugger
+            
             await postit.save()
 
         })()
+list8
 
-
-    },
- 
-
-
+    }
 }
 
 module.exports = logic
