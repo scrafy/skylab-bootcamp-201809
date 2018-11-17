@@ -2,8 +2,7 @@
     background-color: yellow;
     width: 100px;
     height: 100px;
-    margin: 10px;
-    margin-bottom: 50px;
+    margin: 30px;
 }
 
 .post textarea {
@@ -16,4 +15,8 @@
 
 .fa-sticky-note {
     color: gold;
+}
+
+.error {
+    color: red;
 }
