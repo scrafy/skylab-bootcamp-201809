@@ -1,0 +1,38 @@
+@keyframes beemove {
+    from {top: 0px;}
+    to {top: 50%;}
+}
+
+.bees{
+    height: 100%;
+    padding: 1em;
+    & .bees__container{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin: 0 auto;
+        animation: beemove 1s infinite alternate ease-in;
+        & .bees__bee{
+            width: 100px;
+            height: 100px;
+            @include screen(540,"width", 150px);
+            @include screen(768,"height", 250px);
+            &:last-child{
+                right: 0;
+            }         
+        }
+        & .bees_title{
+            color: white;
+            font-size: 2.5em;
+            text-align: center;
+            &:hover{
+                cursor: pointer;
+            }
+            @include screen(480,"font-size", 4em);
+            @include screen(540,"font-size", 5em);
+            @include screen(1024,"font-size", 7em);
+            @include screen(1280,"font-size", 9em);
+            
+        }
+    }
+}

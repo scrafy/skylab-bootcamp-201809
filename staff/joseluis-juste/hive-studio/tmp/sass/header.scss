@@ -1,0 +1,90 @@
+@keyframes beemove-mov {
+    from {top: -100px;}
+    to {top: 90%;}
+}
+
+.header{
+    padding: 1em 1em;
+    background-image: url("../background.jpg");
+    position: fixed;
+    width: 100%;
+    max-width: 1280px;
+    z-index: 100;
+    .header-container{
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        & .header-container__logo{
+            width: 70px;
+            height: 70px;
+            position: absolute;
+            animation: beemove-mov 1s infinite alternate ease-in;
+        }
+        & .header-container__actions{
+            margin-left: auto;
+            & .header-container__actions__menu{
+                font-size: 2em;
+                color:green;
+                text-align: right;
+                @include screen(1024,"display", none);
+            }
+            & .header-container__actions{
+                height: 100%;
+                padding-top: 1em;
+                
+                & .header-container__actions__item{
+                    display: inline-block;
+                    transition: transform 0.3s linear;
+                    &:hover{
+                   
+                        transform: scale(2,2);
+                    }
+                    &:first-child{
+                        padding-right: 1em;
+                       // border-left:1px solid green;                       
+                    }
+                    &:last-child{
+                        padding-left: 1em;
+                                          
+                    }
+                    a{
+                        color:green;
+                        text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
+                        background-clip: text;
+                    }
+                }
+            }
+        }
+    }
+    .nav{
+        padding: 1em 1em;
+        width: 80%;
+        margin-left: auto;
+        margin-top: 2em;
+        border-radius: 10px;
+        background-color: #f8a900;
+        display: none;
+        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+        @include screen(1024,'display',block);
+        & .nav__menu{
+            display: flex;
+            justify-content: space-between;
+            & .nav__menu__item{
+                display: inline-block;
+                transition: transform 0.3s linear;
+                &:hover{
+                   
+                    transform: scale(2,2);
+                }
+                & a{
+                    color:black;
+                    text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
+                    background-clip: text;
+                    &:hover{
+                        color:green;
+                    }
+                }
+            }
+        }
+    }
+}
