@@ -1,10 +1,6 @@
 .home-section{
-    background: linear-gradient(to bottom, rgba(252,201,32,1) 0%, rgba(252,201,32,1) 15%, rgba(246,246,246,1) 88%, rgba(246,246,246,1) 100%);
-   
-    @include screen(1280,"box-shadow", inset 0px 1px 136px -15px rgba(0,0,0,0.75));
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(248,169,0,1) 0%, rgba(246,246,246,1) 69%, rgba(246,246,246,1) 100%);  
     position: relative;
-    padding: 5em 1em;
-    @include screen(1024,"padding-top", 8em);
     height: 100%;
     & .home-section__main{
         padding: 2em 2em;
@@ -45,7 +41,7 @@
             }
           
         }
-        & .home-section__main__dervidados,
+        & .home-section__main__derivados,
         .home-section__main__tools{
              & > div{
                 display: flex;
