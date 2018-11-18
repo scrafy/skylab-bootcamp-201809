@@ -1,0 +1,36 @@
+.home-section__main__derivados
+{       
+       
+        & > div{
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 1em;
+        flex-wrap: wrap;
+        & p{
+            width: 100%;
+            margin: 0;
+            @include screen(480,"width", 60%);
+            @include screen(480,"margin-left", 1em);
+            @include screen(640,"width", 60%);
+            @include screen(1024,"width", 76%);
+        }
+    }
+    & .home-section__main__derivados__img
+    {
+        width: 100%;
+        margin-bottom:1em;
+        @include screen(480,"width", 100px);
+        @include screen(480,"height", 100px);
+        @include screen(540,"width", 150px);
+        @include screen(540,"height", 150px);
+        @include screen(640,"width", 200px);
+        @include screen(640,"height", 200px);
+        
+    }
+    & .home-section__main__dervidados__title
+    {
+        text-align: center;
+        color:green;
+        text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
+    }
+}

@@ -1,0 +1,9 @@
+.home-section{
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(248,169,0,1) 0%, rgba(246,246,246,1) 69%, rgba(246,246,246,1) 100%);  
+    position: relative;
+    height: 100%;
+    & .home-section__main{
+        padding: 2em 2em;
+    }
+}
+
