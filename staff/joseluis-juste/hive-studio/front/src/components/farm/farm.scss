@@ -1,0 +1,88 @@
+.panel-control{
+    background-color: green;
+    height: 100px;
+    padding: 1em 0.5em;
+    position: relative;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    top: -100px;
+    margin-bottom: 3em;
+    -webkit-transition: top 0.5s ease-in;
+    transition: top 0.5s ease-in;
+    z-index: 80;
+    &:before{
+        content: '\64';
+        text-align: center;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        position: absolute;
+        bottom: -30px;
+        width: 3em;
+        background-color: green;
+        cursor: pointer;
+        left: calc(50% - 35px);
+        color: $orange;
+        font-size: 1.5em;
+        padding: 4px 0;
+        
+
+    }
+    & .panel-control__items{
+        display: flex;
+        justify-content: space-around;
+        & .panel-control__item{
+            width: 78px;
+            @include screen(480,"width",110px);
+            height: 70px;
+            &:hover{
+                cursor: pointer;
+            }
+            background-size: contain;
+            background-repeat: no-repeat;
+            &#item-farm{
+                background-image: url("../../assets/img/honeycomb1.png")
+            }
+            &#item-hive{
+                background-image: url("../../assets/img/hive.svg")
+            }
+            &#item-bee{
+                width: 70px;
+                background-image: url("../../assets/img/bee.png")
+            }
+        }
+       
+    }
+}
+
+.farms-area{
+    border:2px solid green;
+    border-radius: 10px;
+    padding: 0.5em;
+    height: 300px;
+    @include screen(1024, "height", 392px);
+    overflow-y: auto;
+    & > div{
+        width: 100%;
+    }
+    background-color: #008000;
+    & .farms-area__item{
+        width: 100%;
+        @include screen(620, "width", 75%);
+        @include screen(768, "width", 65%);
+        @include screen(1024, "width", 58%);
+        @include screen(1280, "width", 46%);
+        height: 277px;
+        @include screen(1024, "height", 372px);
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        background-image: url("../../assets/img/honeycomb1.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position-x: center;
+        background-position-y: center;
+        overflow-y: auto;
+        margin:0 auto;
+    }
+}

@@ -26,6 +26,12 @@ p {
 a:hover {
   cursor: pointer; }
 
+.icon-trash-o,
+.icon-pencil,
+.icon-monitor {
+  color: orange;
+  font-size: 2em; }
+
 #root {
   height: 100%;
   max-width: 1280px;
@@ -151,112 +157,6 @@ body {
   padding: 0em 1em;
   height: 100%;
   padding-bottom: 88px; }
-  .landing-section .panel-control {
-    background-color: green;
-    height: 100px;
-    padding: 1em 0.5em;
-    position: relative;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    top: -100px;
-    margin-bottom: 3em;
-    -webkit-transition: top 0.5s ease-in;
-    transition: top 0.5s ease-in;
-    z-index: 80; }
-    .landing-section .panel-control:before {
-      content: '\64';
-      text-align: center;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      position: absolute;
-      bottom: -30px;
-      width: 3em;
-      background-color: green;
-      cursor: pointer;
-      left: calc(50% - 35px);
-      color: #fcc920;
-      font-size: 1.5em;
-      padding: 4px 0; }
-    .landing-section .panel-control .panel-control__items {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-pack: distribute;
-          justify-content: space-around; }
-      .landing-section .panel-control .panel-control__items .panel-control__item {
-        width: 78px;
-        height: 70px;
-        background-size: contain;
-        background-repeat: no-repeat; }
-        @media screen and (min-width: 480px) {
-          .landing-section .panel-control .panel-control__items .panel-control__item {
-            width: 110px; } }
-        .landing-section .panel-control .panel-control__items .panel-control__item:hover {
-          cursor: pointer; }
-        .landing-section .panel-control .panel-control__items .panel-control__item#item-farm {
-          background-image: url("../../assets/img/honeycomb1.png"); }
-        .landing-section .panel-control .panel-control__items .panel-control__item#item-hive {
-          background-image: url("../../assets/img/hive.svg"); }
-        .landing-section .panel-control .panel-control__items .panel-control__item#item-bee {
-          width: 70px;
-          background-image: url("../../assets/img/bee.png"); }
-  .landing-section .farms-area {
-    border: 2px solid green;
-    border-radius: 10px;
-    padding: 0.5em;
-    height: 300px;
-    overflow-y: auto;
-    background-color: #008000; }
-    @media screen and (min-width: 1024px) {
-      .landing-section .farms-area {
-        height: 392px; } }
-    .landing-section .farms-area > div {
-      width: 100%; }
-    .landing-section .farms-area .farms-area__item {
-      width: 100%;
-      height: 277px;
-      margin: 0 auto;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-      -webkit-box-pack: start;
-          -ms-flex-pack: start;
-              justify-content: flex-start;
-      background-image: url(/static/media/honeycomb1.452511db.png);
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position-x: center;
-      background-position-y: center;
-      overflow-y: auto;
-      margin: 0 auto; }
-      @media screen and (min-width: 768px) {
-        .landing-section .farms-area .farms-area__item {
-          width: 65%; } }
-      @media screen and (min-width: 1024px) {
-        .landing-section .farms-area .farms-area__item {
-          width: 58%; } }
-      @media screen and (min-width: 1280px) {
-        .landing-section .farms-area .farms-area__item {
-          width: 46%; } }
-      @media screen and (min-width: 1024px) {
-        .landing-section .farms-area .farms-area__item {
-          height: 372px; } }
-      .landing-section .farms-area .farms-area__item .farms-area__item__back {
-        /* position: absolute;
-         top:0;
-         left:0;
-         bottom:0;
-         right: 0;
-         z-index: 60;*/ }
-      .landing-section .farms-area .farms-area__item .farms-area__item__hive {
-        width: 70px;
-        height: 70px;
-        margin-left: 1em;
-        /* position:absolute;
-         top:0;
-         left:0;*/ }
 
 .home-section__main__derivados > div {
   display: -webkit-box;
@@ -664,112 +564,6 @@ body {
   padding: 0em 1em;
   height: 100%;
   padding-bottom: 88px; }
-  .landing-section .panel-control {
-    background-color: green;
-    height: 100px;
-    padding: 1em 0.5em;
-    position: relative;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    top: -100px;
-    margin-bottom: 3em;
-    -webkit-transition: top 0.5s ease-in;
-    transition: top 0.5s ease-in;
-    z-index: 80; }
-    .landing-section .panel-control:before {
-      content: '\64';
-      text-align: center;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      position: absolute;
-      bottom: -30px;
-      width: 3em;
-      background-color: green;
-      cursor: pointer;
-      left: calc(50% - 35px);
-      color: #fcc920;
-      font-size: 1.5em;
-      padding: 4px 0; }
-    .landing-section .panel-control .panel-control__items {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-pack: distribute;
-          justify-content: space-around; }
-      .landing-section .panel-control .panel-control__items .panel-control__item {
-        width: 78px;
-        height: 70px;
-        background-size: contain;
-        background-repeat: no-repeat; }
-        @media screen and (min-width: 480px) {
-          .landing-section .panel-control .panel-control__items .panel-control__item {
-            width: 110px; } }
-        .landing-section .panel-control .panel-control__items .panel-control__item:hover {
-          cursor: pointer; }
-        .landing-section .panel-control .panel-control__items .panel-control__item#item-farm {
-          background-image: url("../../assets/img/honeycomb1.png"); }
-        .landing-section .panel-control .panel-control__items .panel-control__item#item-hive {
-          background-image: url("../../assets/img/hive.svg"); }
-        .landing-section .panel-control .panel-control__items .panel-control__item#item-bee {
-          width: 70px;
-          background-image: url("../../assets/img/bee.png"); }
-  .landing-section .farms-area {
-    border: 2px solid green;
-    border-radius: 10px;
-    padding: 0.5em;
-    height: 300px;
-    overflow-y: auto;
-    background-color: #008000; }
-    @media screen and (min-width: 1024px) {
-      .landing-section .farms-area {
-        height: 392px; } }
-    .landing-section .farms-area > div {
-      width: 100%; }
-    .landing-section .farms-area .farms-area__item {
-      width: 100%;
-      height: 277px;
-      margin: 0 auto;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-      -webkit-box-pack: start;
-          -ms-flex-pack: start;
-              justify-content: flex-start;
-      background-image: url(/static/media/honeycomb1.452511db.png);
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position-x: center;
-      background-position-y: center;
-      overflow-y: auto;
-      margin: 0 auto; }
-      @media screen and (min-width: 768px) {
-        .landing-section .farms-area .farms-area__item {
-          width: 65%; } }
-      @media screen and (min-width: 1024px) {
-        .landing-section .farms-area .farms-area__item {
-          width: 58%; } }
-      @media screen and (min-width: 1280px) {
-        .landing-section .farms-area .farms-area__item {
-          width: 46%; } }
-      @media screen and (min-width: 1024px) {
-        .landing-section .farms-area .farms-area__item {
-          height: 372px; } }
-      .landing-section .farms-area .farms-area__item .farms-area__item__back {
-        /* position: absolute;
-         top:0;
-         left:0;
-         bottom:0;
-         right: 0;
-         z-index: 60;*/ }
-      .landing-section .farms-area .farms-area__item .farms-area__item__hive {
-        width: 70px;
-        height: 70px;
-        margin-left: 1em;
-        /* position:absolute;
-         top:0;
-         left:0;*/ }
 
 .register-farm .modal-content {
   background-color: #fcc920; }
@@ -780,3 +574,122 @@ body {
   width: 100%; }
 .register-hive .modal-content {
   background-color: #fcc920; }
+
+.farms-area__item__hive {
+  width: 70px;
+  height: 70px;
+  margin-left: 1em;
+  position: relative; }
+  .farms-area__item__hive:hover {
+    cursor: pointer; }
+  .farms-area__item__hive .farms-area__item__hive_controls {
+    position: absolute;
+    overflow: hidden;
+    top: 62px;
+    left: 0;
+    height: 0;
+    width: 70px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    -webkit-transition: height 0.2s linear,  padding 0.2s linear;
+    transition: height 0.2s linear,  padding 0.2s linear; }
+    .farms-area__item__hive .farms-area__item__hive_controls:hover {
+      cursor: pointer; }
+
+.show-panel-control-hive {
+  padding: 1em 0;
+  height: 169px !important; }
+
+.panel-control {
+  background-color: green;
+  height: 100px;
+  padding: 1em 0.5em;
+  position: relative;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  top: -100px;
+  margin-bottom: 3em;
+  -webkit-transition: top 0.5s ease-in;
+  transition: top 0.5s ease-in;
+  z-index: 80; }
+  .panel-control:before {
+    content: '\64';
+    text-align: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: absolute;
+    bottom: -30px;
+    width: 3em;
+    background-color: green;
+    cursor: pointer;
+    left: calc(50% - 35px);
+    color: #fcc920;
+    font-size: 1.5em;
+    padding: 4px 0; }
+  .panel-control .panel-control__items {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+        justify-content: space-around; }
+    .panel-control .panel-control__items .panel-control__item {
+      width: 78px;
+      height: 70px;
+      background-size: contain;
+      background-repeat: no-repeat; }
+      @media screen and (min-width: 480px) {
+        .panel-control .panel-control__items .panel-control__item {
+          width: 110px; } }
+      .panel-control .panel-control__items .panel-control__item:hover {
+        cursor: pointer; }
+      .panel-control .panel-control__items .panel-control__item#item-farm {
+        background-image: url("../../assets/img/honeycomb1.png"); }
+      .panel-control .panel-control__items .panel-control__item#item-hive {
+        background-image: url("../../assets/img/hive.svg"); }
+      .panel-control .panel-control__items .panel-control__item#item-bee {
+        width: 70px;
+        background-image: url("../../assets/img/bee.png"); }
+
+.farms-area {
+  border: 2px solid green;
+  border-radius: 10px;
+  padding: 0.5em;
+  height: 300px;
+  overflow-y: auto;
+  background-color: #008000; }
+  @media screen and (min-width: 1024px) {
+    .farms-area {
+      height: 392px; } }
+  .farms-area > div {
+    width: 100%; }
+  .farms-area .farms-area__item {
+    width: 100%;
+    height: 277px;
+    margin: 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    background-image: url("../../assets/img/honeycomb1.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+    overflow-y: auto;
+    margin: 0 auto; }
+    @media screen and (min-width: 768px) {
+      .farms-area .farms-area__item {
+        width: 65%; } }
+    @media screen and (min-width: 1024px) {
+      .farms-area .farms-area__item {
+        width: 58%; } }
+    @media screen and (min-width: 1280px) {
+      .farms-area .farms-area__item {
+        width: 46%; } }
+    @media screen and (min-width: 1024px) {
+      .farms-area .farms-area__item {
+        height: 372px; } }

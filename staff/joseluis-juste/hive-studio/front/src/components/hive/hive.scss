@@ -1,0 +1,29 @@
+.farms-area__item__hive{
+    width: 70px;
+    height: 70px;
+    margin-left: 1em;
+    position:relative;
+    &:hover{
+        cursor: pointer;
+    }
+    & .farms-area__item__hive_controls{
+        position: absolute;
+        overflow: hidden;
+        top: 62px;
+        left: 0;
+        height: 0;
+        width: 70px;
+        background-color: rgba(0,0,0,0.5);
+        border-radius: 10px;
+        transition: height 0.2s linear,  padding 0.2s linear;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+}
+
+
+.show-panel-control-hive{
+    padding: 1em 0;
+    height: 169px !important;    
+}

@@ -1,7 +1,7 @@
 @import "./mixins/screen-size";
 @import "fonts";
-@import "reset";
 @import "colors";
+@import "reset";
 @import "general";
 @import "./modules/form";
 @import "../../components/index/index";
@@ -17,3 +17,5 @@
 @import "../../components/landing/landing";
 @import "../../components/farm-register-modal/farm-register-modal";
 @import "../../components/hive-register-modal/hive-register-modal";
+@import "../../components/hive/hive";
+@import "../../components/farm/farm";
