@@ -26,12 +26,7 @@ class Landing extends Component {
         this.setState({ showDefinition: false, showHistory: false, showDerivative: false, showTool: true })
     }
 
-    handleTogglePanelControl = () => {
-
-        this.state.showPanelControl = !this.state.showPanelControl ? "top-0" : "";
-        this.setState({ showPanelControl: this.state.showPanelControl })
-    }
-
+   
     handleDragEvent = (ev) => {
         ev.dataTransfer.setData("text", ev.target.id);
     }

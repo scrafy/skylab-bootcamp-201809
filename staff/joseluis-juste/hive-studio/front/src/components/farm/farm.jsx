@@ -20,7 +20,16 @@ class Farm extends Component {
         var data = ev.dataTransfer.getData("text");
         if (data === "item-farm") {
             this.setState({ showRegisterModal: !this.state.showRegisterModal })
-            this.state.farms.push("asd")
+            this.state.farms.push({hives:[]})
+            this.setState({ farms: this.state.farms })
+        }
+    }
+
+    handleDropHiveEvent = (ev) => {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        if (data === "item-hive") {
+            this.state.farms[0].hives.push("asd")
             this.setState({ farms: this.state.farms })
         }
     }
@@ -43,6 +52,16 @@ class Farm extends Component {
     handleTogglePanelControl = () =>{
 
         this.setState({showPanelControl:!this.state.showPanelControl})
+    }
+
+    handleTogglePanelControl = () => {
+
+        this.state.showPanelControl = !this.state.showPanelControl ? "top-0" : "";
+        this.setState({ showPanelControl: this.state.showPanelControl })
+    }
+
+    handleDragEvent = (ev) =>{
+        ev.dataTransfer.setData("text", ev.target.id);
     }
 
     render() {
@@ -68,7 +87,7 @@ class Farm extends Component {
                     <Carousel showThumbs={false}>
                         {this.state.farms.map(farm => {
                             return <div id={Date.now()} className="farms-area__item" onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropHiveEvent}>
-
+                                {farm.hives.map(hive => {return <Hive></Hive>})}
                             </div>
                         })}
                     </Carousel>
