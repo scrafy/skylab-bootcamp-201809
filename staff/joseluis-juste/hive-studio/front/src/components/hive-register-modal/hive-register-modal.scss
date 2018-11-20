@@ -1,0 +1,13 @@
+.register-hive{
+    & .register-hive-main{
+    
+        & .register-hive-main__map{
+            background-color: blue;
+            height: 300px;
+            width: 100%;
+        }
+    }
+    & .modal-content{
+        background-color: $orange; 
+    }
+}

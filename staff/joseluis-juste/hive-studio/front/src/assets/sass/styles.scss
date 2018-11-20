@@ -3,6 +3,7 @@
 @import "reset";
 @import "colors";
 @import "general";
+@import "./modules/form";
 @import "../../components/index/index";
 @import "../../components/home/home";
 @import "../../components/landing/landing";
@@ -14,3 +15,5 @@
 @import "../../components/home/home";
 @import "../../components/index/index";
 @import "../../components/landing/landing";
+@import "../../components/farm-register-modal/farm-register-modal";
+@import "../../components/hive-register-modal/hive-register-modal";
