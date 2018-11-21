@@ -1,0 +1,12 @@
+const Route = use('Route')
+
+Route.get('/', 'UserController.index').prefix('users').middleware(['auth'])
+Route.get('/collaborators', 'UserController.getListCollaborators').prefix('user').middleware(['auth'])
+Route.get('/find', 'UserController.find').prefix('user').middleware(['auth'])
+Route.get('/getprofileimg', 'UserController.getprofileImg').prefix('user').middleware(['auth'])
+Route.get('/postits', 'UserController.getPostits').prefix('user').middleware(['auth'])
+Route.post('/', 'UserController.create').prefix('user').formats(['json']).validator('user/CreateUser')
+Route.post('/auth', 'UserController.login').prefix('user').formats(['json']).validator('user/AuthUser')
+Route.put('', 'UserController.update').prefix('user').formats(['json']).middleware(['auth','getUserFromAuth']).validator('user/UpdateUser')
+Route.post('/uploadimg', 'UserController.uploadImg').prefix('user').middleware(['auth'])
+Route.delete('', 'UserController.delete').prefix('user').middleware(['auth'])
