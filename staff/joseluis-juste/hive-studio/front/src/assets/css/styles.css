@@ -575,16 +575,59 @@ body {
 .register-hive .modal-content {
   background-color: #fcc920; }
 
+.register-section {
+  background: -webkit-gradient(linear, left top, left bottom, from(white), color-stop(0%, #f8a900), color-stop(69%, #f6f6f6), to(#f6f6f6));
+  background: linear-gradient(to bottom, white 0%, #f8a900 0%, #f6f6f6 69%, #f6f6f6 100%);
+  position: relative;
+  width: 100%;
+  padding: 4.05em 2em; }
+  .register-section h2 {
+    text-align: center;
+    margin-bottom: 1em; }
+  .register-section .form {
+    margin: 0 auto;
+    width: 70%; }
+    .register-section .form > div:last-child {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between; }
+
+@-webkit-keyframes blink_animation {
+  from {
+    background-color: transparent; }
+  to {
+    background-color: brown; } }
+
+@keyframes blink_animation {
+  from {
+    background-color: transparent; }
+  to {
+    background-color: brown; } }
+@-webkit-keyframes blink_animation_danger {
+  from {
+    background-color: transparent; }
+  to {
+    background-color: red; } }
+@keyframes blink_animation_danger {
+  from {
+    background-color: transparent; }
+  to {
+    background-color: red; } }
 .farms-area__item__hive {
   width: 70px;
   height: 70px;
   margin-left: 1em;
-  position: relative; }
+  position: relative;
+  border-radius: 50px; }
   .farms-area__item__hive:hover {
     cursor: pointer; }
   .farms-area__item__hive .farms-area__item__hive_controls {
     position: absolute;
     overflow: hidden;
+    z-index: 1000000;
     top: 62px;
     left: 0;
     height: 0;
@@ -599,6 +642,14 @@ body {
 .show-panel-control-hive {
   padding: 1em 0;
   height: 169px !important; }
+
+.blink-animation {
+  -webkit-animation: blink_animation 1s infinite alternate linear;
+          animation: blink_animation 1s infinite alternate linear; }
+
+.blink-animation-danger {
+  -webkit-animation: blink_animation_danger 1s infinite alternate linear;
+          animation: blink_animation_danger 1s infinite alternate linear; }
 
 .panel-control {
   background-color: green;
@@ -655,6 +706,7 @@ body {
   border-radius: 10px;
   padding: 0.5em;
   height: 300px;
+  margin-bottom: 2em;
   overflow-y: auto;
   background-color: #008000; }
   @media screen and (min-width: 1024px) {
@@ -663,6 +715,7 @@ body {
   .farms-area > div {
     width: 100%; }
   .farms-area .farms-area__item {
+    position: relative;
     width: 100%;
     height: 277px;
     margin: 0 auto;
@@ -693,3 +746,19 @@ body {
     @media screen and (min-width: 1024px) {
       .farms-area .farms-area__item {
         height: 372px; } }
+    .farms-area .farms-area__item .farms-area__item__panel-control {
+      padding: 0.8em;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      height: 60px;
+      width: 116px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      -webkit-transition: height 0.2s linear, padding 0.2s linear;
+      transition: height 0.2s linear, padding 0.2s linear;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between; }
+      .farms-area .farms-area__item .farms-area__item__panel-control:hover {
+        cursor: pointer; }

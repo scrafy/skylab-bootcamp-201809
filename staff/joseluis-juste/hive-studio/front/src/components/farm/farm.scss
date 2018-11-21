@@ -60,12 +60,14 @@
     padding: 0.5em;
     height: 300px;
     @include screen(1024, "height", 392px);
+    margin-bottom: 2em;
     overflow-y: auto;
     & > div{
         width: 100%;
     }
     background-color: #008000;
     & .farms-area__item{
+        position: relative;
         width: 100%;
         @include screen(620, "width", 75%);
         @include screen(768, "width", 65%);
@@ -84,5 +86,18 @@
         background-position-y: center;
         overflow-y: auto;
         margin:0 auto;
+        & .farms-area__item__panel-control{
+            padding: 0.8em;
+            display: flex;
+            height: 60px;
+            width: 116px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            transition: height 0.2s linear, padding 0.2s linear;
+            justify-content: space-between;
+            &:hover{
+                cursor: pointer;
+            }
+        }
     }
 }

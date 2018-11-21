@@ -1,14 +1,26 @@
+@keyframes blink_animation {
+    from {background-color: transparent}
+    to {background-color: brown}
+}
+
+@keyframes blink_animation_danger {
+    from {background-color: transparent}
+    to {background-color: red}
+}
+
 .farms-area__item__hive{
     width: 70px;
     height: 70px;
     margin-left: 1em;
     position:relative;
+    border-radius: 50px;
     &:hover{
         cursor: pointer;
     }
     & .farms-area__item__hive_controls{
         position: absolute;
         overflow: hidden;
+        z-index: 1000000;
         top: 62px;
         left: 0;
         height: 0;
@@ -22,8 +34,15 @@
     }
 }
 
-
 .show-panel-control-hive{
     padding: 1em 0;
     height: 169px !important;    
+}
+
+.blink-animation{
+    animation:  blink_animation 1s infinite alternate linear;
+}
+
+.blink-animation-danger{
+    animation:  blink_animation_danger 1s infinite alternate linear;
 }

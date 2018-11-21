@@ -3,6 +3,7 @@ import Home from './home/home'
 import Index from './index/index'
 import Landing from './landing/landing'
 import { Route, withRouter, Redirect } from 'react-router-dom'
+import Register from './register/register'
 
 class App extends Component {
 
@@ -14,6 +15,7 @@ class App extends Component {
         <Route exact path="/" render={() => <Index></Index>} />
         <Route path="/home" render={() => <Home></Home>} />
         <Route path="/landing" render={() => <Landing></Landing>} />
+        <Route path="/register" render={() => <Register></Register>} />
       </section>
 
     );
