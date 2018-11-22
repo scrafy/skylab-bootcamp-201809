@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { Route, withRouter, Redirect } from 'react-router-dom'
+import LoginModal from '../login-modal/login-modal'
 
 class Header extends Component {
 
-    state = {showNavMobile:""}
+    state = {showNavMobile:"", showLoginModal:false}
 
     showNavMobile = () =>{
 
@@ -10,9 +12,15 @@ class Header extends Component {
         this.setState({showNavMobile:this.state.showNavMobile})
     }
 
+    handleShowFormLogin = () =>{
+
+        this.setState( {showLoginModal:!this.state.showLoginModal} )
+    }
+
     render() {
         return (
             <header className="header">
+               <LoginModal showModal = {this.state.showLoginModal} onShowHideModal={this.handleShowFormLogin}></LoginModal>
                 <nav className={`nav-mobile ${this.state.showNavMobile}`}>
                     <ul className="nav-mobile__menu">
                         <li onClick={this.showNavMobile} className="nav-mobile__menu__item icon-bars" />
@@ -23,14 +31,14 @@ class Header extends Component {
                     </ul>
                 </nav>
                 <div className="header-container">
-                    <div className="header-container__logo">
+                    <div onClick={() => this.props.history.push("/home")} className="header-container__logo">
                         <img src="img/favicon.jpg" />
                     </div>
                     <div className="header-container__menu icon-bars" onClick={this.showNavMobile} />
                     <section className="header-container__actions">
                         <ul className="header-container__actions">
-                            <li className="header-container__actions__item"><a>Register</a></li>
-                            <li className="header-container__actions__item"><a>Login</a></li>
+                            <li onClick={() => this.props.history.push("/register")} className="header-container__actions__item"><a>Register</a></li>
+                            <li onClick={this.handleShowFormLogin} className="header-container__actions__item"><a>Login</a></li>
                         </ul>
                     </section>
                 </div>
@@ -47,6 +55,6 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header)
 
 

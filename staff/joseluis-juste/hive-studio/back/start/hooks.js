@@ -49,8 +49,21 @@ hooks.after.providersBooted((ctx) => {
 
     }
 
+    const superiorToOrEqual = async (data, field, message, args, get) => {
+
+       
+        let value = get(data, field)
+        if (!value) {
+            return
+        }
+
+        if (Number(value) < args[0])
+            throw message
+    }
+
     Validator.extend('passwordCorrect', passwordCorrect)
     Validator.extend('equalTo', equalTo)
+    Validator.extend('superiorToOrEqual', superiorToOrEqual)
 
 
 })

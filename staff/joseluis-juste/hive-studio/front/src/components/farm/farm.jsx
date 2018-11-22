@@ -6,22 +6,21 @@ import { Carousel } from 'react-responsive-carousel'
 
 class Farm extends Component {
 
-    state = { 
+    state = {
+
         selectedSlide:0, 
         farms: [], 
         showPanelControl: false, 
         showHiveModal:false,
         showRegisterModal:false,
         registerModalTitle:"", 
-        registerHiveTitle:"", 
-        farm:{},
-        validationHiveErrors:{},
-        validationFarmErrors:{}
+        registerHiveTitle:"",
+        isUpdateFarm:false        
     }
 
     constructor(props){
-        super(props)
-        this.sent = false
+
+        super(props)      
     }
 
 
@@ -35,20 +34,6 @@ class Farm extends Component {
         var data = ev.dataTransfer.getData("text");
         if (data === "item-farm") {
             this.setState({ showRegisterModal: !this.state.showRegisterModal, registerModalTitle:"New Farm" })
-            this.state.farms.push({id:Date.now(), name:"farm1" + Date.now(), description:"desc", minhives:5, square_meters:50, maxhives:10, hives: [{
-                id:Date.now(),
-                name:"hive1",
-                description:"desc hive",
-                mintemperature:1,
-                maxtemperature:5,
-                minhumidity:5,
-                maxhumidity:10,
-                beeminvolume:30000,
-                beemaxvolume:20000,
-                latitude:28.4,
-                longitude:-16.3
-            }] })
-            this.setState({ farms: this.state.farms })
         }
     }
 
@@ -57,8 +42,6 @@ class Farm extends Component {
         var data = ev.dataTransfer.getData("text");
         if (data === "item-hive") {
             this.setState({ showHiveModal: !this.state.showHiveModal, registerHiveTitle:"New Hive"})
-            this.state.farms[this.state.selectedSlide].hives.push("asd")
-            this.setState({ farms: this.state.farms })
         }
     }
 
@@ -128,10 +111,6 @@ class Farm extends Component {
             //this.handleShowHideHiveModal()
     }
 
-    handleSubmitFarm = (form_data) =>{
-        console.log(form_data)
-    }
-
     render() {
         return (
             <section>
@@ -150,7 +129,7 @@ class Farm extends Component {
                 </section>
                 {this.state.showPanelControl && <section id="farm-area" onDrop={(ev) => this.handleDropFarmEvent(ev)} onDragOver={(ev) => this.handleDragOverEvent(ev)} className="farms-area">
                     <audio autoPlay loop src={require(`../../assets/audio/abeja.mp3`)}></audio>
-                    <FarmRegisterModal onSubmitFarm={this.handleSubmitFarm} farm={this.state.farm} title={this.state.registerModalTitle} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
+                    <FarmRegisterModal farm={this.state.farm} isUpdateFarm={this.state.isUpdateFarm} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
                     <HiveRegisterModal validationErrors = {this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
                     <Carousel selectedItem={this.state.selectedSlide} onChange={(ev) => this.handleSliderChange(ev)} showThumbs={false}>
                         {this.state.farms.map(farm => {

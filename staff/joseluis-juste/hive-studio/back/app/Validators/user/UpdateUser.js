@@ -9,6 +9,7 @@ class UpdateUser {
 
     const userId = this.ctx.request.user.id
     const { confirmpassword } = this.ctx.request.body
+    
     return {
 
       name: 'required',
@@ -17,8 +18,8 @@ class UpdateUser {
       phone: 'required',
       username: `required|unique:users,username,id,${userId}`,
       password: `required|password_correct:users,password,${userId}`,
-      newpassword: `required|equal_to:${confirmpassword}`,
-      confirmpassword: `required`
+      newpassword: `equal_to:${confirmpassword}`,
+      
 
     }
 
@@ -36,9 +37,7 @@ class UpdateUser {
       'username.unique': 'Exists an user with the same username',
       'password.required': `The password field is required`,
       'password.password_correct': `The user´s password is incorrect`,
-      'newpassword.required': 'The newpassword is required',
-      'newpassword.equal_to': 'The newpassword does not match with confirmpassword value',
-      'confirmpassword.required': 'The confirmpassword is required'
+      'newpassword.equal_to': 'The newpassword does not match with confirmpassword value'      
     }
   }
 

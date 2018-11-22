@@ -37,28 +37,11 @@ class HiveRegisterModal extends React.Component {
 
     componentWillReceiveProps(props) {
 
-        /*if (props.hive) {
-
-            if (props.validationErrors)
-                this.state.validationErrors = props.validationErrors
-            else
-                this.state.validationErrors = {}
-
-            this.setState({ form_data: props.hive, modal: props.showModal, title: props.title, validationErrors: this.state.validationErrors })
-        }
-        else {
-            if (props.validationErrors)
-                this.state.validationErrors = props.validationErrors
-            else
-                this.state.validationErrors = {}
-
-            this.setState({ modal: props.showModal, title: props.title, validationErrors: this.state.validationErrors })
-        }*/
         if (props.hive)
 
-            this.setState({ form_data: props.hive, modal: props.showModal, title: props.title, validationErrors: props.validationErrors }) 
+            this.setState({ form_data: props.hive, modal: props.showModal, title: props.title}) 
         else
-            this.setState({ modal: props.showModal, title: props.title, validationErrors: props.validationErrors })
+            this.setState({ modal: props.showModal, title: props.title})
 
     }
 
@@ -142,32 +125,7 @@ class HiveRegisterModal extends React.Component {
     }
 
     handleSubmit = () => {
-
-        this.props.onSubmitHive(this.state.form_data)
         
-        
-        if (Object.keys(this.state.validationErrors).length !== 0 && this.state.validationErrors.constructor === Object){
-            this.state.form_data = {
-
-                name: "",
-                description: "",
-                mintemperature: 1,
-                maxtemperature: 100,
-                minhumidity: 1,
-                maxhumidity: 100,
-                beeminvolume: 10000,
-                beemaxvolume: 100000,
-                latitude: "",
-                longitude: ""
-
-            }
-            this.map.markers.forEach(marker => {
-                marker.setMap(null)
-            })
-
-        }
-        this.setState({ form_data: this.state.form_data })
-        //this.toggle()
     }
 
     render() {

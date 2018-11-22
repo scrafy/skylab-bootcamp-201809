@@ -372,6 +372,8 @@ body {
     .header .header-container .header-container__logo {
       width: 50px;
       height: 50px; }
+      .header .header-container .header-container__logo:hover {
+        cursor: pointer; }
       .header .header-container .header-container__logo img {
         border-radius: 50px; }
       @media screen and (min-width: 640px) {
@@ -594,6 +596,13 @@ body {
       -webkit-box-pack: justify;
           -ms-flex-pack: justify;
               justify-content: space-between; }
+    .register-section .form .form-image-profile {
+      width: 138px;
+      height: 150px;
+      border: 1px solid black;
+      margin-bottom: 1em; }
+      .register-section .form .form-image-profile + button {
+        margin-bottom: 1em; }
 
 @-webkit-keyframes blink_animation {
   from {

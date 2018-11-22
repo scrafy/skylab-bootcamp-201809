@@ -1,25 +1,56 @@
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import React from 'react';
+import ServiceBackEnd from '../../logic/Service'
+import ValidationError from '../../logic/exceptions/validationexception'
 
 class FarmRegisterModal extends React.Component {
 
-    state = {title: this.props.title, farm_loc: {}, modal: false, form_data: {}, validationErrors:{} }
+    state = {
+
+        title: "",
+        isUpdate: this.props.isUpdate,
+        modal: false,
+        farm: {},
+        form_data: {
+
+            name: "",
+            description: "",
+            minhives: 1,
+            maxhives: 100,
+            squaremeters: ""
+        },
+        validationErrors: {},
+        message: "",
+        message_color: "green",
+    }
 
     constructor(props) {
+
         super(props);
         this.valuesForm = []
         for (let i = 1; i <= 100; i++) {
             this.valuesForm.push(i)
         }
+        this.service = new ServiceBackEnd()
     }
 
 
     componentWillReceiveProps(props) {
-        this.setState({form_data:props.farm, modal: props.showModal, title: props.title })
+        if (props.isUpdate)
+            this.setState({ farm: props.farm, isUpdate: props.isUpdate, modal: props.showModal, title: "Edit Farm" })
+        else
+            this.setState({ isUpdate: props.isUpdate, modal: props.showModal, title: "New Farm" })
+    }
+
+    resetComponent = () =>{
+
+        this.state.form_data = { name: "", description: "", minhives: 1, maxhives: 100, squaremeters: "" }
+        this.setState({ validationErrors:{}, form_data:this.state.form_data, message_color:"green", message:"" })
     }
 
     toggle = () => {
-
+        
+        this.resetComponent()
         this.props.onShowHideModal()
     }
 
@@ -49,7 +80,7 @@ class FarmRegisterModal extends React.Component {
 
     handleOnChangeSquareMeters = (ev) => {
 
-        this.state.form_data.square_meters = ev.target.value
+        this.state.form_data.squaremeters = ev.target.value
         this.setState({ form_data: this.state.form_data })
     }
 
@@ -61,7 +92,38 @@ class FarmRegisterModal extends React.Component {
 
     handleSubmitForm = () => {
 
-        this.props.onSubmitFarm(this.state.form_data)
+        if (this.state.isUpdate) {
+
+        } else {
+
+            this.service.createFarm(this.state.form_data).then(res => {
+
+               
+                this.setState({ message: "The farm has been created correctly...", message_color: "green", validationErrors: {}, form_data: this.state.form_data }, () => {
+
+                    setTimeout(() => this.resetComponent(), 3000)
+                })
+
+            }).catch(err => {
+
+                if (err instanceof ValidationError) {
+                    let errors = {}
+                    err.validationErrors.forEach(error => {
+                        errors[error.field] = error.message
+                    });
+                    this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" }, () =>{
+                        
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                } else {
+                    
+                    this.setState({ message: err.message, message_color: "red" }, () =>{
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                }
+            })
+        }
+
     }
 
     render() {
@@ -72,6 +134,7 @@ class FarmRegisterModal extends React.Component {
                     <ModalBody>
                         <section className="register-farm-main">
                             <section className="register-farm-main__form">
+                                <h2 style={{ color: this.state.message_color }}>{this.state.message}</h2>
                                 <form className="form" onSubmit={(ev) => ev.preventDefault()}>
                                     <div className="form-group-field">
                                         <label>Farm name</label>
@@ -109,9 +172,9 @@ class FarmRegisterModal extends React.Component {
                                         <small class="text-danger">{this.state.validationErrors["maxhives"]}</small>
                                     </div>
                                     <div className="form-group-field">
-                                        <label>Square meter</label>
-                                        <input value={this.state.form_data.square_meters} onChange={(ev) => { this.handleOnChangeSquareMeters(ev) }} type="number" name="squaremeter" placeholder="Square meters..."></input>
-                                        <small class="text-danger">{this.state.validationErrors["squaremeter"]}</small>    
+                                        <label>Square meters</label>
+                                        <input value={this.state.form_data.squaremeters} onChange={(ev) => { this.handleOnChangeSquareMeters(ev) }} type="number" name="squaremeters" placeholder="Square meters..."></input>
+                                        <small class="text-danger">{this.state.validationErrors["squaremeters"]}</small>
                                     </div>
                                     <div className="form-group-field">
                                         <button onClick={this.handleSubmitForm}>Send...</button>

@@ -35,8 +35,8 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  postits () {
-    return this.hasMany('App/Models/Postit')
+  farms () {
+    return this.hasMany('App/Models/Farm')
   }
 
 }

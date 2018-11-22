@@ -14,6 +14,15 @@
             display: flex;
             justify-content: space-between;
         }
+        & .form-image-profile{
+            width: 138px;
+            height: 150px;
+            border: 1px solid black;
+            margin-bottom: 1em;
+            & + button{
+                margin-bottom: 1em;
+            }
+        }
     }
     
 }

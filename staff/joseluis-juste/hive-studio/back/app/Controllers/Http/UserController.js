@@ -3,7 +3,6 @@
 const BaseController = use('App/Controllers/Http/BaseController')
 const ResourceNotFoundException = use('App/Exceptions/ResourceNotFoundException')
 const User = use('App/Models/User')
-const PostIt = use('App/Models/PostIt')
 const md5 = require('js-md5')
 const Env = use('Env')
 const fs = require("fs")
@@ -14,16 +13,28 @@ class UserController extends BaseController {
         super()
     }
 
-    async index({ request, response }) {
-
-        const users = await User.all()
-        this.sendResponse(response, users)
-    }
-
     async create({ request, response }) {
 
         const data = JSON.parse(request.raw())
-        await User.create(data)
+        const picprofile = data.picprofile
+        delete data.picprofile
+        let user = new User()
+        user.merge(data)
+        await user.save()
+        if (picprofile) {
+           
+            if (fs.existsSync(`App/uploads/${user.id}/profile_pic.jpg`)) {
+                fs.unlinkSync(`App/uploads/${user.id}/profile_pic.jpg`)
+            }
+            if (!fs.existsSync(`App/uploads/${user.id}`)) {
+                fs.mkdirSync(`App/uploads/${user.id}`)
+            }
+            const readstream = fs.createReadStream(`App/uploads/tmp/${picprofile}.jpg`)
+            const writestream = fs.createWriteStream(`App/uploads/${user.id}/profile_pic.jpg`)
+            readstream.pipe(writestream)
+            fs.unlink(`App/uploads/tmp/${picprofile}.jpg`)
+
+        }
         this.sendResponse(response, null, 201)
     }
 
@@ -47,23 +58,18 @@ class UserController extends BaseController {
         if (!user)
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
 
-        data.password = data.newpassword
-        delete data.newpassword
-        delete data.confirmpassword
+        if (data.newpassword){
+            
+            data.password = data.newpassword
+            delete data.newpassword
+            delete data.confirmpassword
+        }
         user.merge(data)
         await user.save()
         this.sendResponse(response, null)
         this.sendResponse(response)
     }
 
-    async getListCollaborators({ auth, request, response }) {
-
-        const { id } = await auth.getUser()
-       
-        const all = await User.query().where("id",'<>', id).fetch()
-        
-        this.sendResponse(response, all.rows.map(user => {return {id:user.id, username:user.username}}))
-    }
 
     async uploadImg({ auth, request, response }) {
 
@@ -87,6 +93,24 @@ class UserController extends BaseController {
 
     }
 
+    async uploadImgRegister({ request, response }) {
+
+        const id = Date.now()
+        const profilePic = request.file('profileimg', {
+
+        })
+        await profilePic.move(`App/uploads/tmp`, {
+            name: `${id}.jpg`
+        })
+
+        if (!profilePic.moved()) {
+            throw Error("The picture could not to be moved")
+        }
+        var bitmap = fs.readFileSync(`App/uploads/tmp/${id}.jpg`);
+        let data = new Buffer(bitmap).toString('base64');
+        return this.sendResponse(response, { id: id, data: `data:image/png;base64,${data}` })
+    }
+
     async getprofileImg({ auth, request, response }) {
 
         const { id } = await auth.getUser()
@@ -102,27 +126,21 @@ class UserController extends BaseController {
     }
 
 
-    async find({ auth, response }) {
-
-        const { id } = await auth.getUser()
-        const user = await User.find(id)
-        if (!user) {
-            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
-        }
-        this.sendResponse(response, user)
-    }
-
-    async getPostits({ auth, response }) {
-
-        const { id } = await auth.getUser()
-        const user = await User.find(id)
-        if (!user) {
-            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
-        }
-        
-        const postits = await PostIt.query().where("user_id", id).fetch()
+    async getUserData({ auth, response }) {
         debugger
-        this.sendResponse(response, postits)
+        const { id } = await auth.getUser()
+        const user = await User.find(id)
+        let pic_data = ""
+        if (!user) {
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
+        }
+        if (fs.existsSync(`App/uploads/${id}/profile_pic.jpg`)) {
+            let bitmap = fs.readFileSync(`App/uploads/${id}/profile_pic.jpg`);
+            pic_data = new Buffer(bitmap).toString('base64');
+            pic_data = `data:image/png;base64,${pic_data}`
+        }
+       
+        this.sendResponse(response, {user:user, profile_pic:pic_data})
     }
 
     async login({ auth, request, response }) {

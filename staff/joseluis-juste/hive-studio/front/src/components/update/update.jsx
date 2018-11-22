@@ -4,7 +4,7 @@ import { Route, withRouter, Redirect } from 'react-router-dom'
 import ServiceBackEnd from '../../logic/Service'
 import ValidationError from '../../logic/exceptions/validationexception'
 
-class Register extends Component {
+class Update extends Component {
 
     state = { 
          form_data: {
@@ -14,6 +14,8 @@ class Register extends Component {
              phone:"",
              username:"",
              password:"",
+             newpassword:"",
+             confirmpassword:"",
              picprofile:""
          }, 
          validationErrors: {},
@@ -25,6 +27,12 @@ class Register extends Component {
     constructor(props) {
         super(props)
         this.service = new ServiceBackEnd()
+        this.service.getUserData().then(res => {
+            
+            this.setState({ form_data:res.data.user, profile_img:res.data.profile_pic })
+        }).catch(err => {
+            alert(err.message)
+        })
     }
 
     handleClickHistory = () => {
@@ -79,12 +87,24 @@ class Register extends Component {
         this.setState({ form_data: this.state.form_data })
     }
 
+    handleOnChangeNewpassword = (ev) =>{
+        this.state.form_data.newpassword = ev.target.value
+        this.setState({ form_data: this.state.form_data })
+    }
+
+    handleOnChangeConfirmpassword = (ev) =>{
+        this.state.form_data.confirmpassword = ev.target.value
+        this.setState({ form_data: this.state.form_data })
+    }
+
     handleSubmit = () => {
 
-        this.service.registerUser(this.state.form_data).then(res => {
+        this.service.updateUser(this.state.form_data).then(res => {
 
-            this.state.form_data = { name:"", surname:"", email:"", phone:"", username:"", password:"", picprofile:""}
-            this.setState({profile_img:require('../../assets/img/user.png'), message: "The account has been created correctly...", message_color:"green",validationErrors:{}, form_data:this.state.form_data},() => {
+            this.state.form_data.password = ""
+            this.state.form_data.newpassword = ""
+            this.state.form_data.confirmpassword = ""
+            this.setState({form_data:this.state.form_data,  message: "The account has been updated correctly...", message_color:"green",validationErrors:{}},() => {
 
                 setTimeout(() => this.setState({message:""}), 3000)
             })
@@ -108,19 +128,19 @@ class Register extends Component {
 
         let file_input = document.createElement('input');
         file_input.addEventListener("change", (ev) => {
-           
-            this.service.uploadImageProfileRegister(file_input.files[0]).then(res => {
-                this.state.form_data.picprofile = res.data.id
-                this.setState( {profile_img: res.data.data, form_data:this.state.form_data, message:"The profile pic was uploaded correctly...", message_color:"green"}, () =>{
+           debugger
+            this.service.uploadImageProfile(file_input.files[0]).then(res => {
+                
+                this.setState({profile_img: res.data,  message: "The profile pic has been uploaded correctly...", message_color:"green"},() => {
 
                     setTimeout(() => this.setState({message:"", message_color:"green"}), 3000)
                 })
 
             }).catch(err => {
                 
-                this.setState({ message_color:"red", message:"There was a problem while uploading the pic..." }, () => {
+                this.setState({message: "There was a problem while uploading the profile pic...", message_color:"red"},() => {
 
-                    setTimeout(() => this.setState({message:"", message_color:"green"}), 3000)
+                    setTimeout(() => this.setState({message:""}), 3000)
                 })
         
             })
@@ -131,7 +151,7 @@ class Register extends Component {
     }
 
     handleClose = () =>{
-        this.props.history.push("/home")
+        this.props.history.push("/landing")
     }
 
     render() {
@@ -182,6 +202,16 @@ class Register extends Component {
                             <input value={this.state.form_data.password} onChange={(ev) => { this.handleOnChangePassword(ev) }} type="password" name="password" placeholder="Password..."></input>
                             <small class="text-danger">{this.state.validationErrors["password"]}</small>
                         </div>
+                        <div className="form-group-field">
+                            <label>Newpassword</label>
+                            <input value={this.state.form_data.newpassword} onChange={(ev) => { this.handleOnChangeNewpassword(ev) }} type="password" name="newpassword" placeholder="New password..."></input>
+                            <small class="text-danger">{this.state.validationErrors["newpassword"]}</small>
+                        </div>
+                        <div className="form-group-field">
+                            <label>Confirmpassword</label>
+                            <input value={this.state.form_data.confirmpassword} onChange={(ev) => { this.handleOnChangeConfirmpassword(ev) }} type="password" name="confirmpassword" placeholder="Confirm password..."></input>
+                            
+                        </div>
 
                         <div className="form-group-field">
                             <button onClick={this.handleSubmit}>Send...</button>
@@ -194,4 +224,4 @@ class Register extends Component {
     }
 }
 
-export default withRouter(Register)
+export default withRouter(Update)

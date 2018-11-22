@@ -35,16 +35,16 @@ class ServiceBackEnd {
             })
     }
 
-    getUserPostits() {
+    getUserData() {
 
         return new Promise((resolve, reject) => {
 
-            const user = this.getUserFromSession()
-            return fetch(`${this.endpoint}/user/${user.id}/postits`, {
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/user/getuserdata`, {
                 method: 'GET',
                 headers: {
-                    "Accept": "application/json"
-                    //'Authorization': 'Bearer ' + this.token
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
                 }
             })
                 .then(res => res.json())
@@ -56,104 +56,23 @@ class ServiceBackEnd {
 
 
                 }).catch(err => reject(err))
+
         })
     }
 
-
-    addPostit(state, content) {
-
-        return new Promise((resolve, reject) => {
-
-            const user = this.getUserFromSession()
-            return fetch(`${this.endpoint}/postit`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                    "Accept": "application/json"
-                    //'Authorization': 'Bearer ' + this.token
-                },
-                body: JSON.stringify({ userid: user.id, content: content, state: state })
-            })
-                .then(res => res.json())
-                .then((res) => {
-
-                    if (res.status === "OK") return resolve(res)
-
-                    if (res.validationErrors)
-
-                        throw new ValidationError(res.error, res.validationErrors)
-
-                    throw new Error(res.error)
-
-
-                }).catch(err => reject(err))
-        })
-    }
-
-    deletePosIt(id) {
+    updateUser(user) {
 
         return new Promise((resolve, reject) => {
 
-            const user = this.getUserFromSession()
-            return fetch(`${this.endpoint}/postit/${id}/${user.id}`, {
-                method: 'DELETE',
-                headers: {
-                    "Accept": "application/json"
-                    //'Authorization': 'Bearer ' + this.token
-                }
-
-            })
-                .then(res => res.json())
-                .then((res) => {
-
-                    if (res.status === "OK") return resolve(res)
-
-                    throw new Error(res.error)
-
-
-                }).catch(err => reject(err))
-        })
-
-    }
-
-    findPostit(id) {
-
-        return new Promise((resolve, reject) => {
-
-            const user = this.getUserFromSession()
-            return fetch(`${this.endpoint}/postit/${id}/${user.id}`, {
-                method: 'GET',
-                headers: {
-                    "Accept": "application/json"
-                    //'Authorization': 'Bearer ' + this.token
-                }
-
-            })
-                .then(res => res.json())
-                .then((res) => {
-
-                    if (res.status === "OK") return resolve(res)
-
-                    throw new Error(res.error)
-
-
-                }).catch(err => reject(err))
-        })
-    }
-
-    updatePostit(id, state, content) {
-
-        return new Promise((resolve, reject) => {
-
-            const user = this.getUserFromSession()
-            return fetch(`${this.endpoint}/postit/${id}`, {
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/user`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
-                    "Accept": "application/json"
-                    //'Authorization': 'Bearer ' + this.token
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
                 },
-                body: JSON.stringify({ userid: user.id, content: content, state: state })
+                body: JSON.stringify(user)
             })
                 .then(res => res.json())
                 .then((res) => {
@@ -168,9 +87,76 @@ class ServiceBackEnd {
 
 
                 }).catch(err => reject(err))
+
         })
+
     }
 
+    uploadImageProfile(file) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            const formData = new FormData();
+            formData.append('profileimg', file);
+            return fetch(`${this.endpoint}/user/uploadimg`, {
+                method: 'POST',
+                headers: {
+
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+
+    }
+
+    uploadImageProfileRegister(file) {
+
+        return new Promise((resolve, reject) => {
+
+            const formData = new FormData();
+            formData.append('profileimg', file);
+            return fetch(`${this.endpoint}/user/uploadimgregister`, {
+                method: 'POST',
+                headers: {
+
+                    "Accept": "application/json"
+                },
+                body: formData
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+
+    }
 
     loginUser(username, password) {
 
@@ -179,7 +165,6 @@ class ServiceBackEnd {
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 "Accept": "application/json"
-                //'Authorization': 'Bearer ' + this.token
             },
             body: JSON.stringify({ username, password })
         })
@@ -187,7 +172,7 @@ class ServiceBackEnd {
             .then((res) => {
 
                 if (res.status === "OK") {
-                    sessionStorage.setItem("user", JSON.stringify(res.data))
+                    sessionStorage.setItem("token", res.data.token)
                     return res
                 }
 
@@ -200,21 +185,67 @@ class ServiceBackEnd {
 
     }
 
-    getUserFromSession() {
+    getTokenSession() {
 
-        if (!sessionStorage.getItem("user")) throw new NotValidSession("The user session is not valid")
-        return JSON.parse(sessionStorage.getItem("user"))
+        if (!sessionStorage.getItem("token"))
+            throw new NotValidSession("The user token is not valid")
+
+        return sessionStorage.getItem("token")
+    }
+
+    getUserSession() {
+
+        if (!sessionStorage.getItem("token"))
+            throw new NotValidSession("The user token is not valid")
+
+        return JSON.parse(atob(sessionStorage.getItem("token").split(".")[1])).data
+
     }
 
     logoutUser() {
 
-        if (sessionStorage.getItem("user")) sessionStorage.clear()
+        if (sessionStorage.getItem("token")) sessionStorage.clear()
     }
 
     isLogged() {
 
-        if (sessionStorage.getItem("user")) return true
+        if (sessionStorage.getItem("token")) return true
         return false
+    }
+
+
+
+    /*FARM LOGIC*/
+
+    createFarm(farm) {
+
+        return new Promise((resolve, reject) => {
+           
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/farm`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(farm)
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
     }
 
 }
