@@ -3,14 +3,14 @@ import React from 'react';
 import ServiceBackEnd from '../../logic/Service'
 import ValidationError from '../../logic/exceptions/validationexception'
 
+
 class FarmRegisterModal extends React.Component {
 
     state = {
 
         title: "",
-        isUpdate: this.props.isUpdate,
+        isUpdate: this.props.isUpdateFarm,
         modal: false,
-        farm: {},
         form_data: {
 
             name: "",
@@ -34,18 +34,36 @@ class FarmRegisterModal extends React.Component {
         this.service = new ServiceBackEnd()
     }
 
-
+    
     componentWillReceiveProps(props) {
-        if (props.isUpdate)
-            this.setState({ farm: props.farm, isUpdate: props.isUpdate, modal: props.showModal, title: "Edit Farm" })
+        
+        if (props.isUpdateFarm){
+            
+            this.service.findFarm(props.farmId).then(res => {
+                
+                this.setState({isUpdate: props.isUpdateFarm, modal: props.showModal, title: "Edit Farm", form_data:res.data })
+             })
+             .catch(err => {
+     
+                 this.setState({ isUpdate: props.isUpdateFarm, modal: props.showModal, title: "Edit Farm", message:err.message, message_color:"red"}, () => {
+
+                     setTimeout(() => {
+
+                        this.setState({ message:"", message_color:"green"})
+
+                     }, 3000)
+                 })
+             })
+        }
         else
-            this.setState({ isUpdate: props.isUpdate, modal: props.showModal, title: "New Farm" })
+            this.setState({ isUpdate: props.isUpdateFarm, modal: props.showModal, title: "New Farm" })
     }
 
-    resetComponent = () =>{
-
+    resetComponent = () => {
+        
         this.state.form_data = { name: "", description: "", minhives: 1, maxhives: 100, squaremeters: "" }
-        this.setState({ validationErrors:{}, form_data:this.state.form_data, message_color:"green", message:"" })
+        
+        this.setState({ validationErrors: {}, form_data: this.state.form_data, message_color: "green", message: "" })
     }
 
     toggle = () => {
@@ -94,12 +112,39 @@ class FarmRegisterModal extends React.Component {
 
         if (this.state.isUpdate) {
 
+            this.service.updateFarm(this.state.form_data).then(res => {
+
+                this.props.onCreatedAndEdited()
+                this.setState({ message: "The farm has been updated correctly...", message_color: "green", validationErrors: {} }, () => {
+
+                    setTimeout(() => this.setState( {message:""} ), 3000)
+                })
+
+            }).catch(err => {
+
+                if (err instanceof ValidationError) {
+                    let errors = {}
+                    err.validationErrors.forEach(error => {
+                        errors[error.field] = error.message
+                    });
+                    this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" }, () => {
+
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                } else {
+
+                    this.setState({ message: err.message, message_color: "red" }, () => {
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                }
+            })
+
         } else {
 
             this.service.createFarm(this.state.form_data).then(res => {
 
-               
-                this.setState({ message: "The farm has been created correctly...", message_color: "green", validationErrors: {}, form_data: this.state.form_data }, () => {
+                this.props.onCreatedAndEdited()
+                this.setState({ message: "The farm has been created correctly...", message_color: "green", validationErrors: {} }, () => {
 
                     setTimeout(() => this.resetComponent(), 3000)
                 })
@@ -111,13 +156,13 @@ class FarmRegisterModal extends React.Component {
                     err.validationErrors.forEach(error => {
                         errors[error.field] = error.message
                     });
-                    this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" }, () =>{
-                        
+                    this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" }, () => {
+
                         setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                     })
                 } else {
-                    
-                    this.setState({ message: err.message, message_color: "red" }, () =>{
+
+                    this.setState({ message: err.message, message_color: "red" }, () => {
                         setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                     })
                 }
@@ -181,7 +226,6 @@ class FarmRegisterModal extends React.Component {
                                     </div>
                                 </form>
                             </section>
-
                         </section>
                     </ModalBody>
                     <ModalFooter>

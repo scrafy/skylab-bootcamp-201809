@@ -3,24 +3,27 @@ import FarmRegisterModal from '../farm-register-modal/farm-register-modal'
 import HiveRegisterModal from '../hive-register-modal/hive-register-modal'
 import Hive from '../hive/hive'
 import { Carousel } from 'react-responsive-carousel'
+import ServiceBackEnd from '../../logic/Service'
 
 class Farm extends Component {
 
     state = {
 
-        selectedSlide:0, 
-        farms: [], 
-        showPanelControl: false, 
-        showHiveModal:false,
-        showRegisterModal:false,
-        registerModalTitle:"", 
-        registerHiveTitle:"",
-        isUpdateFarm:false        
+        selectedSlide: 0,
+        farms: [],
+        showPanelControl: false,
+        showHiveModal: false,
+        showRegisterModal: false,
+        registerModalTitle: "",
+        registerHiveTitle: "",
+        isUpdateFarm: false
     }
 
-    constructor(props){
+    constructor(props) {
 
-        super(props)      
+        super(props)
+        this.service = new ServiceBackEnd()
+        this.getUserFarms()
     }
 
 
@@ -33,7 +36,7 @@ class Farm extends Component {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         if (data === "item-farm") {
-            this.setState({ showRegisterModal: !this.state.showRegisterModal, registerModalTitle:"New Farm" })
+            this.setState({ isUpdateFarm: false, showRegisterModal: !this.state.showRegisterModal, registerModalTitle: "New Farm" })
         }
     }
 
@@ -41,7 +44,7 @@ class Farm extends Component {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         if (data === "item-hive") {
-            this.setState({ showHiveModal: !this.state.showHiveModal, registerHiveTitle:"New Hive"})
+            this.setState({ showHiveModal: !this.state.showHiveModal, registerHiveTitle: "New Hive" })
         }
     }
 
@@ -52,11 +55,16 @@ class Farm extends Component {
 
     handleShowHideRegisterModal = () => {
 
-        this.setState({ showRegisterModal: !this.state.showRegisterModal })
+        this.state.showRegisterModal = !this.state.showRegisterModal
+
+        if (!this.state.showRegisterModal)
+            this.setState({isUpdateFarm:false, showRegisterModal: this.state.showRegisterModal })
+        else
+            this.setState({ showRegisterModal: this.state.showRegisterModal })
     }
 
     handleShowHideHiveModal = () => {
-
+        
         this.setState({ showHiveModal: !this.state.showHiveModal })
     }
 
@@ -81,35 +89,57 @@ class Farm extends Component {
 
     }
 
-    handleDeleteFarm = (ev) =>{
-        alert("delete")
+    handleDeleteFarm = (ev) => {
+
+        this.service.deleteFarm(ev.target.id).then(res => {
+
+            this.getUserFarms()
+
+        }).catch(err => {
+
+            alert(err.message)
+        })
     }
 
-    handleEditFarm = (ev) =>{
-        
-        if(this.state.farms.length){
-           
-            const farm = this.state.farms.find(farm => farm.id === Number(ev.target.id))
-            if (!farm)
-                return
-            this.setState({farm:farm, showRegisterModal: !this.state.showRegisterModal, registerModalTitle:"Edit Farm" })
-        }
-       
+    handleEditFarm = (ev) => {
+
+        this.setState({ farmId:ev.target.id, isUpdateFarm: true, showRegisterModal: !this.state.showRegisterModal})
+
     }
 
     handleSubmitHive = (form_data) => {
         //enviar al api, si la respuesta ha sido ok desde el api, llamar otra vez para obtener los datos y hacer un setstate de ese hive concreto
         //si hay errores de validacion
-            if (!this.sent){
-                this.setState({validationHiveErrors:{name:"Error en el nombre"}})
-                this.sent = true
-            }
-            else
-                this.setState({validationHiveErrors:{}})
-            
+        if (!this.sent) {
+            this.setState({ validationHiveErrors: { name: "Error en el nombre" } })
+            this.sent = true
+        }
+        else
+            this.setState({ validationHiveErrors: {} })
+
         //else
-            //this.handleShowHideHiveModal()
+        //this.handleShowHideHiveModal()
     }
+
+    getUserFarms = () => {
+
+        this.state.farms.length = 0
+
+        this.service.getUserFarms().then(res => {
+
+            res.data.forEach(farm => {
+                farm.hives = []
+                this.state.farms.push(farm)
+            })
+
+            this.setState({ farms: this.state.farms })
+
+        }).catch(err => {
+
+            alert("error")
+        })
+    }
+
 
     render() {
         return (
@@ -128,14 +158,14 @@ class Farm extends Component {
                     </section>
                 </section>
                 {this.state.showPanelControl && <section id="farm-area" onDrop={(ev) => this.handleDropFarmEvent(ev)} onDragOver={(ev) => this.handleDragOverEvent(ev)} className="farms-area">
-                    <audio autoPlay loop src={require(`../../assets/audio/abeja.mp3`)}></audio>
-                    <FarmRegisterModal farm={this.state.farm} isUpdateFarm={this.state.isUpdateFarm} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
-                    <HiveRegisterModal validationErrors = {this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
+                    <audio autoPlay loop></audio>
+                    <FarmRegisterModal farmId={this.state.farmId} onCreatedAndEdited={this.getUserFarms} isUpdateFarm={this.state.isUpdateFarm} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
+                    <HiveRegisterModal validationErrors={this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
                     <Carousel selectedItem={this.state.selectedSlide} onChange={(ev) => this.handleSliderChange(ev)} showThumbs={false}>
                         {this.state.farms.map(farm => {
                             return <div className="farms-area__item" onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropHiveEvent}>
                                 <div className="farms-area__item__panel-control">
-                                    <div onClick={(ev) => this.handleDeleteFarm(ev)} className="icon-trash-o"></div>
+                                    <div id={farm.id} onClick={(ev) => this.handleDeleteFarm(ev)} className="icon-trash-o"></div>
                                     <div id={farm.id} onClick={(ev) => this.handleEditFarm(ev)} className="icon-pencil"></div>
                                 </div>
                                 {farm.hives.map(hive => { return <Hive hive={hive}></Hive> })}

@@ -220,7 +220,7 @@ class ServiceBackEnd {
     createFarm(farm) {
 
         return new Promise((resolve, reject) => {
-           
+
             const token = this.getTokenSession()
             return fetch(`${this.endpoint}/farm`, {
                 method: 'POST',
@@ -239,6 +239,113 @@ class ServiceBackEnd {
                     if (res.validationErrors)
 
                         throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    updateFarm(farm) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/farm/${farm.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(farm)
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    getUserFarms() {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/farm`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    deleteFarm(id) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/farm/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    findFarm(id) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/farm/find/${id}`, {
+                method: 'GET',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
 
                     throw new Error(res.error)
 

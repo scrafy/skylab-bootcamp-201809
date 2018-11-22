@@ -11,7 +11,7 @@ class CreateFarm {
     
     return {
 
-      name: 'required|unique:farms,name',
+      name: `required`,
       description: 'required',
       minhives: 'required|number|range:0,101',
       maxhives: `required|number|superiorToOrEqual:${minhives}|range:0,101`,
@@ -24,7 +24,6 @@ class CreateFarm {
   get messages() {
     return {
       'name.required': 'The name field is required',
-      'name.unique': 'The name of the farm has to be unique',
       'description.required': 'The description field is required',
       'minhives.required': 'The minhives field is required',
       'minhives.number': 'The minhives field is not a number',

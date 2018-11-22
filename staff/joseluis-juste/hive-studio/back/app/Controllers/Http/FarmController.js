@@ -26,6 +26,18 @@ class FarmController extends BaseController {
 
     }
 
+    async index({ auth, request, response }) {
+
+        const { id } = await auth.getUser()
+        const user = await User.find(id)
+        if (!user) {
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
+        }
+        const farms = await user.farms().fetch()
+        this.sendResponse(response, farms)
+
+    }
+
     async delete({ auth, request, response }) {
 
         const { id } = await auth.getUser()
@@ -61,6 +73,9 @@ class FarmController extends BaseController {
         if (farm.user_id !== Number(id)) {
             throw new ResourceNotFoundException(`The farm with the id ${farmId} does not belongs to the user with the id ${id}`, 404)
         }
+        if (data.hives)
+            delete data.hives
+            
         farm.merge(data)
         await farm.save(farm)
         this.sendResponse(response)
