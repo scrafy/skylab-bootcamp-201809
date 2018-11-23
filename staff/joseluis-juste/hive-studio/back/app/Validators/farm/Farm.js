@@ -2,7 +2,7 @@ const ValidationException = use('App/Exceptions/ValidationException')
 
 'use strict'
 
-class CreateFarm {
+class Farm {
 
   
   get rules() {
@@ -64,4 +64,4 @@ class CreateFarm {
 
 }
 
-module.exports = CreateFarm
+module.exports = Farm

@@ -16,14 +16,15 @@ class Farm extends Component {
         showRegisterModal: false,
         registerModalTitle: "",
         registerHiveTitle: "",
-        isUpdateFarm: false
+        isUpdateFarm: false,
+        farmId:"",       
     }
 
     constructor(props) {
 
         super(props)
         this.service = new ServiceBackEnd()
-        this.getUserFarms()
+        
     }
 
 
@@ -41,10 +42,11 @@ class Farm extends Component {
     }
 
     handleDropHiveEvent = (ev) => {
+        
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         if (data === "item-hive") {
-            this.setState({ showHiveModal: !this.state.showHiveModal, registerHiveTitle: "New Hive" })
+            this.setState({ showHiveModal: !this.state.showHiveModal, registerHiveTitle: "New Hive", farmId:ev.target.id })
         }
     }
 
@@ -121,22 +123,19 @@ class Farm extends Component {
         //this.handleShowHideHiveModal()
     }
 
+    componentDidMount(){
+        this.getUserFarms()
+    }
+
     getUserFarms = () => {
 
-        this.state.farms.length = 0
-
         this.service.getUserFarms().then(res => {
-
-            res.data.forEach(farm => {
-                farm.hives = []
-                this.state.farms.push(farm)
-            })
-
-            this.setState({ farms: this.state.farms })
+            
+          this.setState({ farms: res.data})
 
         }).catch(err => {
 
-            alert("error")
+            alert(err.message)
         })
     }
 
@@ -160,10 +159,10 @@ class Farm extends Component {
                 {this.state.showPanelControl && <section id="farm-area" onDrop={(ev) => this.handleDropFarmEvent(ev)} onDragOver={(ev) => this.handleDragOverEvent(ev)} className="farms-area">
                     <audio autoPlay loop></audio>
                     <FarmRegisterModal farmId={this.state.farmId} onCreatedAndEdited={this.getUserFarms} isUpdateFarm={this.state.isUpdateFarm} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
-                    <HiveRegisterModal validationErrors={this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
+                    <HiveRegisterModal onCreatedAndEdited={this.getUserFarms} farmId={this.state.farmId} validationErrors={this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
                     <Carousel selectedItem={this.state.selectedSlide} onChange={(ev) => this.handleSliderChange(ev)} showThumbs={false}>
                         {this.state.farms.map(farm => {
-                            return <div className="farms-area__item" onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropHiveEvent}>
+                            return <div id={farm.id} className="farms-area__item" onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropHiveEvent}>
                                 <div className="farms-area__item__panel-control">
                                     <div id={farm.id} onClick={(ev) => this.handleDeleteFarm(ev)} className="icon-trash-o"></div>
                                     <div id={farm.id} onClick={(ev) => this.handleEditFarm(ev)} className="icon-pencil"></div>

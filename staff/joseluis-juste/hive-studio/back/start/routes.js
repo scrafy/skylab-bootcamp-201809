@@ -6,6 +6,7 @@ Route.group(() => {
 
     require('./user-routes')
     require('./farm-routes')
+    require('./hive-routes')
 
 }).prefix('api/')
 

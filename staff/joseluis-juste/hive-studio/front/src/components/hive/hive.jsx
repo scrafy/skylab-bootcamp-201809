@@ -3,11 +3,10 @@ import HiveRegisterModal from '../hive-register-modal/hive-register-modal'
 
 class Hive extends Component {
 
-    state = { enabledHive:"", showPanelControlHive:"", hive:{}, showHiveModal:false, title:"", validationErrors:{} }
+    state = { enabledHive:"", showPanelControlHive:"", hive:{}, showHiveModal:false, title:"" }
 
     constructor(props){
-        super(props)
-        this.sent = false
+        super(props)       
     }
 
     handleShowPanelControlHive = (ev) => {
@@ -25,10 +24,8 @@ class Hive extends Component {
         }        
     }
 
-    componentWillReceiveProps(props){
-
-        this.setState({hive:props.hive})
-
+    componentDidMount(){
+        this.setState({hive:this.props.hive})
     }
     
     handleDragOverEvent = (ev) => {
@@ -49,19 +46,6 @@ class Hive extends Component {
         this.setState({ showHiveModal: !this.state.showHiveModal, hive:this.state.hive })
     }
 
-    handleSubmitHive = () =>{
-
-        if (!this.sent){
-            this.setState({validationErrors:{name:"Error en el nombre"}})
-            this.sent = true
-        }
-        else{
-            this.state.hive.name = "jose"
-            this.setState({validationErrors:{}, hive:this.state.hive}) //setear el hive a lo q nos devuela el server
-        }
-           
-    }
-
     render() {
         return (
             <div onClick={this.handleShowPanelControlHive} onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropBeeEvent} className={`farms-area__item__hive ${this.state.enabledHive}`}>
@@ -71,7 +55,7 @@ class Hive extends Component {
                     <div onClick={(ev) => this.handleEditHive(ev)} className="icon-pencil"></div>
                     <div className="icon-monitor"></div>
                 </div>
-                <HiveRegisterModal validationErrors = {this.state.validationErrors} onSubmitHive = {this.handleSubmitHive} title={this.state.title} hive={this.state.hive} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
+                <HiveRegisterModal title={this.state.title} hive={this.state.hive} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
             </div>
         );
     }

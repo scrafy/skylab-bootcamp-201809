@@ -22,7 +22,7 @@ class UserController extends BaseController {
         user.merge(data)
         await user.save()
         if (picprofile) {
-           
+
             if (fs.existsSync(`App/uploads/${user.id}/profile_pic.jpg`)) {
                 fs.unlinkSync(`App/uploads/${user.id}/profile_pic.jpg`)
             }
@@ -58,8 +58,8 @@ class UserController extends BaseController {
         if (!user)
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
 
-        if (data.newpassword){
-            
+        if (data.newpassword) {
+
             data.password = data.newpassword
             delete data.newpassword
             delete data.confirmpassword
@@ -139,8 +139,8 @@ class UserController extends BaseController {
             pic_data = new Buffer(bitmap).toString('base64');
             pic_data = `data:image/png;base64,${pic_data}`
         }
-       
-        this.sendResponse(response, {user:user, profile_pic:pic_data})
+
+        this.sendResponse(response, { user: user, profile_pic: pic_data })
     }
 
     async login({ auth, request, response }) {
@@ -156,6 +156,28 @@ class UserController extends BaseController {
             const token = await auth.generate(user, true)
             this.sendResponse(response, token)
         }
+    }
+
+    async getUserFarms({ auth, response }){
+
+        const { id } = await auth.getUser()
+        const user = await User.find(id)
+        let result = []
+        if (!user) {
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
+        }
+        let farms = await user.farms().fetch()
+
+        await Promise.all(farms.rows.map( async farm => {
+           
+            let hives = await farm.hives().fetch()
+            farm.hives = hives
+            result.push(farm)
+            return
+        
+        }))
+        this.sendResponse(response, result)
+       
     }
 
 }

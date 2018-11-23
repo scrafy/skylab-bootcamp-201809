@@ -1,13 +1,17 @@
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
+import ValidationError from '../../logic/exceptions/validationexception'
+import ServiceBackEnd from '../../logic/Service'
 
 class HiveRegisterModal extends React.Component {
 
     state = {
+
         title: this.props.title,
         modal: false,
         form_data: {
+
             name: "",
             description: "",
             mintemperature: 1,
@@ -17,13 +21,18 @@ class HiveRegisterModal extends React.Component {
             beeminvolume: 10000,
             beemaxvolume: 100000,
             latitude: "",
-            longitude: ""
+            longitude: "",
+            farm_id: ""
 
         },
+        farmId: "",
+        message: "",
+        message_color: "green",
         validationErrors: {}
     }
 
     constructor(props) {
+
         super(props);
         this.valuesForm = []
         this.valuesBeeVol = []
@@ -33,17 +42,20 @@ class HiveRegisterModal extends React.Component {
         for (let i = 1; i <= 10; i++) {
             this.valuesBeeVol.push(i)
         }
+        this.service = new ServiceBackEnd()
     }
 
     componentWillReceiveProps(props) {
 
-        if (props.hive)
+        if (props.hive) {
 
-            this.setState({ form_data: props.hive, modal: props.showModal, title: props.title}) 
+            this.setState({ form_data: props.hive, modal: props.showModal, title: props.title })
+        }
         else
-            this.setState({ modal: props.showModal, title: props.title})
-
+            this.setState({ farmId: props.farmId, modal: props.showModal, title: props.title })
     }
+
+
 
     setMapInstance = ({ map, maps }) => {
 
@@ -56,6 +68,7 @@ class HiveRegisterModal extends React.Component {
 
     toggle = () => {
 
+        this.resetComponent()
         this.props.onShowHideModal()
     }
 
@@ -124,8 +137,92 @@ class HiveRegisterModal extends React.Component {
         this.setState({ form_data: this.state.form_data })
     }
 
+    resetComponent = () => {
+
+        this.map.markers.forEach(marker => {
+            marker.setMap(null)
+        })
+        this.state.form_data = {
+
+            name: "",
+            description: "",
+            mintemperature: 1,
+            maxtemperature: 100,
+            minhumidity: 1,
+            maxhumidity: 100,
+            beeminvolume: 10000,
+            beemaxvolume: 100000,
+            latitude: "",
+            longitude: "",
+            farm_id: ""
+
+        }
+
+        this.setState({ validationErrors: {}, form_data: this.state.form_data, message_color: "green", message: "" })
+    }
+
     handleSubmit = () => {
-        
+
+        if (this.props.hive) {
+
+            this.service.updateHive(this.state.form_data).then(res => {
+
+                //this.props.onCreatedAndEdited()
+                this.setState({ message: "The hive has been updared correctly...", message_color: "green", validationErrors: {} }, () => {
+
+                    setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                })
+
+            }).catch(err => {
+
+                if (err instanceof ValidationError) {
+                    let errors = {}
+                    err.validationErrors.forEach(error => {
+                        errors[error.field] = error.message
+                    });
+                    this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" }, () => {
+
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                } else {
+
+                    this.setState({ message: err.message, message_color: "red" }, () => {
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                }
+            })
+
+        } else {
+
+            this.state.form_data.farm_id = this.state.farmId
+            this.service.createHive(this.state.form_data).then(res => {
+
+                this.props.onCreatedAndEdited()
+                this.resetComponent()
+                this.setState({ message: "The hive has been created correctly...", message_color: "green", validationErrors: {} }, () => {
+
+                    setTimeout(() => this.resetComponent(), 3000)
+                })
+
+            }).catch(err => {
+
+                if (err instanceof ValidationError) {
+                    let errors = {}
+                    err.validationErrors.forEach(error => {
+                        errors[error.field] = error.message
+                    });
+                    this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" }, () => {
+
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                } else {
+
+                    this.setState({ message: err.message, message_color: "red" }, () => {
+                        setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
+                    })
+                }
+            })
+        }
     }
 
     render() {
@@ -136,6 +233,7 @@ class HiveRegisterModal extends React.Component {
                     <ModalHeader toggle={this.toggle}>{this.state.title}</ModalHeader>
                     <ModalBody>
                         <section className="register-hive-main">
+                            <h2 style={{ color: this.state.message_color }}>{this.state.message}</h2>
                             <section className="register-hive-main__map">
                                 <GoogleMapReact
                                     defaultCenter={{ lat: 28.4, lng: -16.3 }}
@@ -146,6 +244,7 @@ class HiveRegisterModal extends React.Component {
                                 </GoogleMapReact>
                             </section>
                             <section className="register-hive-main__form">
+
                                 <form className="form" onSubmit={(ev) => ev.preventDefault()}>
                                     <div className="form-group-field">
                                         <label>Hive name</label>

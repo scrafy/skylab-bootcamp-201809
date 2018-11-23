@@ -34,7 +34,7 @@ class FarmRegisterModal extends React.Component {
         this.service = new ServiceBackEnd()
     }
 
-    
+       
     componentWillReceiveProps(props) {
         
         if (props.isUpdateFarm){

@@ -214,8 +214,72 @@ class ServiceBackEnd {
     }
 
 
+    /* HIVE LOGIC */
 
-    /*FARM LOGIC*/
+    createHive(hive) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/hive`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(hive)
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    updateHive(hive) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/hive/${hive.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(hive)
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    if (res.validationErrors)
+
+                        throw new ValidationError(res.error, res.validationErrors)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+
+    /* FARM LOGIC */
 
     createFarm(farm) {
 
@@ -284,10 +348,9 @@ class ServiceBackEnd {
         return new Promise((resolve, reject) => {
 
             const token = this.getTokenSession()
-            return fetch(`${this.endpoint}/farm`, {
+            return fetch(`${this.endpoint}/user/getuserfarms`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
                     "Accept": "application/json",
                     'Authorization': 'Bearer ' + token
                 }

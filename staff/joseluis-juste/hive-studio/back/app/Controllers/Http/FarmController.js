@@ -53,6 +53,7 @@ class FarmController extends BaseController {
         if (farm.user_id !== Number(id)) {
             throw new ResourceNotFoundException(`The farm with the id ${farmId} does not belongs to the user with the id ${id}`, 404)
         }
+        await farm.hives().delete()
         await farm.delete()
         this.sendResponse(response)
     }
@@ -94,6 +95,7 @@ class FarmController extends BaseController {
         if (!farm) {
             throw new ResourceNotFoundException(`The farm with the id ${farmId} not exists`, 404)
         }
+        
         if (farm.user_id !== Number(id)) {
             throw new ResourceNotFoundException(`The farm with the id ${farmId} does not belongs to the user with the id ${id}`, 404)
         }
@@ -101,6 +103,7 @@ class FarmController extends BaseController {
         this.sendResponse(response, farm)
 
     }
+
 }
 
 module.exports = FarmController

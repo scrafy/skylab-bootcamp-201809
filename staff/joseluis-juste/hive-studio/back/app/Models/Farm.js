@@ -1,6 +1,6 @@
 'use strict'
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+
 const Model = use('Model')
 
 class Farm extends Model {
@@ -31,6 +31,10 @@ class Farm extends Model {
      user () {
        return this.belongsTo('App/Models/User')
      }   
+
+     hives (){
+      return this.hasMany('App/Models/Hive')
+     }
 }
 
 module.exports = Farm
