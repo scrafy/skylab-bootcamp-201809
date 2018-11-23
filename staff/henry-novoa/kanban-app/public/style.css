@@ -1,0 +1,39 @@
+ 
+
+.post textarea {
+    background: transparent;
+    width: inherit;
+    height: inherit;
+    resize: none;
+}
+
+.fa-sticky-note {
+    color: gold;
+}
+
+.error {
+    color: red;
+}
+
+.postits{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    text-decoration: underline;
+    
+}
+
+.postits__category{
+    border: solid 3px;
+    margin: 20px;
+    padding: 20px;
+    background-color: lightblue;
+}
+.card-body-text{
+    color: white;
+    
+}
+
+.postitApp{
+    background-image: url("images/noisepattern.png");
+}
