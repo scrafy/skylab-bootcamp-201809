@@ -19,6 +19,7 @@ class FarmController extends BaseController {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
         }
         let farm = new Farm()
+        delete data.id
         farm.merge(data)
         farm.user_id = id
         await farm.save()

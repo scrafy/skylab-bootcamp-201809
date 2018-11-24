@@ -85,7 +85,8 @@ body {
     .form .form-group-field input:focus, .form .form-group-field select:focus {
       border-color: #fcc920; }
   .form .form-group-field textarea {
-    width: 100%; }
+    width: 100%;
+    padding: 0.5em; }
 
 @-webkit-keyframes beemove {
   from {

@@ -29,6 +29,7 @@ class HiveController extends BaseController {
             throw new ResourceNotFoundException(`The farm with the id ${data.farm_id} does not belongs to user with id ${id}`, 404)
 
         let hive = new Hive()
+        delete data.id
         hive.merge(data)
         await hive.save()        
         this.sendResponse(response)

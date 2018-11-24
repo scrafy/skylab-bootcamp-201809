@@ -9,10 +9,9 @@ class FarmRegisterModal extends React.Component {
     state = {
 
         title: "",
-        isUpdate: this.props.isUpdateFarm,
         modal: false,
         form_data: {
-
+            id:"",
             name: "",
             description: "",
             minhives: 1,
@@ -37,38 +36,25 @@ class FarmRegisterModal extends React.Component {
        
     componentWillReceiveProps(props) {
         
-        if (props.isUpdateFarm){
+        if (props.farm.id){
             
-            this.service.findFarm(props.farmId).then(res => {
-                
-                this.setState({isUpdate: props.isUpdateFarm, modal: props.showModal, title: "Edit Farm", form_data:res.data })
-             })
-             .catch(err => {
-     
-                 this.setState({ isUpdate: props.isUpdateFarm, modal: props.showModal, title: "Edit Farm", message:err.message, message_color:"red"}, () => {
-
-                     setTimeout(() => {
-
-                        this.setState({ message:"", message_color:"green"})
-
-                     }, 3000)
-                 })
-             })
+            this.setState({form_data:props.farm, modal: props.showModal, title: "Edit Farm" })
         }
         else
-            this.setState({ isUpdate: props.isUpdateFarm, modal: props.showModal, title: "New Farm" })
-    }
-
-    resetComponent = () => {
-        
-        this.state.form_data = { name: "", description: "", minhives: 1, maxhives: 100, squaremeters: "" }
-        
-        this.setState({ validationErrors: {}, form_data: this.state.form_data, message_color: "green", message: "" })
+            this.setState({ modal: props.showModal, title: "New Farm" })
     }
 
     toggle = () => {
-        
-        this.resetComponent()
+
+        this.state.form_data= {
+            id:"",
+            name: "",
+            description: "",
+            minhives: 1,
+            maxhives: 100,
+            squaremeters: ""
+        }
+        this.setState({validationErrors:{}, form_data:this.state.form_data })
         this.props.onShowHideModal()
     }
 
@@ -110,7 +96,7 @@ class FarmRegisterModal extends React.Component {
 
     handleSubmitForm = () => {
 
-        if (this.state.isUpdate) {
+        if (this.props.farm.id) {
 
             this.service.updateFarm(this.state.form_data).then(res => {
 
@@ -143,11 +129,19 @@ class FarmRegisterModal extends React.Component {
 
             this.service.createFarm(this.state.form_data).then(res => {
 
-                this.props.onCreatedAndEdited()
-                this.setState({ message: "The farm has been created correctly...", message_color: "green", validationErrors: {} }, () => {
-
-                    setTimeout(() => this.resetComponent(), 3000)
+                this.state.form_data = {
+                    id:"",
+                    name: "",
+                    description: "",
+                    minhives: 1,
+                    maxhives: 100,
+                    squaremeters: ""
+                }
+                
+                this.setState({form_data:this.state.form_data, message: "The farm has been created correctly...", message_color: "green", validationErrors: {} }, () => {
+                     setTimeout(() => this.setState( { message:""} ), 3000)
                 })
+                this.props.onCreatedAndEdited()
 
             }).catch(err => {
 
@@ -162,7 +156,7 @@ class FarmRegisterModal extends React.Component {
                     })
                 } else {
 
-                    this.setState({ message: err.message, message_color: "red" }, () => {
+                    this.setState({  message: err.message, message_color: "red" }, () => {
                         setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                     })
                 }

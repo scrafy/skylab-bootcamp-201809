@@ -12,6 +12,7 @@ class HiveRegisterModal extends React.Component {
         modal: false,
         form_data: {
 
+            id:"",
             name: "",
             description: "",
             mintemperature: 1,
@@ -23,7 +24,6 @@ class HiveRegisterModal extends React.Component {
             latitude: "",
             longitude: "",
             farm_id: ""
-
         },
         farmId: "",
         message: "",
@@ -62,8 +62,9 @@ class HiveRegisterModal extends React.Component {
         this.map = map
         this.mapsApi = maps
         this.map.markers = []
-        if (this.state.form_data)
-            this.handleMapClick({ x: 0, y: 0, lat: this.state.form_data.latitude, lng: this.state.form_data.longitude, event: null })
+
+        if (this.props.hive)
+            this.handleMapClick({ x: 0, y: 0, lat: this.props.hive.latitude, lng: this.props.hive.longitude, event: null })
     }
 
     toggle = () => {
@@ -78,11 +79,11 @@ class HiveRegisterModal extends React.Component {
         this.map.markers.forEach(marker => {
             marker.setMap(null)
         })
-        this.state.form_data.latitude = lat;
-        this.state.form_data.longitude = lng;
-        this.setState({ form_data: this.state.form_data })
+        this.state.form_data.latitude = lat
+        this.state.form_data.longitude = lng
+        this.setState({ form_data:this.state.form_data })
         let marker = new this.mapsApi.Marker({
-            position: { lat: lat, lng: lng },
+            position: { lat: Number(lat), lng: Number(lng) },
             map: this.map,
             icon: require('../../assets/img/hive.ico')
         });
@@ -143,7 +144,8 @@ class HiveRegisterModal extends React.Component {
             marker.setMap(null)
         })
         this.state.form_data = {
-
+            
+            id:"",
             name: "",
             description: "",
             mintemperature: 1,
@@ -158,7 +160,7 @@ class HiveRegisterModal extends React.Component {
 
         }
 
-        this.setState({ validationErrors: {}, form_data: this.state.form_data, message_color: "green", message: "" })
+        this.setState({ validationErrors: {}, form_data: this.state.form_data, message_color: "green" })
     }
 
     handleSubmit = () => {
@@ -168,7 +170,7 @@ class HiveRegisterModal extends React.Component {
             this.service.updateHive(this.state.form_data).then(res => {
 
                 //this.props.onCreatedAndEdited()
-                this.setState({ message: "The hive has been updared correctly...", message_color: "green", validationErrors: {} }, () => {
+                this.setState({ message: "The hive has been updated correctly...", message_color: "green", validationErrors: {} }, () => {
 
                     setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                 })
@@ -198,10 +200,10 @@ class HiveRegisterModal extends React.Component {
             this.service.createHive(this.state.form_data).then(res => {
 
                 this.props.onCreatedAndEdited()
-                this.resetComponent()
                 this.setState({ message: "The hive has been created correctly...", message_color: "green", validationErrors: {} }, () => {
 
-                    setTimeout(() => this.resetComponent(), 3000)
+                    this.resetComponent()
+                    setTimeout(() => this.setState( {message:""} ), 3000)
                 })
 
             }).catch(err => {

@@ -278,6 +278,33 @@ class ServiceBackEnd {
         })
     }
 
+    deleteHive(id) {
+
+        return new Promise( (resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/hive/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    /*****************************************************************************************************************************************/
+
 
     /* FARM LOGIC */
 
@@ -417,6 +444,8 @@ class ServiceBackEnd {
 
         })
     }
+
+    /********************************************************************************************************/
 
 }
 
