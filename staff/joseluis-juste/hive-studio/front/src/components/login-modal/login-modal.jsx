@@ -3,6 +3,7 @@ import React from 'react';
 import ServiceBackEnd from '../../logic/Service'
 import ValidationError from '../../logic/exceptions/validationexception'
 import { Route, withRouter, Redirect } from 'react-router-dom'
+import SocketService from '../../logic/SocketService'
 
 class LoginModal extends React.Component {
 
@@ -51,6 +52,8 @@ class LoginModal extends React.Component {
             .then(res => {
                 this.props.onShowHideModal()
                 this.props.history.push("/landing")
+                const user = this.service.getUserSession()
+                SocketService.emitMessage("honeycomb","setUserId", user.id)
             })
             .catch(err => {
                 if (err instanceof ValidationError) {

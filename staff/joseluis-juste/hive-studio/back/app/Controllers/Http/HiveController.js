@@ -6,6 +6,7 @@ const User = use('App/Models/User')
 const Farm = use('App/Models/Farm')
 const Hive = use('App/Models/Hive')
 
+
 class HiveController extends BaseController {
 
     constructor() {
@@ -17,7 +18,7 @@ class HiveController extends BaseController {
         const { id } = await auth.getUser()
         const data = JSON.parse(request.raw())
         const user = await User.find(id)
-        
+
         if (!user) {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
         }
@@ -31,18 +32,18 @@ class HiveController extends BaseController {
         let hive = new Hive()
         delete data.id
         hive.merge(data)
-        await hive.save()        
+        await hive.save()
         this.sendResponse(response)
 
     }
 
     async update({ auth, request, response }) {
-       
+
         const { id } = await auth.getUser()
         const { hiveId } = request.params
         const data = JSON.parse(request.raw())
         const user = await User.find(id)
-        
+
         if (!user) {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
         }
@@ -52,7 +53,7 @@ class HiveController extends BaseController {
         }
         if (id !== farm.user_id)
             throw new ResourceNotFoundException(`The farm with the id ${data.farm_id} does not belongs to user with id ${id}`, 404)
-        
+
         let hive = await Hive.find(hiveId)
 
         if (!hive)
@@ -61,43 +62,19 @@ class HiveController extends BaseController {
         if (hive.farm_id !== data.farm_id)
             throw new ResourceNotFoundException(`The hive with the id ${hiveId} does not belongs to farm with id ${data.farm_id}`, 404)
 
-       
+
         hive.merge(data)
-        await hive.save()        
+        await hive.save()
         this.sendResponse(response)
 
     }
 
     async find({ auth, request, response }) {
 
-        
+
         const { id } = await auth.getUser()
         const { hiveId } = request.params
-      
-        let user = User.find(id)
-        if (!user) {
-            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
-        }
 
-        const hive = await Hive.find(hiveId)
-        if (!hive)
-        throw new ResourceNotFoundException(`The hive with the id ${hiveId} not exists`, 404)
-
-        const farm = await Farm.find(hive.farm_id)
-
-        if (id !== farm.user_id)
-            throw new ResourceNotFoundException(`The farm with the id ${farm.id} does not belongs to user with id ${id}`, 404)
-               
-        this.sendResponse(response, hive)
-
-    }
-
-    async delete({ auth, request, response }) {
-
-        
-        const { id } = await auth.getUser()
-        const { hiveId } = request.params
-      
         let user = User.find(id)
         if (!user) {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
@@ -109,16 +86,47 @@ class HiveController extends BaseController {
 
         const farm = await Farm.find(hive.farm_id)
 
-        
         if (id !== farm.user_id)
             throw new ResourceNotFoundException(`The farm with the id ${farm.id} does not belongs to user with id ${id}`, 404)
-        
+
+        this.sendResponse(response, hive)
+
+    }
+
+    async getDataFromSensor({ request, response }) {
+        debugger
+        const data = request.raw()
+        const hiveUpdateInfoEventEmitter = use("EventManagement").selectSubject("hiveUpdateInfo")
+        hiveUpdateInfoEventEmitter.next(data)
+    }
+
+    async delete({ auth, request, response }) {
+
+
+        const { id } = await auth.getUser()
+        const { hiveId } = request.params
+
+        let user = User.find(id)
+        if (!user) {
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
+        }
+
+        const hive = await Hive.find(hiveId)
+        if (!hive)
+            throw new ResourceNotFoundException(`The hive with the id ${hiveId} not exists`, 404)
+
+        const farm = await Farm.find(hive.farm_id)
+
+
+        if (id !== farm.user_id)
+            throw new ResourceNotFoundException(`The farm with the id ${farm.id} does not belongs to user with id ${id}`, 404)
+
         hive.delete()
         this.sendResponse(response)
 
     }
 
-    
+
 }
 
 module.exports = HiveController

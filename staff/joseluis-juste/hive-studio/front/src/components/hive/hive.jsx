@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import HiveRegisterModal from '../hive-register-modal/hive-register-modal'
 import ServiceBackEnd from '../../logic/Service'
-
+import EventsManagement from '../../logic/EventManagement'
 
 class Hive extends Component {
 
@@ -10,7 +10,25 @@ class Hive extends Component {
     constructor(props){
 
         super(props) 
-        this.service = new ServiceBackEnd()      
+        this.service = new ServiceBackEnd()     
+        const hiveUpdateInfoEventEmitter = EventsManagement.selectSubject("hiveUpdateInfo")
+        this.subscription = hiveUpdateInfoEventEmitter.subscribe({next: this.getHiveIfFromServer, complete: () => console.log("done"), error: err => {console.log(err)}})
+    }
+
+    componentWillUnmount(){
+        this.subscription.unsubscribe()
+    }
+
+    getHiveIfFromServer = (data) => {
+        
+        const _data = JSON.parse(data)
+        const hive = _data.hives.find(hive => {
+            return hive.hiveId === this.state.hive.id
+        })
+        if (hive)
+        {
+            console.log(`${hive.temperature} ${hive.humidity} ${hive.beevolume}`)
+        }
     }
 
     handleShowPanelControlHive = (ev) => {
@@ -31,7 +49,7 @@ class Hive extends Component {
     componentWillReceiveProps(props){
         if (props.hive){
             this.setState({hive:props.hive})
-            debugger
+            
         }
     }
 

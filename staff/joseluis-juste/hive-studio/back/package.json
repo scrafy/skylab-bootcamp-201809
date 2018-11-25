@@ -27,11 +27,18 @@
     "@adonisjs/session": "^1.0.27",
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/validator": "^5.0.6",
+    "@adonisjs/websocket": "^1.0.11",
+    "@babel/core": "^7.1.6",
+    "babel-polyfill": "^6.26.0",
     "fs": "0.0.1-security",
     "js-md5": "^0.7.3",
-    "mysql": "^2.16.0"
+    "mysql": "^2.16.0",
+    "rxjs": "^6.3.3",
+    "socket.io-client": "^2.1.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/plugin-transform-regenerator": "^7.0.0"
+  },
   "autoload": {
     "App": "./app"
   }

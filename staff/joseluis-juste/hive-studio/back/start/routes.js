@@ -9,6 +9,3 @@ Route.group(() => {
     require('./hive-routes')
 
 }).prefix('api/')
-
-
-
