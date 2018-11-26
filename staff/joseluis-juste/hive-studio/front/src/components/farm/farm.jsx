@@ -18,8 +18,8 @@ class Farm extends Component {
         registerHiveTitle: "",
         farm: {},
         hideHivePanelInf: "",
-        hivedata: {data:[]},
-        currentHive: ""
+        hivedata: { data: [] },
+        currentHive: {}
     }
 
     constructor(props) {
@@ -151,21 +151,21 @@ class Farm extends Component {
 
 
         this.state.hideHivePanelInf = ""
-        this.setState({ hivedata:{data:[]}, currentHive: "", hideHivePanelInf: this.state.hideHivePanelInf })
+        this.setState({ hivedata: { data: [] }, currentHive: {}, hideHivePanelInf: this.state.hideHivePanelInf })
     }
 
-    handleShowPanelMonitor = (hiveId) => {
+    handleShowPanelMonitor = (hive) => {
 
 
         if (this.state.hideHivePanelInf === "") {
             this.state.hideHivePanelInf = "hide-hive-info"
-            this.setState({ currentHive: hiveId, hideHivePanelInf: this.state.hideHivePanelInf })
+            this.setState({ currentHive: hive, hideHivePanelInf: this.state.hideHivePanelInf })
         }
     }
 
     handleGetDataFromServer = (data) => {
 
-        if (data.hiveId === this.state.currentHive) {
+        if (data.hiveId === this.state.currentHive.id) {
             data.data = data.data.reverse()
             this.setState({ hivedata: data })
         }
@@ -190,8 +190,22 @@ class Farm extends Component {
                 {this.state.showPanelControl && <section id="farm-area" onDrop={(ev) => this.handleDropFarmEvent(ev)} onDragOver={(ev) => this.handleDragOverEvent(ev)} className="farms-area">
                     <section className={`hive-info ${this.state.hideHivePanelInf}`}>
                         <section className="hive-info__main">
+                            <h2 className="hive-info__main-hiveid">{this.state.hivedata.hiveId}</h2>
                             <button onClick={this.handleClosePanelInf}>Close panel</button>
-                            
+                            <section className="hive-info__main-detail">
+                                <div>
+                                    <p>Min temperature: <span>{this.state.currentHive.mintemperature}</span></p>
+                                    <p>Max temeprature: <span>{this.state.currentHive.maxtemperature}</span></p>
+                                </div>
+                                <div>
+                                    <p>Min humidity: <span>{this.state.currentHive.minhumidity}</span></p>
+                                    <p>Max humidity: <span>{this.state.currentHive.maxhumidity}</span></p>
+                                </div>
+                                <div>
+                                    <p>Min beevolume: <span>{this.state.currentHive.beeminvolume}</span></p>
+                                    <p>Max beevolume: <span>{this.state.currentHive.beemaxvolume}</span></p>
+                                </div>
+                            </section>
                             {this.state.hivedata.data.map(hivedata => {
                                 return <ul>
                                     <li><span>Temperature: </span><span style={{ color: hivedata.temperature.color }}>{hivedata.temperature.value}</span></li>

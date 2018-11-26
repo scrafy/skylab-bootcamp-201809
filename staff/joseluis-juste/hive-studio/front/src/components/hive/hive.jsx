@@ -20,69 +20,73 @@ class Hive extends Component {
     }
 
     getHiveIfFromServer = (data) => {
-        
-        let tempcolor = "green"
-        let humcolor = "green"
-        let beevolcolor = "green"
-        let blink_color = "green"
-        const _data = JSON.parse(data)
-        const hive = _data.hives.find(hive => {
 
-            return hive.hiveId === this.state.hive.id
-        })
-        if (hive) {
+        if (this.state.isMonitored) {
 
-            if (this.state.hive.mintemperature === hive.temperature || this.state.hive.maxtemperature === hive.temperature)
-                tempcolor = "orange"
+            let tempcolor = "green"
+            let humcolor = "green"
+            let beevolcolor = "green"
+            let blink_color = "green"
+            const _data = JSON.parse(data)
+            const hive = _data.hives.find(hive => {
 
-            if (hive.temperature > this.state.hive.maxtemperature || hive.temperature < this.state.hive.mintemperature)
-                tempcolor = "red"
+                return hive.hiveId === this.state.hive.id
+            })
+            if (hive) {
 
-            if (this.state.hive.minhumidity === hive.humidity || this.state.hive.maxhumidity === hive.humidity)
-                humcolor = "orange"
+                if (this.state.hive.mintemperature === hive.temperature || this.state.hive.maxtemperature === hive.temperature)
+                    tempcolor = "orange"
 
-            if (hive.humidity > this.state.hive.maxhumidity || hive.humidity < this.state.hive.minhumidity)
-                humcolor = "red"
+                if (hive.temperature > this.state.hive.maxtemperature || hive.temperature < this.state.hive.mintemperature)
+                    tempcolor = "red"
 
-            if (this.state.hive.beeminvolume === hive.beevolume || this.state.hive.beemaxvolume === hive.beevolume)
-                beevolcolor = "orange"
+                if (this.state.hive.minhumidity === hive.humidity || this.state.hive.maxhumidity === hive.humidity)
+                    humcolor = "orange"
 
-            if (hive.beevolume > this.state.hive.beemaxvolume || hive.beevolume < this.state.hive.beeminvolume)
-                beevolcolor = "red"
+                if (hive.humidity > this.state.hive.maxhumidity || hive.humidity < this.state.hive.minhumidity)
+                    humcolor = "red"
 
-            const hiveData = {
+                if (this.state.hive.beeminvolume === hive.beevolume || this.state.hive.beemaxvolume === hive.beevolume)
+                    beevolcolor = "orange"
 
-                temperature: { color: tempcolor, value: hive.temperature },
-                humidity: { color: humcolor, value: hive.humidity },
-                beevolume: { color: beevolcolor, value: hive.beevolume }
-            }
+                if (hive.beevolume > this.state.hive.beemaxvolume || hive.beevolume < this.state.hive.beeminvolume)
+                    beevolcolor = "red"
 
-            for (var key in hiveData) {
+                const hiveData = {
 
-                if (hiveData[key].color === "red") {
-                    blink_color = "red"
-                    break;
-
-                } else if (hiveData[key].color === "orange") {
-                    blink_color = "orange"
+                    temperature: { color: tempcolor, value: hive.temperature },
+                    humidity: { color: humcolor, value: hive.humidity },
+                    beevolume: { color: beevolcolor, value: hive.beevolume }
                 }
+
+                for (var key in hiveData) {
+
+                    if (hiveData[key].color === "red") {
+                        blink_color = "red"
+                        break;
+
+                    } else if (hiveData[key].color === "orange") {
+                        blink_color = "orange"
+                    }
+                }
+                if (this.state.isMonitored) {
+                    if (blink_color === "red")
+                        this.state.levelInf = "blink-animation-danger"
+
+                    if (blink_color === "orange")
+                        this.state.levelInf = "blink-animation-warning"
+
+                    if (blink_color === "green")
+                        this.state.levelInf = "blink-animation"
+
+                    this.setState({})
+                }
+                this.state.registeredInf.push(hiveData)
+                this.props.onGetHiveDataFromServer({ hiveId: this.state.hive.id, hivename: this.state.hive.name, data: this.state.registeredInf })
+
             }
-            if (this.state.isMonitored) {
-                if (blink_color === "red")
-                    this.state.levelInf = "blink-animation-danger"
-
-                if (blink_color === "orange")
-                    this.state.levelInf = "blink-animation-warning"
-
-                if (blink_color === "green")
-                    this.state.levelInf = "blink-animation"
-
-                this.setState({})
-            }
-            this.state.registeredInf.push(hiveData)
-            this.props.onGetHiveDataFromServer({ hiveId: this.state.hive.id, hivename: this.state.hive.name, data: this.state.registeredInf })
-
         }
+
     }
 
     handleShowPanelControlHive = (ev) => {
@@ -92,10 +96,11 @@ class Hive extends Component {
     }
 
     handleDropBeeEvent = (ev) => {
+
         var data = ev.dataTransfer.getData("text");
         if (data === "item-bee") {
             this.state.levelInf = this.state.levelInf ? "" : "blink-animation"
-            this.state.isMonitored = true
+            this.state.isMonitored = !this.state.isMonitored;
             this.setState({})
             //llamar al API para desactivar/activar panal
         }
@@ -139,7 +144,7 @@ class Hive extends Component {
         if (!this.state.isMonitored)
             alert("The hive is not being monitored")
         else
-            this.props.onShowPanelMonitor(this.state.hive.id)
+            this.props.onShowPanelMonitor(this.state.hive)
 
     }
 

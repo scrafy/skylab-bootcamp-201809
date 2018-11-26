@@ -741,13 +741,19 @@ body {
   .farms-area .hive-info {
     position: absolute;
     top: 0;
-    left: -50%;
-    width: 50%;
+    left: -100%;
+    width: 100%;
     height: 100%;
     z-index: 5000;
     padding: 1.5em;
     -webkit-transition: left 0.5s ease-in-out;
     transition: left 0.5s ease-in-out; }
+    @media screen and (min-width: 768px) {
+      .farms-area .hive-info {
+        width: 70%; } }
+    @media screen and (min-width: 1024px) {
+      .farms-area .hive-info {
+        width: 50%; } }
     .farms-area .hive-info .hive-info__main {
       width: 100%;
       background: green;
@@ -765,6 +771,37 @@ body {
         margin-bottom: 1em; }
         .farms-area .hive-info .hive-info__main ul:first-of-type {
           margin-top: 1em; }
+      .farms-area .hive-info .hive-info__main .hive-info__main-hiveid {
+        text-align: right;
+        font-size: 1em;
+        margin-bottom: 0; }
+      .farms-area .hive-info .hive-info__main .hive-info__main-detail {
+        margin-top: 1em;
+        border: 1px solid green;
+        padding: 1em;
+        border-radius: 10px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        font-size: 0.8em; }
+        @media screen and (min-width: 480px) {
+          .farms-area .hive-info .hive-info__main .hive-info__main-detail {
+            font-size: 1em; } }
+        .farms-area .hive-info .hive-info__main .hive-info__main-detail > div {
+          margin-top: 0.5em; }
+          .farms-area .hive-info .hive-info__main .hive-info__main-detail > div > p {
+            margin: 0; }
+            .farms-area .hive-info .hive-info__main .hive-info__main-detail > div > p:first-child {
+              margin-bottom: 0.3em; }
+            .farms-area .hive-info .hive-info__main .hive-info__main-detail > div > p:last-child {
+              margin-bottom: 0; }
+            .farms-area .hive-info .hive-info__main .hive-info__main-detail > div > p > span {
+              color: green; }
   .farms-area > div {
     width: 100%; }
   .farms-area .farms-area__item {
