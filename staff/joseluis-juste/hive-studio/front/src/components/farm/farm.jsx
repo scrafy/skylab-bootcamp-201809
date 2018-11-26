@@ -16,7 +16,10 @@ class Farm extends Component {
         showRegisterModal: false,
         registerModalTitle: "",
         registerHiveTitle: "",
-        farm:{}
+        farm: {},
+        hideHivePanelInf: "",
+        hivedata: {data:[]},
+        currentHive: ""
     }
 
     constructor(props) {
@@ -55,11 +58,11 @@ class Farm extends Component {
     }
 
     handleShowHideRegisterModal = () => {
-        
+
         this.state.showRegisterModal = !this.state.showRegisterModal
-        this.state.farm = {}  
-       
-        this.setState({ farm:this.state.farm, showRegisterModal: this.state.showRegisterModal })
+        this.state.farm = {}
+
+        this.setState({ farm: this.state.farm, showRegisterModal: this.state.showRegisterModal })
     }
 
     handleShowHideHiveModal = () => {
@@ -93,7 +96,7 @@ class Farm extends Component {
         this.service.deleteFarm(ev.target.id).then(res => {
 
             this.getUserFarms()
-            this.setState({selectedSlide:0})
+            this.setState({ selectedSlide: 0 })
 
         }).catch(err => {
 
@@ -128,7 +131,7 @@ class Farm extends Component {
     }
 
     componentDidMount() {
-        
+
         this.getUserFarms()
     }
 
@@ -144,6 +147,29 @@ class Farm extends Component {
         })
     }
 
+    handleClosePanelInf = () => {
+
+
+        this.state.hideHivePanelInf = ""
+        this.setState({ hivedata:{data:[]}, currentHive: "", hideHivePanelInf: this.state.hideHivePanelInf })
+    }
+
+    handleShowPanelMonitor = (hiveId) => {
+
+
+        if (this.state.hideHivePanelInf === "") {
+            this.state.hideHivePanelInf = "hide-hive-info"
+            this.setState({ currentHive: hiveId, hideHivePanelInf: this.state.hideHivePanelInf })
+        }
+    }
+
+    handleGetDataFromServer = (data) => {
+
+        if (data.hiveId === this.state.currentHive) {
+            data.data = data.data.reverse()
+            this.setState({ hivedata: data })
+        }
+    }
 
     render() {
         return (
@@ -162,6 +188,20 @@ class Farm extends Component {
                     </section>
                 </section>
                 {this.state.showPanelControl && <section id="farm-area" onDrop={(ev) => this.handleDropFarmEvent(ev)} onDragOver={(ev) => this.handleDragOverEvent(ev)} className="farms-area">
+                    <section className={`hive-info ${this.state.hideHivePanelInf}`}>
+                        <section className="hive-info__main">
+                            <button onClick={this.handleClosePanelInf}>Close panel</button>
+                            
+                            {this.state.hivedata.data.map(hivedata => {
+                                return <ul>
+                                    <li><span>Temperature: </span><span style={{ color: hivedata.temperature.color }}>{hivedata.temperature.value}</span></li>
+                                    <li><span>Humidity: </span><span style={{ color: hivedata.humidity.color }}>{hivedata.humidity.value}</span></li>
+                                    <li><span>BeeVolume: </span><span style={{ color: hivedata.beevolume.color }}>{hivedata.beevolume.value}</span></li>
+                                </ul>
+                            })}
+
+                        </section>
+                    </section>
                     <audio autoPlay loop></audio>
                     <FarmRegisterModal farm={this.state.farm} onCreatedAndEdited={this.getUserFarms} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
                     <HiveRegisterModal onCreatedAndEdited={this.getUserFarms} farmId={this.state.farmId} validationErrors={this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
@@ -172,7 +212,7 @@ class Farm extends Component {
                                     <div id={farm.id} onClick={(ev) => this.handleDeleteFarm(ev)} className="icon-trash-o"></div>
                                     <div id={farm.id} onClick={(ev) => this.handleEditFarm(ev)} className="icon-pencil"></div>
                                 </div>
-                                {farm.hives.map(hive => { return <Hive onDeleteHive={this.getUserFarms} hive={hive}></Hive> })}
+                                {farm.hives.map(hive => { return <Hive onGetHiveDataFromServer={this.handleGetDataFromServer} onShowPanelMonitor={this.handleShowPanelMonitor} onDeleteHive={this.getUserFarms} hive={hive}></Hive> })}
                             </div>
                         })}
                     </Carousel>
