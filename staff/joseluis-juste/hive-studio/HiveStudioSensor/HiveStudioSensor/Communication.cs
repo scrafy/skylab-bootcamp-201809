@@ -125,21 +125,5 @@ namespace HiveStudioSensor
             }
            
         }
-
-		private int GetRandomNumber(int min, int max, string typevalue = "")
-        {
-
-            Random random = null;
-            if (typevalue == "temperature")
-            {
-                random = new Random(DateTime.Now.Millisecond);
-            }
-            else
-            {
-                random = new Random();
-            }
-            return random.Next(min, max);
-        }
-
     }
 }

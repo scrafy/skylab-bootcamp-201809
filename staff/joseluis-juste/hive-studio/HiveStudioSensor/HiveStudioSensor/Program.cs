@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System;
+using System.Configuration;
 
 namespace HiveStudioSensor
 {
@@ -14,7 +15,7 @@ namespace HiveStudioSensor
             Communication com = new Communication();
             while (true)
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["frecuency"]));
                 com.GetHivesInfo();
             }
         }
