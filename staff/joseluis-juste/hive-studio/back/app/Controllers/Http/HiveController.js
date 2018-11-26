@@ -2,6 +2,7 @@
 
 const BaseController = use('App/Controllers/Http/BaseController')
 const ResourceNotFoundException = use('App/Exceptions/ResourceNotFoundException')
+const UnauthorizedException = use("App/Exceptions/UnauthorizedException")
 const User = use('App/Models/User')
 const Farm = use('App/Models/Farm')
 const Hive = use('App/Models/Hive')
@@ -93,13 +94,6 @@ class HiveController extends BaseController {
 
     }
 
-    async getDataFromSensor({ request, response }) {
-        debugger
-        const data = request.raw()
-        const hiveUpdateInfoEventEmitter = use("EventManagement").selectSubject("hiveUpdateInfo")
-        hiveUpdateInfoEventEmitter.next(data)
-    }
-
     async delete({ auth, request, response }) {
 
 
@@ -124,6 +118,43 @@ class HiveController extends BaseController {
         hive.delete()
         this.sendResponse(response)
 
+    }
+
+    async getInfoForSensor({ auth, request, response }){
+        
+        
+        const { name } = await auth.getUser()
+
+        if (name !== "sensor")
+            throw new UnauthorizedException("This action only can be executed by the sensor application")
+
+        let hives = await Hive.query().with("user").fetch()
+        hives = JSON.parse(JSON.stringify(hives))
+        let resp = []
+        hives.forEach( hive => {
+            
+            resp.push({
+                
+                hiveId:hive.id,
+                userId:hive.user[0].id,
+                temperature:null,
+                humidity:null,
+                beevolume:null
+            })
+        })
+        this.sendResponse(response, resp)     
+    }
+
+    async getDataFromSensor({ auth, request}) {
+        
+        const { name } = await auth.getUser()
+
+        if (name !== "sensor")
+            throw new UnauthorizedException("This action only can be executed by the sensor application")
+            
+        const data = request.raw()
+        const hiveUpdateInfoEventEmitter = use("EventManagement").selectSubject("hiveUpdateInfo")
+        hiveUpdateInfoEventEmitter.next(data)
     }
 
 

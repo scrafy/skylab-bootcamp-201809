@@ -20,7 +20,7 @@ class Hive extends Component {
     }
 
     getHiveIfFromServer = (data) => {
-
+        
         let tempcolor = "green"
         let humcolor = "green"
         let beevolcolor = "green"

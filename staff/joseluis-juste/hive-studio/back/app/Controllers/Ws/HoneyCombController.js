@@ -3,26 +3,35 @@
 class HoneyCombController {
 
   constructor({ socket }) {
-   
+
     this.clients = []
     this.adminSocket(socket)
     const hiveUpdateInfoEventEmitter = use("EventManagement").selectSubject("hiveUpdateInfo")
     this.getHivesInfo = this.getHivesInfo.bind(this)
-    this.subscription = hiveUpdateInfoEventEmitter.subscribe({next: this.getHivesInfo, complete: () => console.log("done"), error: err => {console.log(err)}})
-    
+    this.subscription = hiveUpdateInfoEventEmitter.subscribe({ next: this.getHivesInfo, complete: () => console.log("done"), error: err => { console.log(err) } })
+
   }
 
-  getHivesInfo(data){
+  getHivesInfo(data) {
+
+    data = JSON.parse(data)
+    this.clients.forEach(socket => {
       
-     this.clients.forEach(socket => {
-        socket.emit("hivesInfo", JSON.stringify({hives:JSON.parse(data), userid:socket.userId}))
-      })
+       const filtered = data.filter( hiveInf => {
+
+          return hiveInf.userId === socket.userId
+       
+       })
+      
+       socket.emit("hivesInfo", JSON.stringify({ hives: filtered, userid: socket.userId }))
+    })
+
   }
 
   adminSocket(socket) {
 
     this.clients.push(socket)
-    
+
     socket.on("setUserId", (userId) => {
       socket.userId = userId
     })

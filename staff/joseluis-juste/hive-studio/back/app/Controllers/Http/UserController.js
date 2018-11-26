@@ -127,7 +127,7 @@ class UserController extends BaseController {
 
 
     async getUserData({ auth, response }) {
-        debugger
+        
         const { id } = await auth.getUser()
         const user = await User.find(id)
         let pic_data = ""

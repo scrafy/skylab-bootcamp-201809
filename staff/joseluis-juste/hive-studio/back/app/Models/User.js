@@ -39,6 +39,10 @@ class User extends Model {
     return this.hasMany('App/Models/Farm')
   }
 
+  hives () {
+    return this.manyThrough('App/Models/Farm',"hives")
+  }
+
 }
 
 module.exports = User

@@ -27,7 +27,10 @@ class Hive extends Model {
   farm () {
     return this.belongsTo('App/Models/Farm')
   }
-
+ 
+  user () {
+    return this.manyThrough('App/Models/Farm', "user", "farm_id", "id")
+  }
 }
 
 module.exports = Hive
