@@ -30,6 +30,11 @@ class App extends Component {
     this.setState({})
 
   }
+  
+  componentDidMount(){
+
+    this.state.isLogged = this.service.isLogged()
+  }
 
   $onCloseConnectionError = () => {
 

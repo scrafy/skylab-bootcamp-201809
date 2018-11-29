@@ -8,6 +8,6 @@ class ValidationError extends Error {
     }
 }
 
-//export default ValidationError
+export default ValidationError
 
-module.exports = ValidationError
+//module.exports = ValidationError

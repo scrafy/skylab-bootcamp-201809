@@ -4,6 +4,7 @@ import HiveRegisterModal from '../hive-register-modal/hive-register-modal'
 import Hive from '../hive/hive'
 import { Carousel } from 'react-responsive-carousel'
 import ServiceBackEnd from '../../logic/Service'
+import ModalInf from '../../components/modalInf/modalinf'
 
 class Farm extends Component {
 
@@ -19,7 +20,10 @@ class Farm extends Component {
         farm: {},
         hideHivePanelInf: "",
         hivedata: { data: [] },
-        currentHive: {}
+        currentHive: {},
+        showModal:false, 
+        modalMessage:"", 
+        modalTitle:"", 
     }
 
     constructor(props) {
@@ -100,7 +104,10 @@ class Farm extends Component {
 
         }).catch(err => {
 
-            alert(err.message)
+            this.state.showModal = true
+            this.state.modalMessage = err.message
+            this.state.modalTitle = "Error"
+            this.setState({})
         })
     }
 
@@ -112,7 +119,10 @@ class Farm extends Component {
 
         }).catch(err => {
 
-            alert(err.message)
+            this.state.showModal = true
+            this.state.modalMessage = err.message
+            this.state.modalTitle = "Error"
+            this.setState({})
         })
     }
 
@@ -138,6 +148,7 @@ class Farm extends Component {
     getUserFarms = () => {
 
         this.service.getUserFarms().then(res => {
+            
             res.data.sort((a, b) => {
 
                 if (a.id < b.id) {
@@ -150,10 +161,13 @@ class Farm extends Component {
             })
 
             this.setState({ farms: res.data })
-
+            
         }).catch(err => {
 
-            alert(err.message)
+            this.state.showModal = true
+            this.state.modalMessage = err.message
+            this.state.modalTitle = "Error"
+            this.setState({})
         })
     }
 
@@ -181,9 +195,14 @@ class Farm extends Component {
         }
     }
 
+    setOffshowModalValue = () =>{
+        this.state.showModal = false
+    }
+
     render() {
         return (
             <section>
+                 <ModalInf onHideModal = {this.setOffshowModalValue} modalTitle={this.state.modalTitle} modalMessage = {this.state.modalMessage} showModal={this.state.showModal}></ModalInf>
                 <section onClick={this.handleTogglePanelControl} className={`panel-control icon-wrench ${this.state.showPanelControl}`}>
                     <section className="panel-control__items">
                         <div id="item-farm" onDragStart={(ev) => this.handleDragEvent(ev)} draggable="true" className="panel-control__item">

@@ -8,6 +8,6 @@ class NotValidSession extends Error {
 }
 
 
-//export default NotValidSession
+export default NotValidSession
 
-module.exports = NotValidSession
+//module.exports = NotValidSession

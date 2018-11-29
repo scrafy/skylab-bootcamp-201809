@@ -6,7 +6,7 @@ import ModalInf from '../../components/modalInf/modalinf'
 
 class Hive extends Component {
 
-    state = {showModal:false, levelInf: "", showPanelControlHive: "", hive: {}, showHiveModal: false, title: "", registeredInf: [] }
+    state = { showModal:false, modalMessage:"", modalTitle:"", levelInf: "", showPanelControlHive: "", hive: {}, showHiveModal: false, title: "", registeredInf: [] }
 
     constructor(props) {
 
@@ -18,6 +18,10 @@ class Hive extends Component {
 
     componentWillUnmount() {
         this.subscription.unsubscribe()
+    }
+
+    setOffshowModalValue = () =>{
+        this.state.showModal = false
     }
 
     getHiveIfFromServer = (data) => {
@@ -102,12 +106,13 @@ class Hive extends Component {
         if (data === "item-bee") {
             this.state.levelInf = this.state.levelInf ? "" : "blink-animation"
             this.service.stopStartMonitor(ev.target.id).then(res => {
-
                 this.state.hive.isMonitored = !this.state.hive.isMonitored
                 this.setState({})
             }).catch(err => {
-
+                
                 this.state.showModal = true
+                this.state.modalMessage = err.message
+                this.state.modalTitle = "Error"
                 this.setState({})
 
             })
@@ -135,7 +140,10 @@ class Hive extends Component {
 
         this.service.deleteHive(ev.target.id).then(res => {
             this.props.onDeleteHive()
-        }).catch(err => alert(err.message))
+        }).catch(err => {
+
+            
+        })
     }
 
     handleEditHive = (ev) => {
@@ -149,8 +157,13 @@ class Hive extends Component {
 
     handleShowPanelMonitor = (ev) => {
 
-        if (!this.state.hive.isMonitored)
-            alert("The hive is not being monitored")
+        if (!this.state.hive.isMonitored){
+            
+            this.state.showModal = true
+            this.state.modalMessage = "The hive is not being monitored"
+            this.state.modalTitle = "Error"
+            this.setState({})
+        }
         else
             this.props.onShowPanelMonitor(this.state.hive)
 
@@ -159,7 +172,7 @@ class Hive extends Component {
     render() {
         return (
             <div id={this.state.hive.id} onClick={this.handleShowPanelControlHive} onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropBeeEvent} className={`farms-area__item__hive ${this.state.levelInf}`}>
-                <ModalInf  showModal={this.state.showModal}></ModalInf>
+                <ModalInf onHideModal = {this.setOffshowModalValue} modalTitle={this.state.modalTitle} modalMessage = {this.state.modalMessage} showModal={this.state.showModal}></ModalInf>
                 <img src={require('../../assets/img/hive.svg')}></img>
                 <div className={`farms-area__item__hive_controls ${this.state.showPanelControlHive}`}>
                     <div id={this.state.hive.id} onClick={(ev) => this.handleDeleteHive(ev)} className="icon-trash-o"></div>

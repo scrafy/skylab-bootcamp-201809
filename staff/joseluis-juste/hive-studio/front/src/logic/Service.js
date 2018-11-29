@@ -1,8 +1,8 @@
-//import ValidationError from './exceptions/validationexception'
-//import NotValidSession from './exceptions/notvalidsessionexception'
+import ValidationError from './exceptions/validationexception'
+import NotValidSession from './exceptions/notvalidsessionexception'
 
-const ValidationError = require('./exceptions/validationexception')
-const NotValidSession = require('./exceptions/notvalidsessionexception')
+//const ValidationError = require('./exceptions/validationexception')
+//const NotValidSession = require('./exceptions/notvalidsessionexception')
 
 require('isomorphic-fetch')
 
@@ -10,8 +10,8 @@ class ServiceBackEnd {
 
     constructor() {
 
-       //this.endpoint = process.env.REACT_APP_API_ENDPOINT
-       this.endpoint = "http://localhost:3333/api" //descomentar for mocha
+       this.endpoint = process.env.REACT_APP_API_ENDPOINT
+      // this.endpoint = "http://localhost:3333/api" //descomentar for mocha
     }
 
     setEnPoint(url){
@@ -315,7 +315,7 @@ class ServiceBackEnd {
     stopStartMonitor(id) {
 
         return new Promise( (resolve, reject) => {
-            throw new Error("asdasd")
+           
             const token = this.getTokenSession()
             return fetch(`${this.endpoint}/hive/${id}`, {
                 method: 'PATCH',
@@ -483,6 +483,6 @@ class ServiceBackEnd {
 
 }
 
-//export default ServiceBackEnd
+export default ServiceBackEnd
 
-module.exports = ServiceBackEnd
+//module.exports = ServiceBackEnd

@@ -3,24 +3,28 @@ import React from 'react';
 
 class ModalInf extends React.Component {
 
-    state = {
+    state = {}
 
-       
+    componentWillReceiveProps(props) {
+
+        this.setState({ showModal: props.showModal, message: props.modalMessage, title: props.modalTitle })
     }
-
 
     toggle = () => {
 
+        this.state.showModal = !this.state.showModal
+        this.setState({})
+        this.props.onHideModal()
     }
 
     render() {
         return (
             <div>
-                <Modal isOpen={this.props.showModal} toggle={this.toggle} className="register-farm">
+                <Modal isOpen={this.state.showModal} toggle={this.toggle} className="register-farm">
                     <ModalHeader toggle={this.toggle}>{this.state.title}</ModalHeader>
                     <ModalBody>
                         <section className="modalInf-main">
-                            <p>{this.props.message}</p>
+                            <p>{this.state.message}</p>
                         </section>
                     </ModalBody>
                     <ModalFooter>

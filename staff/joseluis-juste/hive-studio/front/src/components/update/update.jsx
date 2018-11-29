@@ -3,6 +3,8 @@ import Header from '../header/header'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 import ServiceBackEnd from '../../logic/Service'
 import ValidationError from '../../logic/exceptions/validationexception'
+import ModalInf from '../../components/modalInf/modalinf'
+
 
 class Update extends Component {
 
@@ -21,7 +23,10 @@ class Update extends Component {
         validationErrors: {},
         message: "",
         message_color: "green",
-        profile_img: require('../../assets/img/user.png')
+        profile_img: require('../../assets/img/user.png'),
+        showModal:false, 
+        modalMessage:"", 
+        modalTitle:"", 
     }
 
     constructor(props) {
@@ -35,7 +40,10 @@ class Update extends Component {
             this.state.profile_img = !res.data.profile_pic ? this.state.profile_img : res.data.profile_pic
             this.setState({ form_data: res.data.user })
         }).catch(err => {
-            alert(err.message)
+            this.state.showModal = true
+            this.state.modalMessage = err.message
+            this.state.modalTitle = "Error"
+            this.setState({})
         })
     }
 
@@ -142,9 +150,14 @@ class Update extends Component {
         this.props.history.push("/landing")
     }
 
+    setOffshowModalValue = () =>{
+        this.state.showModal = false
+    }
+
     render() {
         return (
             <section>
+                <ModalInf onHideModal = {this.setOffshowModalValue} modalTitle={this.state.modalTitle} modalMessage = {this.state.modalMessage} showModal={this.state.showModal}></ModalInf>
                 <Header onHandleIsLogged={this.props.onHandleIsLogged} showMenu={false}></Header>
                 <section className="register-section">
                     <h2 style={{ color: this.state.message_color }}>{this.state.message}</h2>
