@@ -10,18 +10,16 @@ describe('Service', () => {
 
     let service = null
     beforeEach(() => {
-
         service = new ServiceBackEnd()
-
     })
 
-    false && describe("server", () => {
+    describe("server", () => {
 
         it('should fail on incorrect endpoint', () => {
 
             const user = { name: "John", surname: "Doe", email: "test@gmail.com", phone: "627206369", username: "jd-test", password: "1234" }
             service.setEnPoint("asdasdad")
-            service.registerUser(user).catch(err => {
+            return service.registerUser(user).catch(err => {
                 expect(true).to.be.true
                 service.setEnPoint("http://localhost:3333/api")
             })
@@ -29,7 +27,443 @@ describe('Service', () => {
         })
     })
 
-   false && describe('users', () => {
+    describe('farms', () => {
+
+        let user = null
+        let farm = null
+
+        beforeEach(() => {
+
+            farm = { name: "farm", description: "description", maxhives: 5, squaremeters: 45 }
+
+            username = Math.floor(Math.random() * 5000) + 1000
+            email = `mail-${Math.floor(Math.random() * 5000) + 1000}@terra.es`
+            user = { name: "John", surname: "Doe", email: email, phone: "627206369", username: `jd-${username}`, password: "1234" }
+            return service.registerUser(user).then(res => {
+
+                return service.loginUser(`jd-${username}`, user.password).then(res => sessionStorage.setItem("token", res.data.token))
+
+            })
+        })
+
+        describe("find farm", () => {
+
+            it('should fails using an incorrect token', () => {
+
+                sessionStorage.setItem("token", "asd")
+                return service.findFarm(56).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.message).to.equal(`E_INVALID_JWT_TOKEN: jwt malformed`)
+                })
+
+            })
+
+           it('should fails when the farm´s id does not exists', () => {
+
+                return service.findFarm("asd").catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.message).to.equal(`The farm with the id asd not exists`)
+                })
+
+            })
+
+            it('should fails when the farm does not belongs to the user', () => {
+
+                return service.createFarm(farm).then(_farm => {
+
+                    let user = { name: "John", surname: "Doe", phone: "627206369", password: "1234" }
+                    user.username = Math.floor(Math.random() * 5000) + 1000
+                    user.email = `mail-${Math.floor(Math.random() * 5000) + 1000}@terra.es`
+                    return service.registerUser(user).then(resUser => {
+
+                        return service.loginUser(user.username, user.password).then(res => {
+                            sessionStorage.setItem("token", res.data.token)
+                           
+                            return service.findFarm(_farm.data.farmId).catch(err => {
+
+                                expect(err).not.to.be.undefined
+                                expect(err.message).to.equal(`The farm with the id ${_farm.data.farmId} does not belongs to the user with the id ${resUser.data.userId}`)
+
+                            })
+
+                        })
+
+                    })
+                })
+
+            })
+        })
+
+
+        describe("update farm", () => {
+
+            it('should fails using an incorrect token', () => {
+
+                sessionStorage.setItem("token", "asd")
+                return service.updateFarm({}).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.message).to.equal(`E_INVALID_JWT_TOKEN: jwt malformed`)
+                })
+
+            })
+
+            it('should fails when trying update a farm does not exists', () => {
+
+                return service.createFarm(farm).then(res => {
+
+                    farm.id = "as"
+                    return service.updateFarm(farm).catch(err => {
+
+                        expect(err).not.to.be.undefined
+                        expect(err.message).to.equal(`The farm with the id as not exists`)
+
+                    })
+                })
+            })
+
+            it('should fails when trying update a farm does not belongs to the user', () => {
+
+                return service.createFarm(farm).then(_farm => {
+
+                    let user = { name: "John", surname: "Doe", phone: "627206369", password: "1234" }
+                    user.username = Math.floor(Math.random() * 5000) + 1000
+                    user.email = `mail-${Math.floor(Math.random() * 5000) + 1000}@terra.es`
+                    return service.registerUser(user).then(resUser => {
+
+                        return service.loginUser(user.username, user.password).then(res => {
+                            sessionStorage.setItem("token", res.data.token)
+                            farm.id = _farm.data.farmId
+
+                            return service.updateFarm(farm).catch(err => {
+
+                                expect(err).not.to.be.undefined
+                                expect(err.message).to.equal(`The farm with the id ${farm.id} does not belongs to the user with the id ${resUser.data.userId}`)
+
+                            })
+
+                        })
+
+                    })
+                })
+            })
+
+            it('should should fails on empty name', () => {
+
+                farm.name = ""
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The name field is required`)
+                })
+            })
+
+            it('should should fails on undefined name', () => {
+
+                delete farm.name
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The name field is required`)
+                })
+            })
+
+            it('should should fails on empty description', () => {
+
+                farm.description = ""
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The description field is required`)
+                })
+            })
+
+            it('should should fails on undefined description', () => {
+
+                delete farm.description
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The description field is required`)
+                })
+            })
+
+            it('should should fails on empty maxhives', () => {
+
+                farm.maxhives = ""
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field is required`)
+                })
+            })
+
+            it('should should fails on undefined maxhives', () => {
+
+                delete farm.maxhives
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field is required`)
+                })
+            })
+
+            it('should fails if maxhives is not a number', () => {
+
+                farm.maxhives = "asdasd"
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field is not a number`)
+                })
+            })
+
+            it('should fails if maxhives does not belongs to 1-100 range', () => {
+
+                farm.maxhives = 101
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field has to be between 1-100 range`)
+                })
+            })
+
+            it('should should fails on empty squaremeters', () => {
+
+                farm.squaremeters = ""
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The squaremeters field is required`)
+                })
+            })
+
+            it('should should fails on undefined squaremeters', () => {
+
+                delete farm.squaremeters
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The squaremeters field is required`)
+                })
+            })
+
+            it('should fails if squaremeters is not a number', () => {
+
+                farm.squaremeters = "asdasd"
+                return service.updateFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The squaremeters field is not a number`)
+                })
+            })
+
+        })//END DESCRIBE UPDATE FARM
+
+        describe("delete farm", () => {
+
+            it('should fails using an incorrect token', () => {
+
+                sessionStorage.setItem("token", "asd")
+                return service.deleteFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.message).to.equal(`E_INVALID_JWT_TOKEN: jwt malformed`)
+                })
+
+            })
+
+            it('should succeed on delete farm', () => {
+
+                return service.createFarm(farm).then(res => {
+
+                    return service.deleteFarm(res.data.farmId).then(res => {
+
+                        expect(true).to.be.true
+
+                    })
+                })
+            })
+
+            it('should fails when trying delete a farm does not exists', () => {
+
+                return service.createFarm(farm).then(res => {
+
+                    return service.deleteFarm("as").catch(err => {
+
+                        expect(err).not.to.be.undefined
+                        expect(err.message).to.equal(`The farm with the id as not exists`)
+
+                    })
+                })
+            })
+
+            it('should fails when trying delete a farm does not belongs to the user', () => {
+
+                return service.createFarm(farm).then(farm => {
+
+                    let user = { name: "John", surname: "Doe", phone: "627206369", password: "1234" }
+                    user.username = Math.floor(Math.random() * 5000) + 1000
+                    user.email = `mail-${Math.floor(Math.random() * 5000) + 1000}@terra.es`
+                    return service.registerUser(user).then(resUser => {
+
+                        return service.loginUser(user.username, user.password).then(res => {
+                            sessionStorage.setItem("token", res.data.token)
+                            return service.deleteFarm(farm.data.farmId).catch(err => {
+
+                                expect(err).not.to.be.undefined
+                                expect(err.message).to.equal(`The farm with the id ${farm.data.farmId} does not belongs to the user with the id ${resUser.data.userId}`)
+
+                            })
+
+                        })
+
+                    })
+                })
+            })
+
+        })//END DESCRIBE DELETE FARM
+
+
+        describe("create farm", () => {
+
+            it('should succeed on create farm with correct data', () => {
+
+                return service.createFarm(farm).then(res => {
+
+                    expect(true).to.be.true
+                })
+            })
+
+            it('should fails using an incorrect token', () => {
+
+                sessionStorage.setItem("token", "asd")
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.message).to.equal(`E_INVALID_JWT_TOKEN: jwt malformed`)
+                })
+
+            })
+
+            it('should should fails on empty name', () => {
+
+                farm.name = ""
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The name field is required`)
+                })
+            })
+
+            it('should should fails on undefined name', () => {
+
+                delete farm.name
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The name field is required`)
+                })
+            })
+
+            it('should should fails on empty description', () => {
+
+                farm.description = ""
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The description field is required`)
+                })
+            })
+
+            it('should should fails on undefined description', () => {
+
+                delete farm.description
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The description field is required`)
+                })
+            })
+
+            it('should should fails on empty maxhives', () => {
+
+                farm.maxhives = ""
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field is required`)
+                })
+            })
+
+            it('should should fails on undefined maxhives', () => {
+
+                delete farm.maxhives
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field is required`)
+                })
+            })
+
+            it('should fails if maxhives is not a number', () => {
+
+                farm.maxhives = "asdasd"
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field is not a number`)
+                })
+            })
+
+            it('should fails if maxhives does not belongs to 1-100 range', () => {
+
+                farm.maxhives = 101
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The maxhives field has to be between 1-100 range`)
+                })
+            })
+
+            it('should should fails on empty squaremeters', () => {
+
+                farm.squaremeters = ""
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The squaremeters field is required`)
+                })
+            })
+
+            it('should should fails on undefined squaremeters', () => {
+
+                delete farm.squaremeters
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The squaremeters field is required`)
+                })
+            })
+
+            it('should fails if squaremeters is not a number', () => {
+
+                farm.squaremeters = "asdasd"
+                return service.createFarm(farm).catch(err => {
+
+                    expect(err).not.to.be.undefined
+                    expect(err.validationErrors[0].message).to.equal(`The squaremeters field is not a number`)
+                })
+            })
+
+        })//END CREATE FARM
+
+    }) //END TEST FARM
+
+
+    describe('users', () => {
 
         describe('getuserfarms', () => {
 
@@ -242,7 +676,7 @@ describe('Service', () => {
             it('should succeed on correct data', () => {
 
                 const user = { name: "John", surname: "Doe", email: "test@gmail.com", phone: "627206369", username: "jd-test", password: "1234" }
-                service.registerUser(user)
+                return service.registerUser(user)
                     .then(() => expect(true).to.be.true)
             })
 
@@ -253,7 +687,7 @@ describe('Service', () => {
                     .then(() => {
 
                         user.email = "test2@gmail.com"
-                        service.registerUser(user).catch(err => {
+                        return service.registerUser(user).catch(err => {
                             expect(err).not.to.be.undefined
                             expect(err.validationErrors[0].message).to.equal(`Exists an user with the same username`)
                         })
@@ -267,7 +701,7 @@ describe('Service', () => {
                     .then(() => {
 
                         user.username = "jd-test2"
-                        service.registerUser(user).catch(err => {
+                        return service.registerUser(user).catch(err => {
 
                             expect(err).not.to.be.undefined
                             expect(err.validationErrors[0].message).to.equal(`Email address in use`)
