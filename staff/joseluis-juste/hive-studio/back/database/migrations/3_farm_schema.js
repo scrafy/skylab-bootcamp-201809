@@ -18,7 +18,7 @@ class FarmSchema extends Schema {
   }
 
   down () {
-    this.drop('hives')
+   
     this.drop('farms')
   }
 }

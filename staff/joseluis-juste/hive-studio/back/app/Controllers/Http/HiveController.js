@@ -3,6 +3,7 @@
 const BaseController = use('App/Controllers/Http/BaseController')
 const ResourceNotFoundException = use('App/Exceptions/ResourceNotFoundException')
 const UnauthorizedException = use("App/Exceptions/UnauthorizedException")
+const FarmIsFullException = use("App/Exceptions/FarmIsFullException")
 const User = use('App/Models/User')
 const Farm = use('App/Models/Farm')
 const Hive = use('App/Models/Hive')
@@ -24,17 +25,23 @@ class HiveController extends BaseController {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
         }
         let farm = await Farm.find(data.farm_id)
+        await farm.load("hives")
         if (!farm) {
             throw new ResourceNotFoundException(`The farm with the id ${data.farm_id} not exists`, 404)
         }
         if (id !== farm.user_id)
             throw new ResourceNotFoundException(`The farm with the id ${data.farm_id} does not belongs to user with id ${id}`, 404)
+        
+        const total_hives =  await farm.hives().getCount()   
+        if ( total_hives + 1 > farm.maxhives){
 
+            throw new FarmIsFullException("This farm is full of hives")
+        }
         let hive = new Hive()
         delete data.id
         hive.merge(data)
         await hive.save()
-        this.sendResponse(response)
+        this.sendResponse(response,{ hiveId:hive.id })
 
     }
 
@@ -47,6 +54,9 @@ class HiveController extends BaseController {
 
         if (!user) {
             throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
+        }
+        if(!data.farm_id){
+            throw new ResourceNotFoundException(`The farmId has not been sent in the request body`, 404)
         }
         let farm = await Farm.find(data.farm_id)
         if (!farm) {
@@ -120,15 +130,38 @@ class HiveController extends BaseController {
 
     }
 
+    async enableMonitor({ auth, request, response }){
+        
+        const { id } = await auth.getUser()
+        const { hiveId } = request.params
+
+        let user = User.find(id)
+        if (!user) {
+            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
+        }
+        const hive = await Hive.find(hiveId)
+        if (!hive) {
+            throw new ResourceNotFoundException(`The hive with the id ${hiveId} not exists`, 404)
+        }
+        await hive.load("user")
+        const jsonhive = JSON.parse(JSON.stringify(hive))
+        if (id !== jsonhive.user[0].id)
+            throw new ResourceNotFoundException(`The hive with the id ${jsonhive[0].id} does not belongs to user with id ${id}`, 404)
+        
+        hive.isMonitored = !hive.isMonitored
+        hive.save()
+        this.sendResponse(response)
+    }
+
     async getInfoForSensor({ auth, request, response }){
         
         
-        const { name } = await auth.getUser()
+        const { username } = await auth.getUser()
 
-        if (name !== "sensor")
+        if (username !== "sensor")
             throw new UnauthorizedException("This action only can be executed by the sensor application")
 
-        let hives = await Hive.query().with("user").fetch()
+        let hives = await Hive.query().with("user").where("isMonitored",1).fetch()
         hives = JSON.parse(JSON.stringify(hives))
         let resp = []
         hives.forEach( hive => {
@@ -147,9 +180,9 @@ class HiveController extends BaseController {
 
     async getDataFromSensor({ auth, request}) {
         
-        const { name } = await auth.getUser()
+        const { username } = await auth.getUser()
 
-        if (name !== "sensor")
+        if (username !== "sensor")
             throw new UnauthorizedException("This action only can be executed by the sensor application")
             
         const data = request.raw()

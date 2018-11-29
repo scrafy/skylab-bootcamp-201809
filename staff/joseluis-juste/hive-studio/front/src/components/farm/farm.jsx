@@ -138,6 +138,16 @@ class Farm extends Component {
     getUserFarms = () => {
 
         this.service.getUserFarms().then(res => {
+            res.data.sort((a, b) => {
+
+                if (a.id < b.id) {
+                    return -1;
+                }
+                if (a.id > b.id) {
+                    return 1;
+                }
+                return 0
+            })
 
             this.setState({ farms: res.data })
 
@@ -177,13 +187,13 @@ class Farm extends Component {
                 <section onClick={this.handleTogglePanelControl} className={`panel-control icon-wrench ${this.state.showPanelControl}`}>
                     <section className="panel-control__items">
                         <div id="item-farm" onDragStart={(ev) => this.handleDragEvent(ev)} draggable="true" className="panel-control__item">
-                            {false && <img src="img/honeycomb1.png" />}
+                            {false && <img src={require('../../assets/img/honeycomb1.png')} />}
                         </div>
                         <div id="item-hive" onDragStart={(ev) => this.handleDragEvent(ev)} draggable="true" className="panel-control__item">
-                            {false && <img src="img/hive.svg" />}
+                            {false && <img src={require('../../assets/img/hive.svg')} />}
                         </div>
                         <div id="item-bee" onDragStart={(ev) => this.handleDragEvent(ev)} draggable="true" className="panel-control__item">
-                            {false && <img src="img/bee.png" />}
+                        {false && <img src={require('../../assets/img/bee.png')} />}
                         </div>
                     </section>
                 </section>
@@ -216,7 +226,7 @@ class Farm extends Component {
 
                         </section>
                     </section>
-                    <audio autoPlay loop></audio>
+                    <audio autoPlay loop src={require('../../assets/audio/abeja.mp3')}></audio>
                     <FarmRegisterModal farm={this.state.farm} onCreatedAndEdited={this.getUserFarms} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
                     <HiveRegisterModal onCreatedAndEdited={this.getUserFarms} farmId={this.state.farmId} validationErrors={this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
                     <Carousel selectedItem={this.state.selectedSlide} onChange={(ev) => this.handleSliderChange(ev)} showThumbs={false}>

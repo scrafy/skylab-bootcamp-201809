@@ -23,7 +23,7 @@ class FarmController extends BaseController {
         farm.merge(data)
         farm.user_id = id
         await farm.save()
-        this.sendResponse(response)
+        this.sendResponse(response, { farmId:farm.id })
 
     }
 

@@ -1,5 +1,8 @@
-import ValidationError from './exceptions/validationexception'
-import NotValidSession from './exceptions/notvalidsessionexception'
+//import ValidationError from './exceptions/validationexception'
+//import NotValidSession from './exceptions/notvalidsessionexception'
+
+const ValidationError = require('./exceptions/validationexception')
+const NotValidSession = require('./exceptions/notvalidsessionexception')
 
 require('isomorphic-fetch')
 
@@ -7,11 +10,17 @@ class ServiceBackEnd {
 
     constructor() {
 
-        this.endpoint = "http://localhost:3333/api"
+       //this.endpoint = process.env.REACT_APP_API_ENDPOINT
+       this.endpoint = "http://localhost:3333/api" //descomentar for mocha
+    }
+
+    setEnPoint(url){
+
+        this.endpoint = url
     }
 
     registerUser(user) {
-
+        
         return fetch(`${this.endpoint}/user`, {
             method: 'POST',
             headers: {
@@ -22,11 +31,11 @@ class ServiceBackEnd {
         })
             .then(res => res.json())
             .then((res) => {
-
+                
                 if (res.status === "OK") return res
 
                 if (res.validationErrors)
-
+                    
                     throw new ValidationError(res.error, res.validationErrors)
 
                 throw new Error(res.error)
@@ -61,7 +70,7 @@ class ServiceBackEnd {
     }
 
     updateUser(user) {
-
+        
         return new Promise((resolve, reject) => {
 
             const token = this.getTokenSession()
@@ -76,7 +85,7 @@ class ServiceBackEnd {
             })
                 .then(res => res.json())
                 .then((res) => {
-
+                    
                     if (res.status === "OK") return resolve(res)
 
                     if (res.validationErrors)
@@ -86,7 +95,7 @@ class ServiceBackEnd {
                     throw new Error(res.error)
 
 
-                }).catch(err => reject(err))
+                }).catch(err => { reject(err) })
 
         })
 
@@ -159,7 +168,7 @@ class ServiceBackEnd {
     }
 
     loginUser(username, password) {
-
+        
         return fetch(`${this.endpoint}/user/auth`, {
             method: 'POST',
             headers: {
@@ -186,7 +195,7 @@ class ServiceBackEnd {
     }
 
     getTokenSession() {
-
+        
         if (!sessionStorage.getItem("token"))
             throw new NotValidSession("The user token is not valid")
 
@@ -285,6 +294,31 @@ class ServiceBackEnd {
             const token = this.getTokenSession()
             return fetch(`${this.endpoint}/hive/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    stopStartMonitor(id) {
+
+        return new Promise( (resolve, reject) => {
+            throw new Error("asdasd")
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/hive/${id}`, {
+                method: 'PATCH',
                 headers: {
                     "Accept": "application/json",
                     'Authorization': 'Bearer ' + token
@@ -449,4 +483,6 @@ class ServiceBackEnd {
 
 }
 
-export default ServiceBackEnd
+//export default ServiceBackEnd
+
+module.exports = ServiceBackEnd

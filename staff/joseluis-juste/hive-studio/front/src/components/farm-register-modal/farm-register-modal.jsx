@@ -14,7 +14,6 @@ class FarmRegisterModal extends React.Component {
             id:"",
             name: "",
             description: "",
-            minhives: 1,
             maxhives: 100,
             squaremeters: ""
         },
@@ -50,7 +49,6 @@ class FarmRegisterModal extends React.Component {
             id:"",
             name: "",
             description: "",
-            minhives: 1,
             maxhives: 100,
             squaremeters: ""
         }
@@ -67,12 +65,6 @@ class FarmRegisterModal extends React.Component {
     handleOnChangeDescription = (ev) => {
 
         this.state.form_data.description = ev.target.value
-        this.setState({ form_data: this.state.form_data })
-    }
-
-    handleOnChangeMinHives = (ev) => {
-
-        this.state.form_data.minhives = ev.target.value
         this.setState({ form_data: this.state.form_data })
     }
 
@@ -133,7 +125,6 @@ class FarmRegisterModal extends React.Component {
                     id:"",
                     name: "",
                     description: "",
-                    minhives: 1,
                     maxhives: 100,
                     squaremeters: ""
                 }
@@ -184,18 +175,6 @@ class FarmRegisterModal extends React.Component {
                                         <label>Farm description</label>
                                         <textarea value={this.state.form_data.description} onChange={(ev) => { this.handleOnChangeDescription(ev) }} name="description" placeholder="Farm description..."></textarea>
                                         <small class="text-danger">{this.state.validationErrors["description"]}</small>
-                                    </div>
-                                    <div className="form-group-field">
-                                        <label>Min hives</label>
-                                        <select onChange={(ev) => { this.handleOnChangeMinHives(ev) }} name="minhives">
-                                            {this.valuesForm.map(val => {
-                                                if (val == this.state.form_data.minhives)
-                                                    return <option selected value={val}>{`${val}`}</option>
-                                                else
-                                                    return <option value={val}>{`${val}`}</option>
-
-                                            })}
-                                        </select>
                                     </div>
                                     <div className="form-group-field">
                                         <label>Max hives</label>

@@ -1,7 +1,6 @@
 import Ws from '@adonisjs/websocket-client'
 import ChannelNotReadyException from './exceptions/channelnotreadyexception'
 import ChannelSubscriptionNotFoundException from './exceptions/channelsubcriptionnotfoundexception'
-import DoubleSubsctiptionException from './exceptions/doublesubscriptionexception'
 import NoConnectedWsException from './exceptions/nonconnectedwsexception'
 
 class SocketService {
@@ -13,7 +12,7 @@ class SocketService {
         this.onDisconnectCallback = null
         this.subscriptionsChannels = []
         this.isConnected = false
-        this.ws = Ws('ws://localhost:3333')
+        this.ws = Ws(process.env.REACT_APP_API_WS_ENDPOINT)
         this.setEvents()
     }
 

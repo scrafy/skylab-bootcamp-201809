@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import HiveRegisterModal from '../hive-register-modal/hive-register-modal'
 import ServiceBackEnd from '../../logic/Service'
 import EventsManagement from '../../logic/EventManagement'
+import ModalInf from '../../components/modalInf/modalinf'
 
 class Hive extends Component {
 
-    state = { isMonitored: false, levelInf: "", showPanelControlHive: "", hive: {}, showHiveModal: false, title: "", registeredInf: [] }
+    state = {showModal:false, levelInf: "", showPanelControlHive: "", hive: {}, showHiveModal: false, title: "", registeredInf: [] }
 
     constructor(props) {
 
@@ -21,7 +22,7 @@ class Hive extends Component {
 
     getHiveIfFromServer = (data) => {
 
-        if (this.state.isMonitored) {
+        if (this.state.hive.isMonitored) {
 
             let tempcolor = "green"
             let humcolor = "green"
@@ -69,18 +70,18 @@ class Hive extends Component {
                         blink_color = "orange"
                     }
                 }
-                if (this.state.isMonitored) {
-                    if (blink_color === "red")
-                        this.state.levelInf = "blink-animation-danger"
 
-                    if (blink_color === "orange")
-                        this.state.levelInf = "blink-animation-warning"
+                if (blink_color === "red")
+                    this.state.levelInf = "blink-animation-danger"
 
-                    if (blink_color === "green")
-                        this.state.levelInf = "blink-animation"
+                if (blink_color === "orange")
+                    this.state.levelInf = "blink-animation-warning"
 
-                    this.setState({})
-                }
+                if (blink_color === "green")
+                    this.state.levelInf = "blink-animation"
+
+                this.setState({})
+
                 this.state.registeredInf.push(hiveData)
                 this.props.onGetHiveDataFromServer({ hiveId: this.state.hive.id, hivename: this.state.hive.name, data: this.state.registeredInf })
 
@@ -100,9 +101,16 @@ class Hive extends Component {
         var data = ev.dataTransfer.getData("text");
         if (data === "item-bee") {
             this.state.levelInf = this.state.levelInf ? "" : "blink-animation"
-            this.state.isMonitored = !this.state.isMonitored;
-            this.setState({})
-            //llamar al API para desactivar/activar panal
+            this.service.stopStartMonitor(ev.target.id).then(res => {
+
+                this.state.hive.isMonitored = !this.state.hive.isMonitored
+                this.setState({})
+            }).catch(err => {
+
+                this.state.showModal = true
+                this.setState({})
+
+            })
         }
     }
 
@@ -141,7 +149,7 @@ class Hive extends Component {
 
     handleShowPanelMonitor = (ev) => {
 
-        if (!this.state.isMonitored)
+        if (!this.state.hive.isMonitored)
             alert("The hive is not being monitored")
         else
             this.props.onShowPanelMonitor(this.state.hive)
@@ -150,7 +158,8 @@ class Hive extends Component {
 
     render() {
         return (
-            <div onClick={this.handleShowPanelControlHive} onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropBeeEvent} className={`farms-area__item__hive ${this.state.levelInf}`}>
+            <div id={this.state.hive.id} onClick={this.handleShowPanelControlHive} onDragOver={(ev) => this.handleDragOverEvent(ev)} onDrop={this.handleDropBeeEvent} className={`farms-area__item__hive ${this.state.levelInf}`}>
+                <ModalInf  showModal={this.state.showModal}></ModalInf>
                 <img src={require('../../assets/img/hive.svg')}></img>
                 <div className={`farms-area__item__hive_controls ${this.state.showPanelControlHive}`}>
                     <div id={this.state.hive.id} onClick={(ev) => this.handleDeleteHive(ev)} className="icon-trash-o"></div>

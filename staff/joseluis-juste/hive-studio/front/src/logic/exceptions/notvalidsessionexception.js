@@ -1,4 +1,4 @@
-export default class NotValidSession extends Error {
+class NotValidSession extends Error {
     constructor (message) {
       super()
       Error.captureStackTrace( this, this.constructor )
@@ -6,3 +6,8 @@ export default class NotValidSession extends Error {
       this.message = message
     }
 }
+
+
+//export default NotValidSession
+
+module.exports = NotValidSession

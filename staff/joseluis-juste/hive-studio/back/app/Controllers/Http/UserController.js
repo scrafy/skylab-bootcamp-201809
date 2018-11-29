@@ -35,23 +35,11 @@ class UserController extends BaseController {
             fs.unlink(`App/uploads/tmp/${picprofile}.jpg`)
 
         }
-        this.sendResponse(response, null, 201)
-    }
-
-    async delete({ auth, response }) {
-
-        const { id } = await auth.getUser()
-        const user = await User.find(id)
-        if (!user) {
-            throw new ResourceNotFoundException(`The user with the id ${id} not exists`, 404)
-        }
-        await user.postits().delete()
-        await user.delete()
-        this.sendResponse(response)
+        this.sendResponse(response, {userId:user.id})
     }
 
     async update({ auth, request, response }) {
-
+        
         const { id } = await auth.getUser()
         const data = JSON.parse(request.raw())
         const user = await User.find(id)
@@ -176,6 +164,7 @@ class UserController extends BaseController {
             return
         
         }))
+        
         this.sendResponse(response, result)
        
     }

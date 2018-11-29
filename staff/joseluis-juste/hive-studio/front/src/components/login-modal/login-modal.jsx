@@ -50,6 +50,7 @@ class LoginModal extends React.Component {
 
         this.service.loginUser(this.state.form_data.username, this.state.form_data.password)
             .then(res => {
+                this.props.onHandleIsLogged(true)
                 this.props.onShowHideModal()
                 this.props.history.push("/landing")
                 const user = this.service.getUserSession()

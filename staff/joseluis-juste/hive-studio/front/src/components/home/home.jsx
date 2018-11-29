@@ -32,7 +32,10 @@ class Home extends Component {
                 <Header onClickHistory={this.handleClickHistory}
                     onClickDefinition={this.handleClickDefinition}
                     onClickDerivates={this.handleClickDerivates}
-                    onClickTools={this.handleClickTools}>
+                    onClickTools={this.handleClickTools}
+                    showMenu={true}
+                    onHandleIsLogged = {this.props.onHandleIsLogged}
+                >
                 </Header>
                 <section className="home-section">
                     <section className="home-section__main">

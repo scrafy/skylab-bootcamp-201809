@@ -12,9 +12,9 @@ class Index extends Component {
         return (
             <section className="bees">
                 <section className="bees__container">
-                    <div className="bees__bee"><img src="img/bee.png" /></div>
+                    <div className="bees__bee"><img src={require('../../assets/img/bee.png')} /></div>
                     <div onClick={this.goHome} className="bees_title"><span>Hive Studio</span></div>
-                    <div className="bees__bee"><img src="img/bee.png" /></div>
+                    <div className="bees__bee"><img src={require('../../assets/img/bee.png')} /></div>
                 </section>
             </section>
         )

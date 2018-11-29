@@ -40,8 +40,6 @@
         @include screen(1024,"padding-bottom", 0.5em);
         width: 100%;
         @include screen(1024,"width", auto);
-        //display: none;
-        //@include screen(1024,"display", block);
         & .header-container__actions{
             height: 100%;
             padding-top: 1em;
@@ -65,6 +63,9 @@
                     color:green;
                     text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
                     background-clip: text;
+                    &:before{
+                        font-size: 1.5em;
+                    }
                 }
             }
         }

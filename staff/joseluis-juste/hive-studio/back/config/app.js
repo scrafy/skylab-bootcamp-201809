@@ -16,7 +16,7 @@ module.exports = {
   |
   */
 
-  name: Env.get('APP_NAME', 'FullStack'),
+  name: Env.get('APP_NAME', 'HiveStudio'),
 
   /*
   |--------------------------------------------------------------------------

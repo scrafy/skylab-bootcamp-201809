@@ -11,54 +11,65 @@ import ServiceBackEnd from '../logic/Service'
 
 class App extends Component {
 
+  state = { isLogged: false }
+
   constructor(props) {
 
     super(props)
-    this.service = new ServiceBackEnd()  
+    this.service = new ServiceBackEnd()
     SocketService.connectToWsServer()
     SocketService.setOnChannelReadyCallback(this.$onsubscribed)
     SocketService.setConnectToWebSocketServerCallback(this.$onConnected)
     SocketService.setDisconnectFromWebSocketServerCallback(this.$onCloseConnectionError)
- 
+
   }
 
-  $onCloseConnectionError = () =>{
-   
+  setIsLogged = (val) => {
+    
+    this.state.isLogged = val
+    this.setState({})
+
+  }
+
+  $onCloseConnectionError = () => {
+
 
   }
 
   $onConnected = () => {
-    
+
     SocketService.subscribeChannel("honeycomb")
   }
 
   $onsubscribed = () => {
 
-    try{
+    try {
       const user = this.service.getUserSession()
-      SocketService.emitMessage("honeycomb","setUserId", user.id)
-    }catch(err){
+      SocketService.emitMessage("honeycomb", "setUserId", user.id)
+    } catch (err) {
 
     }
     SocketService.setMessageEventsInChannel("hivesInfo", "honeycomb", this.$onGetHivesInfo)
-   
+
   }
 
-  $onGetHivesInfo(data){
-    
+  $onGetHivesInfo(data) {
+
     const hiveUpdateInfoEventEmitter = EventsManagement.selectSubject("hiveUpdateInfo")
     hiveUpdateInfoEventEmitter.next(data)
 
   }
 
   render() {
+
     return (
       <section>
         <Route exact path="/" render={() => <Index></Index>} />
-        <Route path="/home" render={() => <Home></Home>} />
-        <Route path="/landing" render={() => <Landing></Landing>} />
-        <Route path="/register" render={() => <Register></Register>} />
-        <Route path="/update" render={() => <Update></Update>} />
+        <Route path="/home" render={() => <Home onHandleIsLogged={this.setIsLogged}></Home>} />
+        <Route path="/landing" render={() => this.state.isLogged ? <Landing onHandleIsLogged={this.setIsLogged}></Landing> : <Redirect to="/home" />} />
+        <Route path="/register" render={() => <Register onHandleIsLogged={this.setIsLogged}></Register>} />
+        <Route path="/update" render={() => this.state.isLogged ? <Update onHandleIsLogged={this.setIsLogged}></Update> : <Redirect to="/home" />} />
+
       </section>
 
     );

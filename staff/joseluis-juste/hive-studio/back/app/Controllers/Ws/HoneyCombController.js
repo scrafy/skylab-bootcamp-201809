@@ -15,16 +15,20 @@ class HoneyCombController {
   getHivesInfo(data) {
 
     data = JSON.parse(data)
-    this.clients.forEach(socket => {
-      
-       const filtered = data.filter( hiveInf => {
 
-          return hiveInf.userId === socket.userId
-       
-       })
-      
-       socket.emit("hivesInfo", JSON.stringify({ hives: filtered, userid: socket.userId }))
+
+    this.clients.forEach(socket => {
+
+      const filtered = data.filter(hiveInf => {
+
+        return hiveInf.userId === socket.userId
+
+      })
+      if (filtered.length)
+        socket.emit("hivesInfo", JSON.stringify({ hives: filtered, userid: socket.userId }))
     })
+
+
 
   }
 

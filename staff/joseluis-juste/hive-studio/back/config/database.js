@@ -54,7 +54,7 @@ module.exports = {
       port: Env.get('DB_PORT', '3306'),
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', 'root'),
-      database: Env.get('DB_DATABASE', 'fullstack')
+      database: Env.get('DB_DATABASE', 'hivestudio')
     }
   },
 

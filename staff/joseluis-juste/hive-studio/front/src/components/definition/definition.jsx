@@ -16,7 +16,7 @@ export default function Definition(props) {
             </p>
             <p className="home-section__main__historia__desc">
                 <div className="home-section__main__historia__img--float-right">
-                    <img src="img/apicultura.jpg" />
+                    <img src={require('../../assets/img/apicultura.jpg')} />
                 </div>
                 El origen de la apicultura es muy remoto: de acuerdo a pinturas rupestres, se puede estimar que
                 hace cerca de 8.000 años el hombre ya recolectaba la miel que producían las abejas. Se cree que
@@ -59,13 +59,13 @@ export default function Definition(props) {
                 fuente de dinero para quienes se dedican a ella a tiempo completo.
             </p>
             <p className="home-section__main__historia__desc">
-            <div className="home-section__main__historia__img--float-right">
-                <img src="img/apicultura1.jpg" />
-            </div>
-            Esto no significa que sea fácil o que su efecto sea instantáneo: convertirse en apicultor toma
-            tiempo y mucha práctica. Si bien existen cursos de apicultura en el ámbito académico, muchas
-            personas prefieren aprender esta disciplina de sus padres, a lo largo de gran parte de su vida,
-            interiorizando los diversos conceptos de forma paulatina.
+                <div className="home-section__main__historia__img--float-right">
+                    <img src={require('../../assets/img/apicultura1.jpg')} />
+                </div>
+                Esto no significa que sea fácil o que su efecto sea instantáneo: convertirse en apicultor toma
+                tiempo y mucha práctica. Si bien existen cursos de apicultura en el ámbito académico, muchas
+                personas prefieren aprender esta disciplina de sus padres, a lo largo de gran parte de su vida,
+                interiorizando los diversos conceptos de forma paulatina.
             </p>
             <p className="home-section__main__historia__desc">
                 A pesar de que la apicultura sea una actividad con resultados económicos muy prometedores, no

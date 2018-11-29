@@ -18,8 +18,7 @@ class UpdateUser {
       phone: 'required',
       username: `required|unique:users,username,id,${userId}`,
       password: `required|password_correct:users,password,${userId}`,
-      newpassword: `equal_to:${confirmpassword}`,
-      
+      newpassword: `equal_to:${confirmpassword}`      
 
     }
 

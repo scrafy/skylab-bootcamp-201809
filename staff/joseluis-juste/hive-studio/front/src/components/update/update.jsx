@@ -6,49 +6,37 @@ import ValidationError from '../../logic/exceptions/validationexception'
 
 class Update extends Component {
 
-    state = { 
-         form_data: {
-             name:"",
-             surname:"",
-             email:"",
-             phone:"",
-             username:"",
-             password:"",
-             newpassword:"",
-             confirmpassword:"",
-             picprofile:""
-         }, 
-         validationErrors: {},
-         message: "", 
-         message_color: "green",
-         profile_img:require('../../assets/img/user.png')
+    state = {
+        form_data: {
+            name: "",
+            surname: "",
+            email: "",
+            phone: "",
+            username: "",
+            password: "",
+            newpassword: "",
+            confirmpassword: "",
+            picprofile: ""
+        },
+        validationErrors: {},
+        message: "",
+        message_color: "green",
+        profile_img: require('../../assets/img/user.png')
     }
 
     constructor(props) {
         super(props)
         this.service = new ServiceBackEnd()
+    }
+
+    componentDidMount() {
+
         this.service.getUserData().then(res => {
-            
-            this.setState({ form_data:res.data.user, profile_img:res.data.profile_pic })
+            this.state.profile_img = !res.data.profile_pic ? this.state.profile_img : res.data.profile_pic
+            this.setState({ form_data: res.data.user })
         }).catch(err => {
             alert(err.message)
         })
-    }
-
-    handleClickHistory = () => {
-
-    }
-
-    handleClickDefinition = () => {
-
-    }
-
-    handleClickDerivates = () => {
-
-    }
-
-    handleClickTools = () => {
-
     }
 
     handleOnChangeName = (ev) => {
@@ -87,12 +75,12 @@ class Update extends Component {
         this.setState({ form_data: this.state.form_data })
     }
 
-    handleOnChangeNewpassword = (ev) =>{
+    handleOnChangeNewpassword = (ev) => {
         this.state.form_data.newpassword = ev.target.value
         this.setState({ form_data: this.state.form_data })
     }
 
-    handleOnChangeConfirmpassword = (ev) =>{
+    handleOnChangeConfirmpassword = (ev) => {
         this.state.form_data.confirmpassword = ev.target.value
         this.setState({ form_data: this.state.form_data })
     }
@@ -104,9 +92,9 @@ class Update extends Component {
             this.state.form_data.password = ""
             this.state.form_data.newpassword = ""
             this.state.form_data.confirmpassword = ""
-            this.setState({form_data:this.state.form_data,  message: "The account has been updated correctly...", message_color:"green",validationErrors:{}},() => {
+            this.setState({ form_data: this.state.form_data, message: "The account has been updated correctly...", message_color: "green", validationErrors: {} }, () => {
 
-                setTimeout(() => this.setState({message:""}), 3000)
+                setTimeout(() => this.setState({ message: "" }), 3000)
             })
 
         }).catch(err => {
@@ -116,10 +104,10 @@ class Update extends Component {
                 err.validationErrors.forEach(error => {
                     errors[error.field] = error.message
                 });
-                this.setState({ validationErrors: errors,message:"Exists validation errors...",  message_color:"red" })
+                this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" })
             } else {
-               
-                this.setState({ message: err.message, message_color:"red" })
+
+                this.setState({ message: err.message, message_color: "red" })
             }
         })
     }
@@ -128,21 +116,21 @@ class Update extends Component {
 
         let file_input = document.createElement('input');
         file_input.addEventListener("change", (ev) => {
-           debugger
+            debugger
             this.service.uploadImageProfile(file_input.files[0]).then(res => {
-                
-                this.setState({profile_img: res.data,  message: "The profile pic has been uploaded correctly...", message_color:"green"},() => {
 
-                    setTimeout(() => this.setState({message:"", message_color:"green"}), 3000)
+                this.setState({ profile_img: res.data, message: "The profile pic has been uploaded correctly...", message_color: "green" }, () => {
+
+                    setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                 })
 
             }).catch(err => {
-                
-                this.setState({message: "There was a problem while uploading the profile pic...", message_color:"red"},() => {
 
-                    setTimeout(() => this.setState({message:""}), 3000)
+                this.setState({ message: "There was a problem while uploading the profile pic...", message_color: "red" }, () => {
+
+                    setTimeout(() => this.setState({ message: "" }), 3000)
                 })
-        
+
             })
         }, false);
         file_input.type = 'file';
@@ -150,18 +138,14 @@ class Update extends Component {
 
     }
 
-    handleClose = () =>{
+    handleClose = () => {
         this.props.history.push("/landing")
     }
 
     render() {
         return (
             <section>
-                <Header onClickHistory={this.handleClickHistory}
-                    onClickDefinition={this.handleClickDefinition}
-                    onClickDerivates={this.handleClickDerivates}
-                    onClickTools={this.handleClickTools}>
-                </Header>
+                <Header onHandleIsLogged={this.props.onHandleIsLogged} showMenu={false}></Header>
                 <section className="register-section">
                     <h2 style={{ color: this.state.message_color }}>{this.state.message}</h2>
                     <form className="form" onSubmit={(ev) => ev.preventDefault()}>
@@ -210,7 +194,7 @@ class Update extends Component {
                         <div className="form-group-field">
                             <label>Confirmpassword</label>
                             <input value={this.state.form_data.confirmpassword} onChange={(ev) => { this.handleOnChangeConfirmpassword(ev) }} type="password" name="confirmpassword" placeholder="Confirm password..."></input>
-                            
+
                         </div>
 
                         <div className="form-group-field">

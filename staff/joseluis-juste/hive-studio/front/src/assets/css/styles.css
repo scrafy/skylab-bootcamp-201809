@@ -430,6 +430,8 @@ body {
           color: green;
           text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
           background-clip: text; }
+          .header .header-container__actions .header-container__actions .header-container__actions__item a:before {
+            font-size: 1.5em; }
   .header .nav {
     padding: 1em 1em;
     width: 80%;

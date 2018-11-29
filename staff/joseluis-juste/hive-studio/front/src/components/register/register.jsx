@@ -6,41 +6,25 @@ import ValidationError from '../../logic/exceptions/validationexception'
 
 class Register extends Component {
 
-    state = { 
-         form_data: {
-             name:"",
-             surname:"",
-             email:"",
-             phone:"",
-             username:"",
-             password:"",
-             picprofile:""
-         }, 
-         validationErrors: {},
-         message: "", 
-         message_color: "green",
-         profile_img:require('../../assets/img/user.png')
+    state = {
+        form_data: {
+            name: "",
+            surname: "",
+            email: "",
+            phone: "",
+            username: "",
+            password: "",
+            picprofile: ""
+        },
+        validationErrors: {},
+        message: "",
+        message_color: "green",
+        profile_img: require('../../assets/img/user.png')
     }
 
     constructor(props) {
         super(props)
         this.service = new ServiceBackEnd()
-    }
-
-    handleClickHistory = () => {
-
-    }
-
-    handleClickDefinition = () => {
-
-    }
-
-    handleClickDerivates = () => {
-
-    }
-
-    handleClickTools = () => {
-
     }
 
     handleOnChangeName = (ev) => {
@@ -83,10 +67,10 @@ class Register extends Component {
 
         this.service.registerUser(this.state.form_data).then(res => {
 
-            this.state.form_data = { name:"", surname:"", email:"", phone:"", username:"", password:"", picprofile:""}
-            this.setState({profile_img:require('../../assets/img/user.png'), message: "The account has been created correctly...", message_color:"green",validationErrors:{}, form_data:this.state.form_data},() => {
+            this.state.form_data = { name: "", surname: "", email: "", phone: "", username: "", password: "", picprofile: "" }
+            this.setState({ profile_img: require('../../assets/img/user.png'), message: "The account has been created correctly...", message_color: "green", validationErrors: {}, form_data: this.state.form_data }, () => {
 
-                setTimeout(() => this.setState({message:""}), 3000)
+                setTimeout(() => this.setState({ message: "" }), 3000)
             })
 
         }).catch(err => {
@@ -96,10 +80,10 @@ class Register extends Component {
                 err.validationErrors.forEach(error => {
                     errors[error.field] = error.message
                 });
-                this.setState({ validationErrors: errors,message:"Exists validation errors...",  message_color:"red" })
+                this.setState({ validationErrors: errors, message: "Exists validation errors...", message_color: "red" })
             } else {
-               
-                this.setState({ message: err.message, message_color:"red" })
+
+                this.setState({ message: err.message, message_color: "red" })
             }
         })
     }
@@ -108,21 +92,21 @@ class Register extends Component {
 
         let file_input = document.createElement('input');
         file_input.addEventListener("change", (ev) => {
-           
+
             this.service.uploadImageProfileRegister(file_input.files[0]).then(res => {
                 this.state.form_data.picprofile = res.data.id
-                this.setState( {profile_img: res.data.data, form_data:this.state.form_data, message:"The profile pic was uploaded correctly...", message_color:"green"}, () =>{
+                this.setState({ profile_img: res.data.data, form_data: this.state.form_data, message: "The profile pic was uploaded correctly...", message_color: "green" }, () => {
 
-                    setTimeout(() => this.setState({message:"", message_color:"green"}), 3000)
+                    setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                 })
 
             }).catch(err => {
-                
-                this.setState({ message_color:"red", message:"There was a problem while uploading the pic..." }, () => {
 
-                    setTimeout(() => this.setState({message:"", message_color:"green"}), 3000)
+                this.setState({ message_color: "red", message: "There was a problem while uploading the pic..." }, () => {
+
+                    setTimeout(() => this.setState({ message: "", message_color: "green" }), 3000)
                 })
-        
+
             })
         }, false);
         file_input.type = 'file';
@@ -130,18 +114,14 @@ class Register extends Component {
 
     }
 
-    handleClose = () =>{
+    handleClose = () => {
         this.props.history.push("/home")
     }
 
     render() {
         return (
             <section>
-                <Header onClickHistory={this.handleClickHistory}
-                    onClickDefinition={this.handleClickDefinition}
-                    onClickDerivates={this.handleClickDerivates}
-                    onClickTools={this.handleClickTools}>
-                </Header>
+                <Header showMenu={false} onHandleIsLogged={this.props.onHandleIsLogged}></Header>
                 <section className="register-section">
                     <h2 style={{ color: this.state.message_color }}>{this.state.message}</h2>
                     <form className="form" onSubmit={(ev) => ev.preventDefault()}>

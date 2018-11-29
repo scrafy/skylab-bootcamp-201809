@@ -4,6 +4,7 @@
 const Schema = use('Schema')
 
 class HiveSchema extends Schema {
+  
   up() {
 
     this.create('hives', (table) => {
@@ -17,9 +18,7 @@ class HiveSchema extends Schema {
       table.integer('maxhumidity').unsigned().notNullable()
       table.integer('beeminvolume').unsigned().notNullable()
       table.integer('beemaxvolume').unsigned().notNullable()
-      table.integer('temperature').unsigned()
-      table.integer('humidity').unsigned()
-      table.integer('beevolume').unsigned()
+      table.boolean('isMonitored')
       table.string('latitude', 30).notNullable()
       table.string('longitude', 30).notNullable()
       table.integer('farm_id').unsigned().references('id').inTable('farms').notNullable()

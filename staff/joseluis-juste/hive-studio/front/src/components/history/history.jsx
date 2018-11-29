@@ -23,18 +23,18 @@ export default function History(props) {
 
             <p className="home-section__main__historia__desc">
                 <div className="home-section__main__historia__img--float-left">
-                    <img src="img/egipcia.jpg" />
+                    <img src={require('../../assets/img/egipcia.jpg')} />
                 </div>
                 En las civilizaciones mediterráneas se fue gestando la apicultura durante el periodo
                 comprendido entre los años 8000 y 4000 años antes de Cristo. El hombre pasó de ejercer una
                 actividad recolectora a proporcionar a las abejas un habitáculo, fabricado por él con diversos
                 materiales, para que pudieran anidar y construir los panales en su interior.
-    
+
                 Los Sumerios, una de las civilizaciones mas antiguas surgida entre los ríos Tigris y Eufrates
                 aproximadamente hacia 4000 a. C., conocían ya la miel y las abejas, y con su escritura
                 pictográfica sobre tablillas de arcilla reflejaron algunos datos sobre ellas que han llegado
                 hasta nuestros días.
-    
+
                     </p>
 
             <p className="home-section__main__historia__desc">
