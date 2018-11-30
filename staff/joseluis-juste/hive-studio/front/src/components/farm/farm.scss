@@ -63,6 +63,9 @@
     margin-bottom: 2em;
     overflow-y: auto;
     position: relative;
+    & ::-webkit-scrollbar-thumb {
+        background: green; 
+    }
     & .hive-info{
         position: absolute;
         top: 0;
@@ -154,10 +157,10 @@
         overflow-y: auto;
         margin:0 auto;
         & .farms-area__item__panel-control{
-            padding: 0.8em;
+            padding: 0.3em;
             display: flex;
-            height: 60px;
-            width: 116px;
+            height: 55px;
+            width: 87px;
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             transition: height 0.2s linear, padding 0.2s linear;
