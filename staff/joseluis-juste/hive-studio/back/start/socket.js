@@ -16,3 +16,5 @@
 const Ws = use('Ws')
 
 Ws.channel('honeycomb', 'HoneyCombController')
+
+Ws.channel('chat', 'ChatController')

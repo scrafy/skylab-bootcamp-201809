@@ -1,0 +1,71 @@
+.chat-section{
+
+    width: 100%;
+    @include screen(640,"width",70%);
+    @include screen(1024,"width",50%);
+    @include screen(1280,"width",30%);
+    height: 384px;
+    position: fixed;
+    bottom: -368px;
+    @include screen(640,"right", 0);
+    margin-right: 2em;
+    padding: 1em;
+    opacity: 1;
+    transition: bottom 0.2s ease-in-out;
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(0,128,0,1) 0%, rgba(246,246,246,1) 75%, rgba(246,246,246,1) 100%);
+    &:hover{
+        cursor: pointer;
+    }
+    & .chat-section__show{
+        
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        position: absolute;
+        top: -30px;
+        width: 100px;
+        background-color: #008000;
+        cursor: pointer;
+        left: calc(50% - 50px);
+        color: $orange;
+        font-size: 1.5em;
+        padding: 4px 0;
+    }
+    & .chat-section__main{
+        height: 300px;
+        background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(248,169,0,1) 0%, rgba(246,246,246,1) 81%, rgba(246,246,246,1) 100%);
+        margin-bottom: 1em;
+        padding: 1em;
+        overflow-y: auto;
+        & ::-webkit-scrollbar-thumb {
+            background: green; 
+        }
+        & p{
+            margin: 0;
+            margin-bottom: 0.5em;
+        }
+        & span{
+            color:green;
+        }
+    }
+    & .chat-section__footer{
+        & form{
+            & > div{
+                display: flex;
+                justify-content: space-between;
+                & > div:last-child{
+                    width: 71%;
+                }
+            }
+            & input{
+                width: 100%;
+                padding: 0.3em;
+            }
+            
+        }
+    }
+}
+
+.show-chat{
+    bottom: 0;
+}

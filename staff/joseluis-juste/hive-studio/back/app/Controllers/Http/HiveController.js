@@ -1,5 +1,4 @@
 'use strict'
-
 const BaseController = use('App/Controllers/Http/BaseController')
 const ResourceNotFoundException = use('App/Exceptions/ResourceNotFoundException')
 const UnauthorizedException = use("App/Exceptions/UnauthorizedException")
@@ -7,7 +6,7 @@ const FarmIsFullException = use("App/Exceptions/FarmIsFullException")
 const User = use('App/Models/User')
 const Farm = use('App/Models/Farm')
 const Hive = use('App/Models/Hive')
-
+const ws = use('WebSocketClient')
 
 class HiveController extends BaseController {
 
@@ -186,8 +185,11 @@ class HiveController extends BaseController {
             throw new UnauthorizedException("This action only can be executed by the sensor application")
             
         const data = request.raw()
-        const hiveUpdateInfoEventEmitter = use("EventManagement").selectSubject("hiveUpdateInfo")
-        hiveUpdateInfoEventEmitter.next(data)
+        if (ws.isConnectionOpen){
+            const _data = {t:7,d:{topic:"honeycomb",event:"getHivesInfo",data:data}}
+            ws._client.send(JSON.stringify(_data))
+        }
+          
     }
 
 

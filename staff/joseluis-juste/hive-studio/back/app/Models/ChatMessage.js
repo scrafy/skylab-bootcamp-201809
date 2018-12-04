@@ -1,0 +1,17 @@
+'use strict'
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Model = use('Model')
+
+class ChatMessage extends Model {
+
+    static get hidden() {
+        return ['created_at', 'updated_at']
+    }
+
+    chat() {
+        return this.belongsTo('App/Models/Chat')
+    }
+}
+
+module.exports = ChatMessage

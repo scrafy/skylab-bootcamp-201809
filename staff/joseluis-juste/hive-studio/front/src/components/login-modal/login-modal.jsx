@@ -49,12 +49,17 @@ class LoginModal extends React.Component {
     handleSubmit = () => {
 
         this.service.loginUser(this.state.form_data.username, this.state.form_data.password)
+
             .then(res => {
+
                 this.props.onHandleIsLogged(true)
                 this.props.onShowHideModal()
                 this.props.history.push("/landing")
                 const user = this.service.getUserSession()
                 SocketService.emitMessage("honeycomb","setUserId", user.id)
+                SocketService.emitMessage("chat","setUserId", user.id)
+                SocketService.emitMessage("chat", "setUsername", user.username)
+                //SocketService.emitMessage("chat", "getConnectedUsers")
             })
             .catch(err => {
                 if (err instanceof ValidationError) {

@@ -21,9 +21,9 @@ class Farm extends Component {
         hideHivePanelInf: "",
         hivedata: { data: [] },
         currentHive: {},
-        showModal:false, 
-        modalMessage:"", 
-        modalTitle:"", 
+        showModal: false,
+        modalMessage: "",
+        modalTitle: "",
     }
 
     constructor(props) {
@@ -35,11 +35,12 @@ class Farm extends Component {
 
 
     handleDragOverEvent = (ev) => {
+        
         ev.preventDefault();
-
     }
 
     handleDropFarmEvent = (ev) => {
+
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         if (data === "item-farm") {
@@ -148,7 +149,7 @@ class Farm extends Component {
     getUserFarms = () => {
 
         this.service.getUserFarms().then(res => {
-            
+
             res.data.sort((a, b) => {
 
                 if (a.id < b.id) {
@@ -161,7 +162,7 @@ class Farm extends Component {
             })
 
             this.setState({ farms: res.data })
-            
+
         }).catch(err => {
 
             this.state.showModal = true
@@ -195,14 +196,14 @@ class Farm extends Component {
         }
     }
 
-    setOffshowModalValue = () =>{
+    setOffshowModalValue = () => {
         this.state.showModal = false
     }
 
     render() {
         return (
             <section>
-                 <ModalInf onHideModal = {this.setOffshowModalValue} modalTitle={this.state.modalTitle} modalMessage = {this.state.modalMessage} showModal={this.state.showModal}></ModalInf>
+                <ModalInf onHideModal={this.setOffshowModalValue} modalTitle={this.state.modalTitle} modalMessage={this.state.modalMessage} showModal={this.state.showModal}></ModalInf>
                 <section onClick={this.handleTogglePanelControl} className={`panel-control icon-wrench ${this.state.showPanelControl}`}>
                     <section className="panel-control__items">
                         <div id="item-farm" onDragStart={(ev) => this.handleDragEvent(ev)} draggable="true" className="panel-control__item">
@@ -212,7 +213,7 @@ class Farm extends Component {
                             {false && <img src={require('../../assets/img/hive.svg')} />}
                         </div>
                         <div id="item-bee" onDragStart={(ev) => this.handleDragEvent(ev)} draggable="true" className="panel-control__item">
-                        {false && <img src={require('../../assets/img/bee.png')} />}
+                            {false && <img src={require('../../assets/img/bee.png')} />}
                         </div>
                     </section>
                 </section>

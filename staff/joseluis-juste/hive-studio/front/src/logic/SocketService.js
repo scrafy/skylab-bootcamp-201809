@@ -7,9 +7,16 @@ class SocketService {
 
     constructor() {
 
-        this.callbacks = {}
-        this.onConnectCallback = null
-        this.onDisconnectCallback = null
+        this.callbacks = {
+
+            onConnectCallbacks: [],
+            onDisconnectCallbacks: [],
+            onChannelReadyCallbacks: [],
+            onChannelErrorCallbacks: [],
+            onChannelCloseCallbacks: [],
+            onChannelMessageCallbacks: []
+
+        }
         this.subscriptionsChannels = []
         this.isConnected = false
         this.ws = Ws(process.env.REACT_APP_API_WS_ENDPOINT)
@@ -18,32 +25,32 @@ class SocketService {
 
     setConnectToWebSocketServerCallback(callback) {
 
-        this.callbacks.onConnectCallback = callback
+        this.callbacks.onConnectCallbacks.push(callback)
     }
 
     setDisconnectFromWebSocketServerCallback(callback) {
 
-        this.callbacks.onDisconnectCallback = callback
+        this.callbacks.onDisconnectCallbacks.push(callback)
     }
 
     setOnChannelReadyCallback(callback) {
 
-        this.callbacks.onChannelReadyCallback = callback
+        this.callbacks.onChannelReadyCallbacks.push(callback)
     }
 
     setOnChannelErrorCallback(callback) {
 
-        this.callbacks.onChannelErrorCallback = callback
+        this.callbacks.onChannelErrorCallbacks.push(callback)
     }
 
     setOnChannelCloseCallback(callback) {
 
-        this.callbacks.onChannelCloseCallback = callback
+        this.callbacks.onChannelCloseCallbacks.push(callback)
     }
 
     setOnChannelMessageCallback(callback) {
 
-        this.callbacks.onChannelMessageCallback = callback
+        this.callbacks.onChannelMessageCallbacks.push(callback)
     }
 
     connectToWsServer() {
@@ -65,16 +72,16 @@ class SocketService {
         this.ws.on('open', () => {
             this.isConnected = true
             console.log("connected to web socket server...")
-            if (this.callbacks.onConnectCallback)
-                this.callbacks.onConnectCallback()
+            if (this.callbacks.onConnectCallbacks.length)
+                this.callbacks.onConnectCallbacks.forEach(callback => callback())
         })
 
         this.ws.on('close', () => {
             //this.unsubscribeAllChannels()
             this.isConnected = false
             console.log("disconnected from web socket server...")
-            if (this.callbacks.onDisconnectCallback)
-                this.callbacks.onDisconnectCallback()
+            if (this.callbacks.onDisconnectCallbacks.length)
+                this.callbacks.onDisconnectCallbacks.forEach(callback => callback())
         })
     }
 
@@ -94,21 +101,21 @@ class SocketService {
             console.log(`Channel subscription: ${name} is ready...`)
             let channelFound = this.getChannelFromSubscriptions(name)
             channelFound.ready = true
-            if (this.callbacks.onChannelReadyCallback)
-                this.callbacks.onChannelReadyCallback()
+            if (this.callbacks.onChannelReadyCallbacks.length)
+                this.callbacks.onChannelReadyCallbacks.forEach(callback => callback(name))
         })
 
         channel.on('error', (error) => {
-            if (this.callbacks.onChannelErrorCallback)
-                this.callbacks.onChannelErrorCallback()
+            if (this.callbacks.onChannelErrorCallbacks.length)
+                this.callbacks.onChannelErrorCallbacks.forEach(callback => callback())
 
             console.log(`An error happened in the channel ${name}: ${error}`)
         })
 
         channel.on('close', () => {
 
-            if (this.onChannelCloseCallback)
-                this.callbacks.onChannelCloseCallback()
+            if (this.onChannelCloseCallbacks.length)
+                this.callbacks.onChannelCloseCallbacks.forEach(callback => callback())
             console.log(`Subscription to the channel: ${name} ended`)
         })
     }
@@ -124,7 +131,7 @@ class SocketService {
     }
 
     emitMessage(channelName, event, data) {
-
+        
         let channel = this.getChannelFromSubscriptions(channelName)
         if (channel.ready)
             channel.channel.emit(event, data)
@@ -135,7 +142,7 @@ class SocketService {
     getChannelFromSubscriptions(name) {
 
         if (this.subscriptionsChannels.length === 0)
-            throw new ChannelSubscriptionNotFoundException(`The with the name ${name} does not exists`)
+            return undefined
 
         const index = this.subscriptionsChannels.findIndex(channel => {
 
@@ -143,8 +150,8 @@ class SocketService {
         })
         if (index !== -1) {
             return this.subscriptionsChannels[index]
-        } else {
-            throw new ChannelSubscriptionNotFoundException(`The with the name ${name} does not exists`)
+
+            return undefined
         }
     }
 
@@ -157,7 +164,7 @@ class SocketService {
                     const index = this.subscriptionsChannels.findIndex(channel => {
                         return channel.name === name
                     })
-                    this.subscriptionsChannels.splice(index,1)
+                    this.subscriptionsChannels.splice(index, 1)
                 }
 
             }
@@ -184,6 +191,7 @@ class SocketService {
 
         }
     }
+
 }
 
 SocketService = new SocketService()

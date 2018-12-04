@@ -10,17 +10,17 @@ class ServiceBackEnd {
 
     constructor() {
 
-       this.endpoint = process.env.REACT_APP_API_ENDPOINT
-      // this.endpoint = "http://localhost:3333/api" //descomentar for mocha
+        this.endpoint = process.env.REACT_APP_API_ENDPOINT
+        // this.endpoint = "http://localhost:3333/api" //descomentar for mocha
     }
 
-    setEnPoint(url){
+    setEnPoint(url) {
 
         this.endpoint = url
     }
 
     registerUser(user) {
-        
+
         return fetch(`${this.endpoint}/user`, {
             method: 'POST',
             headers: {
@@ -31,11 +31,11 @@ class ServiceBackEnd {
         })
             .then(res => res.json())
             .then((res) => {
-                
+
                 if (res.status === "OK") return res
 
                 if (res.validationErrors)
-                    
+
                     throw new ValidationError(res.error, res.validationErrors)
 
                 throw new Error(res.error)
@@ -70,7 +70,7 @@ class ServiceBackEnd {
     }
 
     updateUser(user) {
-        
+
         return new Promise((resolve, reject) => {
 
             const token = this.getTokenSession()
@@ -85,7 +85,7 @@ class ServiceBackEnd {
             })
                 .then(res => res.json())
                 .then((res) => {
-                    
+
                     if (res.status === "OK") return resolve(res)
 
                     if (res.validationErrors)
@@ -168,7 +168,7 @@ class ServiceBackEnd {
     }
 
     loginUser(username, password) {
-        
+
         return fetch(`${this.endpoint}/user/auth`, {
             method: 'POST',
             headers: {
@@ -195,7 +195,7 @@ class ServiceBackEnd {
     }
 
     getTokenSession() {
-        
+
         if (!sessionStorage.getItem("token"))
             throw new NotValidSession("The user token is not valid")
 
@@ -289,7 +289,7 @@ class ServiceBackEnd {
 
     deleteHive(id) {
 
-        return new Promise( (resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
             const token = this.getTokenSession()
             return fetch(`${this.endpoint}/hive/${id}`, {
@@ -314,8 +314,8 @@ class ServiceBackEnd {
 
     stopStartMonitor(id) {
 
-        return new Promise( (resolve, reject) => {
-           
+        return new Promise((resolve, reject) => {
+
             const token = this.getTokenSession()
             return fetch(`${this.endpoint}/hive/${id}`, {
                 method: 'PATCH',
@@ -480,6 +480,55 @@ class ServiceBackEnd {
     }
 
     /********************************************************************************************************/
+
+    sendChatMessage(chatId, message) {
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/chat/${chatId}`, {
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                },
+                body:JSON.stringify({message:message})
+            })
+                .then(res => res.json())
+                .then((res) => {
+                    
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
+    getLastMessage(chatId) {
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/chat/${chatId}`, {
+                method: 'GET',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+                    
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
 
 }
 

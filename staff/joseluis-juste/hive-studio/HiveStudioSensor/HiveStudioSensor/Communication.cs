@@ -77,7 +77,7 @@ namespace HiveStudioSensor
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("INFO: Hives info getted from API:\n");
                 Console.ForegroundColor = ConsoleColor.White;
-                if(_data == null)
+                if ((_data == null) || (_data.Count == 0))
                 {
                     Console.WriteLine("Any hive gotted from API\n\n");
                 }

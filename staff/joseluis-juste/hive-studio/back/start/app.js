@@ -24,7 +24,8 @@ const providers = [
   '@adonisjs/auth/providers/AuthProvider',
   '@adonisjs/validator/providers/ValidatorProvider',
   '@adonisjs/websocket/providers/WsProvider',
-   path.join(__dirname, '..', 'providers', 'EventManagementService/EventManagementProvider')
+   path.join(__dirname, '..', 'providers', 'EventManagementService/EventManagementProvider'),
+   path.join(__dirname, '..', 'providers', 'WebSocketClientService/WebSocketClientProvider')
 ]
 
 /*

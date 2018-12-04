@@ -10,7 +10,6 @@ class FarmSchema extends Schema {
       table.integer('user_id').unsigned().references('id').inTable('users').notNullable()
       table.string('name', 25).notNullable()
       table.string('description', 255).notNullable()
-      table.integer('minhives').unsigned().notNullable()
       table.integer('maxhives').unsigned().notNullable()
       table.integer('squaremeters').unsigned().notNullable()
       table.timestamps()

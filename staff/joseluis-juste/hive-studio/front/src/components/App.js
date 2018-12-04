@@ -8,6 +8,7 @@ import Update from './update/update'
 import SocketService from '../logic/SocketService'
 import EventsManagement from '../logic/EventManagement'
 import ServiceBackEnd from '../logic/Service'
+import Chat from '../components/chat/chat'
 
 class App extends Component {
 
@@ -25,13 +26,13 @@ class App extends Component {
   }
 
   setIsLogged = (val) => {
-    
+
     this.state.isLogged = val
     this.setState({})
 
   }
-  
-  componentDidMount(){
+
+  componentDidMount() {
 
     this.state.isLogged = this.service.isLogged()
   }
@@ -46,20 +47,26 @@ class App extends Component {
     SocketService.subscribeChannel("honeycomb")
   }
 
-  $onsubscribed = () => {
+  $onsubscribed = (name) => {
 
-    try {
-      const user = this.service.getUserSession()
-      SocketService.emitMessage("honeycomb", "setUserId", user.id)
-    } catch (err) {
+    if (name === "honeycomb") {
+
+      try {
+        
+        const user = this.service.getUserSession()
+        SocketService.emitMessage("honeycomb", "setUserId", user.id)
+
+      } catch (err) {
+
+      }
+      SocketService.setMessageEventsInChannel("hivesInfo", "honeycomb", this.$onGetHivesInfo)
 
     }
-    SocketService.setMessageEventsInChannel("hivesInfo", "honeycomb", this.$onGetHivesInfo)
 
   }
 
   $onGetHivesInfo(data) {
-
+    
     const hiveUpdateInfoEventEmitter = EventsManagement.selectSubject("hiveUpdateInfo")
     hiveUpdateInfoEventEmitter.next(data)
 
@@ -74,7 +81,7 @@ class App extends Component {
         <Route path="/landing" render={() => this.state.isLogged ? <Landing onHandleIsLogged={this.setIsLogged}></Landing> : <Redirect to="/home" />} />
         <Route path="/register" render={() => <Register onHandleIsLogged={this.setIsLogged}></Register>} />
         <Route path="/update" render={() => this.state.isLogged ? <Update onHandleIsLogged={this.setIsLogged}></Update> : <Redirect to="/home" />} />
-
+        { this.props.location.pathname !== "/" && <Chat isLogged={this.state.isLogged}></Chat>}
       </section>
 
     );

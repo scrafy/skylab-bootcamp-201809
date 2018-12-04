@@ -25,7 +25,7 @@ class Hive extends Component {
     }
 
     getHiveIfFromServer = (data) => {
-
+        
         if (this.state.hive.isMonitored) {
 
             let tempcolor = "green"
