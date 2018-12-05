@@ -44,6 +44,8 @@ class ServiceBackEnd {
             })
     }
 
+    
+
     getUserData() {
 
         return new Promise((resolve, reject) => {
@@ -68,6 +70,32 @@ class ServiceBackEnd {
 
         })
     }
+
+    getName(userId) {
+
+        return new Promise((resolve, reject) => {
+
+            const token = this.getTokenSession()
+            return fetch(`${this.endpoint}/user/getusername/${userId}`, {
+                method: 'GET',
+                headers: {
+                    "Accept": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then((res) => {
+
+                    if (res.status === "OK") return resolve(res)
+
+                    throw new Error(res.error)
+
+
+                }).catch(err => reject(err))
+
+        })
+    }
+
 
     updateUser(user) {
 

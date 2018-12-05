@@ -184,9 +184,19 @@ class HiveController extends BaseController {
         if (username !== "sensor")
             throw new UnauthorizedException("This action only can be executed by the sensor application")
             
-        const data = request.raw()
+        const data = JSON.parse(request.raw())
+        data.map(async _hive => {
+              
+            let hive = await Hive.find(_hive.hiveId)
+            hive.temperature = _hive.temperature
+            hive.humidity = _hive.humidity
+            hive.beevolume = _hive.beevolume
+            await hive.save()
+            
+        })
+        
         if (ws.isConnectionOpen){
-            const _data = {t:7,d:{topic:"honeycomb",event:"getHivesInfo",data:data}}
+            const _data = {t:7,d:{topic:"honeycomb",event:"getHivesInfo", data:null}}
             ws._client.send(JSON.stringify(_data))
         }
           

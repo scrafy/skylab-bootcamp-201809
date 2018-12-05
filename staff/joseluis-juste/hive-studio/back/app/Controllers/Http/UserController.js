@@ -169,6 +169,17 @@ class UserController extends BaseController {
        
     }
 
+    async getUsername({ request, response }){
+      
+        const { userId } = request.params
+        const user = await User.find(userId)
+        if (!user) {
+            throw new ResourceNotFoundException(`The user with the id ${userId} not exists`, 404)
+        }
+        this.sendResponse(response, user.name)
+       
+    }
+
 }
 
 module.exports = UserController

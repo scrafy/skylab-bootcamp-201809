@@ -22,18 +22,19 @@ class Connection {
     _onOpen() {
 
         this.isConnectionOpen = true
-        //this.channel = this._client. .subscribe("honeycomb")
-        const data = { t: 1, d: { topic: "honeycomb" } }
+        console.log('Connected to WebSocket Server')
+       
+         const data = { t: 1, d: { topic: "honeycomb" } }
         this._client.send(JSON.stringify(data))
     }
 
     _onMessage(data) {
-        console.log('data received on', this._url, data)
-        //Event.emit(this._ev, data)
+      
     }
 
     _onClose(e) {
         this.isConnectionOpen = false
+        console.log('Disconnected to WebSocket Server')
         switch (e.code) {
             case 1000:	// CLOSE_NORMAL
                 console.log("WebSocket: closed")
@@ -51,9 +52,7 @@ class Connection {
             case 'ECONNREFUSED':
                 this._reconnect(e)
                 break
-            default:
-                this.onerror(e)
-                break
+          
         }
     }
 

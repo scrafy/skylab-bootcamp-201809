@@ -16,6 +16,7 @@ class ChatController {
     socket.on("setUserId", (userId) => {
 
       socket.userId = userId
+      socket.broadcastToAll("connectedUsers", { socketId:socket.id, userId:userId })
 
 
     })

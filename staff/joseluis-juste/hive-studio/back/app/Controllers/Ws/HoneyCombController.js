@@ -13,16 +13,15 @@ class HoneyCombController {
   
   adminSocket(socket) {
 
-    this.clients.push(socket)
-
+    
     socket.on("setUserId", (userId) => {
       socket.userId = userId
+      
     })
 
-    socket.on("getHivesInfo", (data) => {
-
-      data = JSON.parse(data)
-      socket.broadcast("hivesInfo", JSON.stringify({ hives: data, userid: socket.userId }))
+    socket.on("getHivesInfo", () => {
+      
+      socket.broadcast("hivesInfo")
      /* this.clients.forEach(_socket => {
 
         const filtered = data.filter(hiveInf => {
@@ -36,7 +35,7 @@ class HoneyCombController {
 
     })
 
-
+    
     socket.on("close", () => {
 
       this.subscription.unsubscribe()

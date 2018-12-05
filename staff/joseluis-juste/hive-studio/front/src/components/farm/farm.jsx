@@ -246,7 +246,7 @@ class Farm extends Component {
 
                         </section>
                     </section>
-                    <audio autoPlay loop src={require('../../assets/audio/abeja.mp3')}></audio>
+                    {false && <audio autoPlay loop src={require('../../assets/audio/abeja.mp3')}></audio>}
                     <FarmRegisterModal farm={this.state.farm} onCreatedAndEdited={this.getUserFarms} onShowHideModal={this.handleShowHideRegisterModal} showModal={this.state.showRegisterModal}></FarmRegisterModal>
                     <HiveRegisterModal onCreatedAndEdited={this.getUserFarms} farmId={this.state.farmId} validationErrors={this.state.validationHiveErrors} onSubmitHive={this.handleSubmitHive} title={this.state.registerHiveTitle} onShowHideModal={this.handleShowHideHiveModal} showModal={this.state.showHiveModal}></HiveRegisterModal>
                     <Carousel selectedItem={this.state.selectedSlide} onChange={(ev) => this.handleSliderChange(ev)} showThumbs={false}>

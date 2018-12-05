@@ -69,13 +69,22 @@ class Chat extends Component {
         }
     }
 
-    $onGetConnectedUsers = (users) => {
-
+    $onGetConnectedUsers = (_user) => {
+        
         try {
-            if (this.service.getUserSession()) {
-                users.forEach(user => {
-                    this.state.users.push(users)
-                })
+            const user = this.service.getUserSession()
+            if (user) {
+                
+                if (user.id === _user.userId){
+                    if (!this.state.users.find(us => us.id === user.id))
+                        this.state.users.push({ userId:user.id, name:user.name })
+                }else{
+                    this.service.getName(_user.userId).then(res => {
+                        
+                        if (!this.state.users.find(us => us.id === _user.userId))
+                            this.state.users.push({ userId:_user.userId, name:res.data })
+                    })
+                }
                 this.setState({})
             }
         } catch (err) {
