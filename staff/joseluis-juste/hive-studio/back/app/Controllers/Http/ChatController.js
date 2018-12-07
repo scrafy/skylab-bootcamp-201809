@@ -9,7 +9,7 @@ class ChatController extends BaseController {
     }
 
     async storeMessage({ request, response }) {
-        debugger
+        
         const { chatId } = request.params
         const { message } = JSON.parse(request.raw())
         if (message) {

@@ -127,20 +127,6 @@ class Farm extends Component {
         })
     }
 
-    handleSubmitHive = (form_data) => {
-        //enviar al api, si la respuesta ha sido ok desde el api, llamar otra vez para obtener los datos y hacer un setstate de ese hive concreto
-        //si hay errores de validacion
-        if (!this.sent) {
-            this.setState({ validationHiveErrors: { name: "Error en el nombre" } })
-            this.sent = true
-        }
-        else
-            this.setState({ validationHiveErrors: {} })
-
-        //else
-        //this.handleShowHideHiveModal()
-    }
-
     componentDidMount() {
 
         this.getUserFarms()

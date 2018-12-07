@@ -14,7 +14,7 @@ class UserController extends BaseController {
     }
 
     async create({ request, response }) {
-
+        
         const data = JSON.parse(request.raw())
         const picprofile = data.picprofile
         delete data.picprofile

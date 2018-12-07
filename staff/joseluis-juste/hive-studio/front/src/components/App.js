@@ -19,7 +19,7 @@ class App extends Component {
     super(props)
     this.service = new ServiceBackEnd()
     SocketService.connectToWsServer()
-    SocketService.setOnChannelReadyCallback(this.$onsubscribed)
+    SocketService.setOnChannelReadyCallback(this.$onSubscribed)
     SocketService.setConnectToWebSocketServerCallback(this.$onConnected)
     SocketService.setDisconnectFromWebSocketServerCallback(this.$onCloseConnectionError)
     this.hiveUpdateInfoEventEmitter = EventsManagement.selectSubject("hiveUpdateInfo")
@@ -57,7 +57,7 @@ class App extends Component {
     SocketService.subscribeChannel("honeycomb")
   }
 
-  $onsubscribed = (name) => {
+  $onSubscribed = (name) => {
 
     if (name === "honeycomb") {
 
