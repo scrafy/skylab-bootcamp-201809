@@ -1,7 +1,7 @@
 # Hive Studio
 
 ## DOCS
-[Use Case](./docs/Readme.md)
+[Docs](./docs/Readme.md)
 ## Deploy
 In order to prepare the environment to run the app, first, we have setup the values in .env files in order to connect to servers correclty.
 

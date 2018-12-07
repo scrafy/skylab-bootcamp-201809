@@ -14,12 +14,12 @@ The user will be able to see too a code colors which it will go changing from gr
 
 [Activity Diagram](./images/ActivityDiagram.png)
 
-[Use Case](./image/CaseUses.png)
+[Use Case](./images/CaseUses.png)
 
 ## Tec Desc
 
-[Data Model](./image/DataModel.png)
+[Data Model](./images/DataModel.png)
 
-[Class Diagram](./image/DiagramaClases.png)
+[Class Diagram](./images/DiagramaClases.png)
 
-[Component Diagram](./image/ComponentDiagram.png)
+[Component Diagram](./images/ComponentDiagram.png)
