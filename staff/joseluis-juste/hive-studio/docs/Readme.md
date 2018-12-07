@@ -1,5 +1,6 @@
 # Hive Studio
 
+![](./images/logoSkylab.png)
 ## Intro
 
 This application let us to monitor hives parameters in real time like can be temperature, humidity and beevolume. 
@@ -11,6 +12,14 @@ The user will be able to see too a code colors which it will go changing from gr
 
 ## Func Desc
 
+[Activity Diagram](./images/ActivityDiagram.png)
 
+[Use Case](./image/CaseUses.png)
 
 ## Tec Desc
+
+[Data Model](./image/DataModel.png)
+
+[Class Diagram](./image/DiagramaClases.png)
+
+[Component Diagram](./image/ComponentDiagram.png)
