@@ -1,6 +1,6 @@
 # Hive Studio
 
-![](./images/logoSkylab.png)
+![](./images/logo.jpg)
 ## Intro
 
 This application let us to monitor hives parameters in real time like can be temperature, humidity and beevolume. 
