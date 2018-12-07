@@ -1,6 +1,7 @@
 # Hive Studio
 
 ![](./images/logo.jpg)
+
 ## Intro
 
 This application let us to monitor hives parameters in real time like can be temperature, humidity and beevolume. 
@@ -10,13 +11,13 @@ Once the monitored for a concrete hive is enabled, the user will be able to see 
 The user will be able to see too a code colors which it will go changing from green to red warning to the user about a danger in the hive.
 
 
-## Func Desc
+## Functional Description
 
 [Activity Diagram](./images/ActivityDiagram.png)
 
 [Use Case](./images/CaseUses.png)
 
-## Tec Desc
+## Technical Description
 
 [Data Model](./images/DataModel.png)
 
